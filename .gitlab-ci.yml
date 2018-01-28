@@ -1,15 +1,15 @@
-test:2.7:
+python_2_7:
    image: python:2.7
    script:
-  - apt-get update -qy
-  - apt-get install -y python-pip
-  - pip install -r requirements.txt
-  - python -m unittest discover tests
+     - apt-get update -qy
+     - apt-get install -y python-pip
+     - pip install -r requirements.txt
+     - python -m unittest discover tests
 
-test:3.5:
+python_3_5:
    image: python:3.5
    script:
-  - apt-get update -qy
-  - apt-get install -y python-pip
-  - pip install -r requirements.txt
-  - python -m unittest discover tests
+     - apt-get update -qy
+     - apt-get install -y python-pip
+     - pip install -r requirements.txt
+     - python -m unittest discover tests
