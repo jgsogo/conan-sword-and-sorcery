@@ -2,19 +2,24 @@
 
 from collections import defaultdict
 from conans.util.env_reader import get_env
-from conan.ci.operating_system import OperatingSystem
 
 
-class Compiler(OperatingSystem):
+class Compiler(object):
     compiler = None
-    _configurations = ['os', 'archs', 'build_types', 'versions', ]
+    os_system = None
+
+    _configurations = ['arch', 'build_type', 'version', ]
 
     @property
-    def build_types(self):
+    def arch(self):
+        return get_env("CONAN_ARCHS", ["x86", "x86_64"])
+
+    @property
+    def build_type(self):
         return get_env("CONAN_BUILD_TYPES", ["Release", "Debug"])
 
     @property
-    def versions(self):
+    def version(self):
         raise NotImplementedError()
 
     # Add a factory
@@ -32,7 +37,7 @@ class CompilerGCC(Compiler):
     os_system = "Linux"
 
     @property
-    def versions(self):
+    def version(self):
         return get_env("CONAN_GCC_VERSIONS", ["4.9", "5", "6", "7"])
 
 
@@ -42,7 +47,7 @@ class CompilerClangLinux(Compiler):
     os_system = "Linux"
 
     @property
-    def versions(self):
+    def version(self):
         return get_env("CONAN_CLANG_VERSIONS", ["3.8", "3.9", "4.0"])
 
 
@@ -52,7 +57,7 @@ class CompilerClangApple(Compiler):
     os_system = "Darwin"
 
     @property
-    def versions(self):
+    def version(self):
         return get_env("CONAN_APPLE_CLANG_VERSIONS", ["7.3", "8.0", "8.1"])
 
 
@@ -60,12 +65,12 @@ class CompilerClangApple(Compiler):
 class CompilerVisualStudio(Compiler):
     compiler = 'Visual Studio'
     os_system = "Windows"
-    _configurations = Compiler._configurations + ['runtimes', ]
+    _configurations = Compiler._configurations + ['runtime', ]
 
     @property
-    def versions(self):
+    def version(self):
         return get_env("CONAN_VISUAL_VERSIONS", ["10", "12", "14"])
 
     @property
-    def runtimes(self):
+    def runtime(self):
         return get_env("CONAN_VISUAL_RUNTIMES", ["MT", "MD", "MTd", "MDd"])

@@ -16,7 +16,7 @@ class TestCompiler01(Compiler):
     os_system = "TestPlatform"
 
     @property
-    def versions(self):
+    def version(self):
         return ["01_v1", "01_v2", ]
 
 
@@ -27,7 +27,7 @@ class TestCompiler02(Compiler):
     _configurations = Compiler._configurations + ["test_config"]
 
     @property
-    def versions(self):
+    def version(self):
         return ["02_v1", "02_v2", ]
 
     @property
@@ -39,19 +39,19 @@ class TestGetSettingsFunction(unittest.TestCase):
     def setUp(self):
         platform.system = mock.Mock(return_value="TestPlatform")
         self.configurations = list(get_settings())
-        self.n_build_types = len(Compiler().build_types)
-        self.n_archs = len(Compiler().archs)
+        self.n_build_types = len(Compiler().build_type)
+        self.n_archs = len(Compiler().arch)
 
     def test_total(self):
         self.assertEqual(len(self.configurations), self.n_archs*16)
 
     def test_compiler01(self):
         confs = list(filter(lambda x: isinstance(x[1], TestCompiler01), self.configurations))
-        self.assertEqual(len(confs), self.n_archs * self.n_build_types * len(TestCompiler01().versions))
+        self.assertEqual(len(confs), self.n_archs * self.n_build_types * len(TestCompiler01().version))
 
         all_config_options = defaultdict(set)
         for os_system, compiler, config in confs:
-            self.assertEqual(os_system.os, "TestPlatform")
+            self.assertEqual(os_system, "TestPlatform")
             self.assertTrue(isinstance(compiler, TestCompiler01))
             for key, value in config.items():
                 all_config_options[key].add(value)
@@ -66,11 +66,11 @@ class TestGetSettingsFunction(unittest.TestCase):
 
     def test_compiler02(self):
         confs = list(filter(lambda x: isinstance(x[1], TestCompiler02), self.configurations))
-        self.assertEqual(len(confs), self.n_archs*self.n_build_types * len(TestCompiler02().versions) * len(TestCompiler02().test_config))
+        self.assertEqual(len(confs), self.n_archs*self.n_build_types * len(TestCompiler02().version) * len(TestCompiler02().test_config))
 
         all_config_options = defaultdict(set)
         for os_system, compiler, config in confs:
-            self.assertEqual(os_system.os, "TestPlatform")
+            self.assertEqual(os_system, "TestPlatform")
             self.assertTrue(isinstance(compiler, TestCompiler02))
             for key, value in config.items():
                 all_config_options[key].add(value)
