@@ -15,6 +15,7 @@ class TestCompilerVisualStudio(unittest.TestCase):
         self.n_versions = len(CompilerVisualStudio().versions)
         self.n_runtimes = len(CompilerVisualStudio().runtimes)
         self.n_build_types = len(CompilerVisualStudio().build_types)
+        self.n_archs = len(CompilerVisualStudio().archs)
 
     def test_default(self):
         compilers = Compiler._registry[platform.system()]
@@ -24,34 +25,34 @@ class TestCompilerVisualStudio(unittest.TestCase):
         self.assertEqual(vs.os_system, "Windows")
 
         configurations = get_settings()
-        self.assertEqual(len(list(configurations)), self.n_versions*self.n_runtimes*self.n_build_types)
+        self.assertEqual(len(list(configurations)), self.n_archs*self.n_versions*self.n_runtimes*self.n_build_types)
 
     def test_versions(self):
         with context_env(CONAN_VISUAL_VERSIONS='22'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), 1*self.n_runtimes*self.n_build_types)
+            self.assertEqual(len(list(configurations)), self.n_archs*1*self.n_runtimes*self.n_build_types)
 
         with context_env(CONAN_VISUAL_VERSIONS='22,33'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), 2*self.n_runtimes*self.n_build_types)
+            self.assertEqual(len(list(configurations)), self.n_archs*2*self.n_runtimes*self.n_build_types)
 
     def test_runtimes(self):
         with context_env(CONAN_VISUAL_RUNTIMES='22'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * 1 * self.n_build_types)
+            self.assertEqual(len(list(configurations)), self.n_archs*self.n_versions * 1 * self.n_build_types)
 
         with context_env(CONAN_VISUAL_RUNTIMES='22,33'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * 2 * self.n_build_types)
+            self.assertEqual(len(list(configurations)), self.n_archs*self.n_versions * 2 * self.n_build_types)
 
     def test_build_types(self):
         with context_env(CONAN_BUILD_TYPES='22'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * self.n_runtimes * 1)
+            self.assertEqual(len(list(configurations)), self.n_archs*self.n_versions * self.n_runtimes * 1)
 
         with context_env(CONAN_BUILD_TYPES='22,33'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * self.n_runtimes * 2)
+            self.assertEqual(len(list(configurations)), self.n_archs*self.n_versions * self.n_runtimes * 2)
 
 
 if __name__ == '__main__':

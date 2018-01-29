@@ -35,7 +35,7 @@ class ConanfileWrapper(object):
                 foo = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(foo)
 
-            except ImportError:
+            except AttributeError:
                 # Python 3.3, 3.4
                 from importlib.machinery import SourceFileLoader
                 foo = SourceFileLoader("module.name", filename).load_module()

@@ -7,6 +7,7 @@ from collections import defaultdict
 
 from conan.ci.compilers import Compiler
 from conan.ci.settings import get_settings
+from conan.utils import isstr
 
 
 @Compiler.register
@@ -34,18 +35,19 @@ class TestCompiler02(Compiler):
         return ["1", "2", "3",]
 
 
-class TestSettingsGenerator(unittest.TestCase):
+class TestGetSettingsFunction(unittest.TestCase):
     def setUp(self):
         platform.system = mock.Mock(return_value="TestPlatform")
         self.configurations = list(get_settings())
         self.n_build_types = len(Compiler().build_types)
+        self.n_archs = len(Compiler().archs)
 
     def test_total(self):
-        self.assertEqual(len(self.configurations), 16)
+        self.assertEqual(len(self.configurations), self.n_archs*16)
 
     def test_compiler01(self):
         confs = list(filter(lambda x: isinstance(x[1], TestCompiler01), self.configurations))
-        self.assertEqual(len(confs), self.n_build_types * len(TestCompiler01().versions))
+        self.assertEqual(len(confs), self.n_archs * self.n_build_types * len(TestCompiler01().versions))
 
         all_config_options = defaultdict(set)
         for os_system, compiler, config in confs:
@@ -56,14 +58,15 @@ class TestSettingsGenerator(unittest.TestCase):
 
         # All options must be seen
         for item in TestCompiler01._configurations:
-            self.assertSetEqual(set(getattr(TestCompiler01(), item)), all_config_options[item])
+            value = getattr(TestCompiler01(), item)
+            self.assertSetEqual(set(value) if not isstr(value) else set([value,]), all_config_options[item])
 
         # TestCompiler01 does not define 'test_config'
         self.assertSetEqual(all_config_options["test_config"], {None, })
 
     def test_compiler02(self):
         confs = list(filter(lambda x: isinstance(x[1], TestCompiler02), self.configurations))
-        self.assertEqual(len(confs), self.n_build_types * len(TestCompiler02().versions) * len(TestCompiler02().test_config))
+        self.assertEqual(len(confs), self.n_archs*self.n_build_types * len(TestCompiler02().versions) * len(TestCompiler02().test_config))
 
         all_config_options = defaultdict(set)
         for os_system, compiler, config in confs:
@@ -74,5 +77,5 @@ class TestSettingsGenerator(unittest.TestCase):
 
         # All options must be seen
         for item in TestCompiler02._configurations:
-            self.assertSetEqual(set(getattr(TestCompiler02(), item)), all_config_options[item])
-
+            value = getattr(TestCompiler02(), item)
+            self.assertSetEqual(set(value) if not isstr(value) else set([value,]), all_config_options[item])

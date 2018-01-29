@@ -14,6 +14,7 @@ class TestCompilersWindows(unittest.TestCase):
         platform.system = mock.Mock(return_value="Darwin")
         self.n_versions = len(CompilerClangApple().versions)
         self.n_build_types = len(CompilerClangApple().build_types)
+        self.n_archs = len(CompilerClangApple().archs)
 
     def test_default(self):
         compilers = Compiler._registry[platform.system()]
@@ -23,25 +24,25 @@ class TestCompilersWindows(unittest.TestCase):
         self.assertEqual(vs.os_system, "Darwin")
 
         configurations = get_settings()
-        self.assertEqual(len(list(configurations)), self.n_versions*self.n_build_types)
+        self.assertEqual(len(list(configurations)), self.n_archs*self.n_versions*self.n_build_types)
 
     def test_versions(self):
         with context_env(CONAN_APPLE_CLANG_VERSIONS='22'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), 1*self.n_build_types)
+            self.assertEqual(len(list(configurations)), self.n_archs*1*self.n_build_types)
 
         with context_env(CONAN_APPLE_CLANG_VERSIONS='22,33'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), 2*self.n_build_types)
+            self.assertEqual(len(list(configurations)), self.n_archs*2*self.n_build_types)
 
     def test_build_types(self):
         with context_env(CONAN_BUILD_TYPES='22'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * 1)
+            self.assertEqual(len(list(configurations)), self.n_archs*self.n_versions * 1)
 
         with context_env(CONAN_BUILD_TYPES='22,33'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * 2)
+            self.assertEqual(len(list(configurations)), self.n_archs*self.n_versions * 2)
 
 
 if __name__ == '__main__':

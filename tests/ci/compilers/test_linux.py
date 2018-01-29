@@ -16,6 +16,7 @@ class TestCompilersLinux(unittest.TestCase):
         self.n_gcc_build_types = len(CompilerGCC().build_types)
         self.n_clang_versions = len(CompilerClangLinux().versions)
         self.n_clang_build_types = len(CompilerClangLinux().build_types)
+        self.n_archs = len(CompilerClangLinux().archs)
 
     def test_default(self):
         compilers = Compiler._registry[platform.system()]
@@ -34,40 +35,46 @@ class TestCompilersLinux(unittest.TestCase):
 
         configurations = get_settings()
         self.assertEqual(len(list(configurations)),
-                         self.n_gcc_versions*self.n_gcc_build_types +
-                         self.n_clang_versions*self.n_clang_build_types)
+                         self.n_archs*(
+                             self.n_gcc_versions*self.n_gcc_build_types +
+                             self.n_clang_versions*self.n_clang_build_types))
 
     def test_versions(self):
         with context_env(CONAN_GCC_VERSIONS='1'):
             configurations = get_settings()
             self.assertEqual(len(list(configurations)),
-                             1*self.n_gcc_build_types +
-                             self.n_clang_versions * self.n_clang_build_types)
+                             self.n_archs*(
+                                 1*self.n_gcc_build_types +
+                                 self.n_clang_versions * self.n_clang_build_types))
 
         with context_env(CONAN_GCC_VERSIONS='1', CONAN_CLANG_VERSIONS='2'):
             configurations = get_settings()
             self.assertEqual(len(list(configurations)),
-                             1*self.n_gcc_build_types +
-                             1*self.n_clang_build_types)
+                             self.n_archs*(
+                                 1*self.n_gcc_build_types +
+                                 1*self.n_clang_build_types))
 
         with context_env(CONAN_GCC_VERSIONS='1,2', CONAN_CLANG_VERSIONS='2'):
             configurations = get_settings()
             self.assertEqual(len(list(configurations)),
-                             2*self.n_gcc_build_types +
-                             1*self.n_clang_build_types)
+                             self.n_archs*(
+                                 2*self.n_gcc_build_types +
+                                 1*self.n_clang_build_types))
 
     def test_build_types(self):
         with context_env(CONAN_BUILD_TYPES='22'):
             configurations = get_settings()
             self.assertEqual(len(list(configurations)),
-                             self.n_gcc_versions * 1 +
-                             self.n_clang_versions * 1)
+                             self.n_archs*(
+                                 self.n_gcc_versions * 1 +
+                                 self.n_clang_versions * 1))
 
         with context_env(CONAN_BUILD_TYPES='22,33'):
             configurations = get_settings()
             self.assertEqual(len(list(configurations)),
-                             self.n_gcc_versions*2 +
-                             self.n_clang_versions*2)
+                             self.n_archs*(
+                                 self.n_gcc_versions*2 +
+                                 self.n_clang_versions*2))
 
 
 if __name__ == '__main__':

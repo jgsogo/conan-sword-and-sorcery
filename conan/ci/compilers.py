@@ -2,11 +2,12 @@
 
 from collections import defaultdict
 from conans.util.env_reader import get_env
+from conan.ci.operating_system import OperatingSystem
 
 
-class Compiler(object):
+class Compiler(OperatingSystem):
     compiler = None
-    _configurations = ['build_types', 'versions', ]
+    _configurations = ['os', 'archs', 'build_types', 'versions', ]
 
     @property
     def build_types(self):
