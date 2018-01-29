@@ -12,9 +12,9 @@ from tests.utils import context_env
 class TestCompilersWindows(unittest.TestCase):
     def setUp(self):
         platform.system = mock.Mock(return_value="Darwin")
-        self.n_versions = len(CompilerClangApple().versions)
-        self.n_build_types = len(CompilerClangApple().build_types)
-        self.n_archs = len(CompilerClangApple().archs)
+        self.n_versions = len(CompilerClangApple().version)
+        self.n_build_types = len(CompilerClangApple().build_type)
+        self.n_archs = len(CompilerClangApple().arch)
 
     def test_default(self):
         compilers = Compiler._registry[platform.system()]

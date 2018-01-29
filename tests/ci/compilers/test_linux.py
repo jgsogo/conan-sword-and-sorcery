@@ -12,11 +12,11 @@ from tests.utils import context_env
 class TestCompilersLinux(unittest.TestCase):
     def setUp(self):
         platform.system = mock.Mock(return_value="Linux")
-        self.n_gcc_versions = len(CompilerGCC().versions)
-        self.n_gcc_build_types = len(CompilerGCC().build_types)
-        self.n_clang_versions = len(CompilerClangLinux().versions)
-        self.n_clang_build_types = len(CompilerClangLinux().build_types)
-        self.n_archs = len(CompilerClangLinux().archs)
+        self.n_gcc_versions = len(CompilerGCC().version)
+        self.n_gcc_build_types = len(CompilerGCC().build_type)
+        self.n_clang_versions = len(CompilerClangLinux().version)
+        self.n_clang_build_types = len(CompilerClangLinux().build_type)
+        self.n_archs = len(CompilerClangLinux().arch)
 
     def test_default(self):
         compilers = Compiler._registry[platform.system()]

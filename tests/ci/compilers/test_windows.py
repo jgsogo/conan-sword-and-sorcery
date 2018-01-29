@@ -12,10 +12,10 @@ from tests.utils import context_env
 class TestCompilerVisualStudio(unittest.TestCase):
     def setUp(self):
         platform.system = mock.Mock(return_value="Windows")
-        self.n_versions = len(CompilerVisualStudio().versions)
-        self.n_runtimes = len(CompilerVisualStudio().runtimes)
-        self.n_build_types = len(CompilerVisualStudio().build_types)
-        self.n_archs = len(CompilerVisualStudio().archs)
+        self.n_versions = len(CompilerVisualStudio().version)
+        self.n_runtimes = len(CompilerVisualStudio().runtime)
+        self.n_build_types = len(CompilerVisualStudio().build_type)
+        self.n_archs = len(CompilerVisualStudio().arch)
 
     def test_default(self):
         compilers = Compiler._registry[platform.system()]

@@ -47,9 +47,18 @@ class ConanfileWrapper(object):
         raise ValueError("Cannot load conan recipe from filename '{}'".format(filename))
 
     def __getattr__(self, item):
-        log.debug("ConanfileWrapper::__getattr__(item='{}'). Fallback to self.recipe_class".format(item))
         return getattr(self.recipe_class, item)
 
+    def conjugate_options(self, options):
+        to_conjugate = []
+        for opt in options:
+            idx = list(self.options.keys()).index(opt)
+            to_conjugate.append(list(self.options.values())[idx])
+        if len(to_conjugate):
+            return itertools.product(*to_conjugate)
+        return None
+
+    """
     def get_configurations(self):
         log.debug("ConanfileWrapper::get_configuration()")
         log.debug(" - options: {}".format(self.options))
@@ -57,4 +66,4 @@ class ConanfileWrapper(object):
         keys = self.options.keys()
         for configset in cross_product:
             yield zip(keys, configset)
-
+    """

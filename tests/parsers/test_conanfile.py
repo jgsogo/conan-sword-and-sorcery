@@ -22,8 +22,11 @@ class TestParserConanfile01(unittest.TestCase):
         options = self.wrapper.options
         self.assertSetEqual(set(options.keys()), {'shared', 'build_gmock', 'fpic'})
 
-    def test_configurations(self):
-        self.assertEqual(len(list(self.wrapper.get_configurations())), 2*2*2)
+    def test_conjugations(self):
+        self.assertEqual(len(list(self.wrapper.conjugate_options(['shared', 'build_gmock', 'fpic', ]))), 2*2*2)
+        self.assertEqual(len(list(self.wrapper.conjugate_options(['shared', 'build_gmock', ]))), 2 * 2)
+        self.assertEqual(len(list(self.wrapper.conjugate_options(['shared', ]))), 2)
+        self.assertEqual(self.wrapper.conjugate_options([]), None)
 
 
 if __name__ == '__main__':

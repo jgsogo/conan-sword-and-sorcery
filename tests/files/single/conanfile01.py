@@ -22,7 +22,7 @@ class GTestConan(ConanFile):
 
     def configure(self):
         if self.settings.os == "Windows":
-            self.options.remove("fPIC")
+            self.options.remove("fpic")
 
     def source(self):
         zip_name = "release-%s.zip" % self.version

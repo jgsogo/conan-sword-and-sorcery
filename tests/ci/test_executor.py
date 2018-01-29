@@ -14,17 +14,18 @@ from conan.ci.Executor import Executor
 class TestExecutor(unittest.TestCase):
     def setUp(self):
         import logging
-        log = logging.getLogger('conan')
         logging.basicConfig()
-        log.setLevel(level=logging.DEBUG)
+        log = logging.getLogger()
+        log.setLevel(level=logging.INFO)
 
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
-        conanfile01 = os.path.join(single_files, 'conanfile01.py')
-
-        platform.system = mock.Mock(return_value="Linux")
-        self.executor = Executor(conanfile01)
-        self.executor.enumerate_jobs()
+        self.conanfile01 = os.path.join(single_files, 'conanfile01.py')
 
     def test_total(self):
-        pass
+        platform.system = mock.Mock(return_value="Linux")
+        executor = Executor(self.conanfile01)
+
+        jobs = list(executor.enumerate_jobs())
+        print(len(jobs))
+
