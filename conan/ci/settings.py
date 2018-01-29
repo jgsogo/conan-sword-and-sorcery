@@ -15,14 +15,13 @@ log = logging.getLogger(__name__)
 def get_settings(os_system=OperatingSystem()):
     compiler_classes = Compiler._registry[os_system.os]
     configurations = set(itertools.chain(*[c._configurations for c in compiler_classes]))
-    configurations.remove('compiler')
     log.debug("get_settings - configurations: {}".format(', '.join(configurations)))
 
     cross_configs = []
     for compiler in compiler_classes:
         r = [[compiler,],]  # List of lists
         for config in configurations:
-            value = getattr(compiler, config, [])
+            value = getattr(compiler, config, [None])
             if isinstance(value, property):
                 value = value.fget(compiler)
 

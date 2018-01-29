@@ -6,7 +6,7 @@ from conans.util.env_reader import get_env
 
 class Compiler(object):
     compiler = None
-    _configurations = ['compiler', 'build_types', 'versions', ]
+    _configurations = ['build_types', 'versions', ]
 
     @property
     def build_types(self):

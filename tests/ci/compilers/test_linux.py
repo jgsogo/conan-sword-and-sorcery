@@ -50,27 +50,24 @@ class TestCompilersLinux(unittest.TestCase):
                              1*self.n_gcc_build_types +
                              1*self.n_clang_build_types)
 
-        with context_env(CONAN_VISUAL_VERSIONS='22,33'):
+        with context_env(CONAN_GCC_VERSIONS='1,2', CONAN_CLANG_VERSIONS='2'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), 2*self.n_runtimes*self.n_build_types)
-
-    def test_runtimes(self):
-        with context_env(CONAN_VISUAL_RUNTIMES='22'):
-            configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * 1 * self.n_build_types)
-
-        with context_env(CONAN_VISUAL_RUNTIMES='22,33'):
-            configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * 2 * self.n_build_types)
+            self.assertEqual(len(list(configurations)),
+                             2*self.n_gcc_build_types +
+                             1*self.n_clang_build_types)
 
     def test_build_types(self):
         with context_env(CONAN_BUILD_TYPES='22'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * self.n_runtimes * 1)
+            self.assertEqual(len(list(configurations)),
+                             self.n_gcc_versions * 1 +
+                             self.n_clang_versions * 1)
 
         with context_env(CONAN_BUILD_TYPES='22,33'):
             configurations = get_settings()
-            self.assertEqual(len(list(configurations)), self.n_versions * self.n_runtimes * 2)
+            self.assertEqual(len(list(configurations)),
+                             self.n_gcc_versions*2 +
+                             self.n_clang_versions*2)
 
 
 if __name__ == '__main__':

@@ -9,11 +9,6 @@ from conan.parsers.conanfile import ConanfileWrapper
 class TestParserConanfile01(unittest.TestCase):
 
     def setUp(self):
-        import logging
-        logging.basicConfig()
-        logger = logging.getLogger('conan')
-        logger.setLevel(logging.DEBUG)
-
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
         conanfile01 = os.path.join(single_files, 'conanfile01.py')
