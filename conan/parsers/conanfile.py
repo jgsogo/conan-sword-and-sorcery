@@ -58,12 +58,3 @@ class ConanfileWrapper(object):
             return itertools.product(*to_conjugate)
         return None
 
-    """
-    def get_configurations(self):
-        log.debug("ConanfileWrapper::get_configuration()")
-        log.debug(" - options: {}".format(self.options))
-        cross_product = itertools.product(*self.options.values())
-        keys = self.options.keys()
-        for configset in cross_product:
-            yield zip(keys, configset)
-    """

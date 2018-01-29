@@ -39,3 +39,14 @@ class Executor:
                 except ConanException:
                     log.info("Configuration not supported: os_system={}, compiler={}, {}".format(os_system, compiler.compiler, items))
                     pass
+
+    def filter_jobs(self, filter):
+        for it in self.enumerate_jobs():
+            if not filter or filter(it):
+                yield it
+
+    def paginate(self, page, page_size, filter=None):
+        jobs = list(self.enumerate_jobs(filter=filter))
+        init = page*page_size
+        end = min(page*(page_size + 1), len(jobs))
+        return jobs[page*page_size:end]
