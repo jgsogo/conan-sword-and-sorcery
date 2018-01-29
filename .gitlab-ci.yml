@@ -4,6 +4,7 @@ python_2_7:
      - apt-get update -qy
      - apt-get install -y python-pip
      - pip install -r requirements.txt
+     - pip install mock
      - python -m unittest discover tests
 
 python_3_4:
