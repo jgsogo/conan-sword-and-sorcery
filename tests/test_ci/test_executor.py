@@ -10,7 +10,6 @@ except ImportError:
 from collections import defaultdict
 
 from conan.ci.compilers import Compiler
-from conan.ci.settings import get_settings
 from conan.ci.Executor import Executor
 
 
