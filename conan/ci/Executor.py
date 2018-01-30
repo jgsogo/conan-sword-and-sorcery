@@ -20,13 +20,16 @@ class Executor:
 
     def enumerate_jobs(self):
         log.debug("Executor::enumerate_jobs")
+        recipe = self._conanfile_wrapper.recipe_class(output=None, runner=None, settings=self._settings.conan_settings)
+
+        settings_in_recipe = list(self._settings.conan_settings._data.keys())
+        settings_in_recipe = settings_in_recipe + ['version', 'runtime',]
 
         # Get all compilers and configurations available for this operating system
-        for compiler, configurations in get_available_configurations():
+        for compiler, configurations in get_available_configurations(allow_configurations=settings_in_recipe):
             for items in configurations:
                 log.debug(" - set_current({}, {}, {})".format(compiler.os_system, compiler.compiler, items))
-                s = self._settings.current(compiler, **items)
-                recipe = self._conanfile_wrapper.recipe_class(output=None, runner=None, settings=s)
+                self._settings.current(compiler=compiler, **items)
                 try:
                     recipe.configure()
                     exploded_options = self._conanfile_wrapper.conjugate_options(recipe.options._data.keys())

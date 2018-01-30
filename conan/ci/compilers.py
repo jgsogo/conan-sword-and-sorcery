@@ -7,6 +7,20 @@ from conans.util.env_reader import get_env
 
 from conan.utils import isstr
 
+
+
+
+
+
+class Compiler:
+    name = None
+    version = None
+    others = {}
+
+    def get_settings_keys(self):
+        return ['name', 'version', ] + others.keys()
+
+
 _registry_by_os = defaultdict(list)
 
 
@@ -19,13 +33,17 @@ def get_compilers(os_system):
     return _registry_by_os[os_system]
 
 
-def get_available_configurations(compiler_classes=None):
+def get_available_configurations(compiler_classes=None, allow_configurations=None):
     compiler_classes = compiler_classes or get_compilers(platform.system())
     cross_config = []
     for compiler_class in compiler_classes:
         compiler = compiler_class()
+        used_configurations = []
         r = []
         for config in compiler._configurations:
+            if allow_configurations and not config in allow_configurations:
+                continue
+            used_configurations.append(config)
             values = getattr(compiler, config)
             # Make a list
             if isstr(values):
@@ -36,14 +54,20 @@ def get_available_configurations(compiler_classes=None):
 
         compiler_configurations = []
         for config_cross in itertools.product(*r):
-            compiler_configurations.append({key: value for key, value in zip(compiler._configurations, config_cross)})
+            compiler_configurations.append({key: value for key, value in zip(used_configurations, config_cross)})
 
         cross_config.append((compiler, compiler_configurations))
     return cross_config
 
 
+
+
+
+
 class Compiler(object):
     compiler = None
+    version = None
+
     os_system = None
 
     _configurations = ['arch', 'build_type', 'version', ]

@@ -29,11 +29,14 @@ class Settings:
         else:
             self.conan_settings = Settings.default()
 
-    def current(self, compiler, arch, build_type, version, **kwargs):
+    def current(self, version=None, compiler=None, arch=None, build_type=None, **kwargs):
         self.conan_settings.os = compiler.os_system
-        self.conan_settings.arch = arch
-        self.conan_settings.build_type = build_type
-        self.conan_settings.compiler = compiler.compiler
+        if arch:
+            self.conan_settings.arch = arch
+        if build_type:
+            self.conan_settings.build_type = build_type
+        if compiler:
+            self.conan_settings.compiler = compiler.compiler
         self.conan_settings.compiler.version = version
         return self.conan_settings
 

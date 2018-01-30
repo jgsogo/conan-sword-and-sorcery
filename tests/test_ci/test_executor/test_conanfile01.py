@@ -12,10 +12,10 @@ from conan.ci.Executor import Executor
 from tests.utils import context_env
 
 
-class TestExecutor(unittest.TestCase):
+class TestConanfile01(unittest.TestCase):
     def setUp(self):
         me = os.path.dirname(__file__)
-        single_files = os.path.join(me, '..', 'files', 'single')
+        single_files = os.path.join(me, '..', '..', 'files', 'single')
         conanfile01 = os.path.join(single_files, 'conanfile01.py')
         self.executor = Executor(conanfile01)
 
