@@ -39,11 +39,11 @@ class Executor:
 
     def filter_jobs(self, filter):
         for it in self.enumerate_jobs():
-            if not filter or filter(it):
+            if not filter or filter(*it):
                 yield it
 
     def paginate(self, page, page_size, filter=None):
-        jobs = list(self.enumerate_jobs(filter=filter))
+        jobs = list(self.filter_jobs(filter=filter))
         init = page*page_size
-        end = min(page*(page_size + 1), len(jobs))
-        return jobs[page*page_size:end]
+        end = min((page+1)*page_size, len(jobs))
+        return jobs[init:end]

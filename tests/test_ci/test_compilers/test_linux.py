@@ -8,7 +8,7 @@ except ImportError:
     import mock
 
 
-from conan.ci.compilers import CompilerGCC, CompilerClangLinux, Compiler, get_compilers, get_available_configurations
+from conan.ci.compilers import CompilerGCC, CompilerClangLinux, get_compilers, get_available_configurations
 from tests.utils import context_env
 
 
