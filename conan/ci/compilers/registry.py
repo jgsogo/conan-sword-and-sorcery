@@ -49,10 +49,10 @@ class CompilerRegistry:
 
     @classmethod
     def environment_filters(cls):
-        env_filters = defaultdict(list)
+        env_filters = defaultdict(set)
         for holder in cls._registry:
             for key, values in holder.environment_filters().items():
-                env_filters[key] += values
+                env_filters[key].update(values)
         return env_filters
 
     @classmethod

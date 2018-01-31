@@ -12,7 +12,7 @@ from conan.ci.Executor import Executor
 from tests.utils import context_env
 
 
-class TestConanfile02(unittest.TestCase):
+class TestConanfile02(TestCaseEnvClean):
     def setUp(self):
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')

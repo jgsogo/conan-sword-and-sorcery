@@ -8,10 +8,10 @@ except ImportError:
 
 
 from conan.ci.compilers import CompilerRegistry
-from tests.utils import context_env
+from tests.utils import context_env, TestCaseEnvClean
 
 
-class TestCompilerRegistry(unittest.TestCase):
+class TestCompilerRegistry(TestCaseEnvClean):
 
     def setUp(self):
         self.registry = CompilerRegistry()
@@ -30,48 +30,40 @@ class TestCompilerRegistry(unittest.TestCase):
         self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=["x86000", ]))), 0)
 
 
-class TestCompilerRegistryEnvironmentFilters(unittest.TestCase):
+class TestCompilerRegistryEnvironmentFilters(TestCaseEnvClean):
     def setUp(self):
         self.registry = CompilerRegistry()
 
     def test_one_compiler(self):
         with context_env(CONAN_VISUAL_VERSIONS='10'):
             self.assertDictEqual(self.registry.environment_filters(),
-                                 {'version': [('Visual Studio', '10'),
+                                 {'version': {('Visual Studio', '10'),
                                               ('no-compiler', 'no-version'),
-                                              ('no-compiler', 'no-version'),
-                                              ('no-compiler', 'no-version'),
-                                              ]})
+                                              }})
 
         with context_env(CONAN_VISUAL_VERSIONS='10,12'):
             self.assertDictEqual(self.registry.environment_filters(),
-                                 {'version': [('Visual Studio', '10'),
+                                 {'version': {('Visual Studio', '10'),
                                               ('Visual Studio', '12'),
                                               ('no-compiler', 'no-version'),
-                                              ('no-compiler', 'no-version'),
-                                              ('no-compiler', 'no-version'),
-                                              ]})
+                                              }})
 
     def test_several_compilers(self):
         with context_env(CONAN_VISUAL_VERSIONS='10', CONAN_GCC_VERSIONS='3,4'):
             self.assertDictEqual(self.registry.environment_filters(),
-                                 {'version': [('gcc', '3'),
+                                 {'version': {('gcc', '3'),
                                               ('gcc', '4'),
                                               ('Visual Studio', '10'),
                                               ('no-compiler', 'no-version'),
-                                              ('no-compiler', 'no-version'),
-                                              ('no-compiler', 'no-version'),
-                                              ]})
+                                              }})
 
     def test_several_filters(self):
         with context_env(CONAN_VISUAL_VERSIONS='10', CONAN_VISUAL_RUNTIMES='MT,MTd'):
             self.assertDictEqual(self.registry.environment_filters(),
-                                 {'version': [('Visual Studio', '10'),
+                                 {'version': {('Visual Studio', '10'),
                                               ('no-compiler', 'no-version'),
-                                              ('no-compiler', 'no-version'),
-                                              ('no-compiler', 'no-version'),
-                                              ],
-                                  'runtime': ["MT", "MTd"],})
+                                              },
+                                  'runtime': {"MT", "MTd"},})
 
 
 if __name__ == '__main__':
