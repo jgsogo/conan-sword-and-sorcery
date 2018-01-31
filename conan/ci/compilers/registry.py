@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import logging
 import itertools
+import logging
 
-from conans.util.env_reader import get_env
+from conan.ci.compilers.base_compiler import BaseCompiler
 
 log = logging.getLogger(__name__)
 
@@ -16,6 +16,7 @@ def _raise_on_difference(lhs, rhs, msg="Some items are in 'lhs' but not in 'rhs'
 
 class CompilerClassHolder:
     def __init__(self, compiler_class, **kwargs):
+        assert(issubclass(compiler_class, BaseCompiler))
         self.compiler_class = compiler_class
         self.configurations = kwargs
 
@@ -27,7 +28,7 @@ class CompilerClassHolder:
 
     def explode(self, **configurations):
         explode_vector = []
-        _raise_on_difference(configurations.keys(), self.configurations.keys(), msg="Some configurations required are not registered: '{{}}'")
+        _raise_on_difference(configurations.keys(), self.configurations.keys(), msg="Some configurations required are not registered: '{z}'")
         for key, values in self.configurations.items():
             explode_filter = configurations.get(key, values)
             _raise_on_difference(explode_filter, values, msg="Some configurations required for '{}' are not found: '{{z}}'".format(key))
@@ -59,18 +60,3 @@ class CompilerRegistry:
             except ValueError as e:
                 log.warning("Compiler {} discarded: {}".format(compiler_holder, e))
         return
-
-
-class Compiler:
-    def __init__(self, **kwargs):
-        pass
-
-
-@CompilerRegistry.register(
-    archs = get_env("CONAN_ARCHS", ["x86", "x86_64"]),
-    versions = get_env("CONAN_GCC_VERSIONS", ["4.9", "5", "6", "7"]),
-    build_types = get_env("CONAN_BUILD_TYPES", ["Release", "Debug"])
-)
-class CompilerGCC(Compiler):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)

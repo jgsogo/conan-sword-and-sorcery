@@ -7,7 +7,13 @@ except ImportError:
     import mock
 
 
-from conan.ci.compiler_registry import CompilerClassHolder, Compiler
+from conan.ci.compilers.registry import CompilerClassHolder
+from conan.ci.compilers.base_compiler import BaseCompiler
+
+
+class TestCompiler(BaseCompiler):
+    def __init__(self, **kwargs):
+        super(TestCompiler, self).__init__(name='test', **kwargs)
 
 
 class TestCompilerClassHolder(unittest.TestCase):
@@ -15,7 +21,7 @@ class TestCompilerClassHolder(unittest.TestCase):
     def setUp(self):
         self.param1_values = ["a", "b", "c", ]
         self.param2_values = ["1", "2"]
-        self.holder = CompilerClassHolder(Compiler, param1=self.param1_values, param2=self.param2_values)
+        self.holder = CompilerClassHolder(TestCompiler, param1=self.param1_values, param2=self.param2_values)
 
     def test_base(self):
         self.assertListEqual(self.holder.get_configurations(key='param1'), self.param1_values)
@@ -25,7 +31,7 @@ class TestCompilerClassHolder(unittest.TestCase):
         explosion = list(self.holder.explode())
         self.assertEqual(len(explosion), len(self.param1_values)*len(self.param2_values))
         for it in explosion:
-            self.assertTrue(isinstance(it, Compiler))
+            self.assertTrue(isinstance(it, TestCompiler))
 
     def test_explode_filtered(self):
         my_param1_values = ["a", "b"]

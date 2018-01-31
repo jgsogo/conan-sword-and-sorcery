@@ -7,7 +7,7 @@ except ImportError:
     import mock
 
 
-from conan.ci.compiler_registry import CompilerRegistry
+from conan.ci.compilers import CompilerRegistry
 
 
 class TestCompilerRegistry(unittest.TestCase):
@@ -17,8 +17,8 @@ class TestCompilerRegistry(unittest.TestCase):
 
     def test_base(self):
         self.assertEqual(len(list(self.registry.get_compilers())), 16)
-        self.assertEqual(len(list(self.registry.get_compilers(archs=['x86',]))), 8)
-        self.assertEqual(len(list(self.registry.get_compilers(archs=['x86',], versions=["7",]))), 2)
+        self.assertEqual(len(list(self.registry.get_compilers(archs=['x86', ]))), 8)
+        self.assertEqual(len(list(self.registry.get_compilers(archs=['x86', ], versions=["7", ]))), 2)
 
     def test_invalid_argument(self):
         self.assertEqual(len(list(self.registry.get_compilers(invalid_arg=["x86", ]))), 0)
