@@ -17,6 +17,10 @@ class CompilerVisualStudio(BaseCompiler):
     id = 'Visual Studio'
     osys = "Windows"
 
+    def update_settings(self, settings):
+        super(CompilerVisualStudio, self).update_settings(settings)
+        settings.compiler.runtime = self.runtime
+
     @classmethod
     def environment_filters(cls):
         visual_versions = get_env("CONAN_VISUAL_VERSIONS", [])

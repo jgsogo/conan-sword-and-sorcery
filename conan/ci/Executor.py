@@ -33,51 +33,69 @@ class Executor:
         if 'os' in recipe_settings:
             filters['os'] = [str(self._settings.os), ]
 
-        if 'compiler' in recipe_settings:
-            filters['version'] = []
+        filters['version'] = []
 
-            # Helper function to avoid duplication getting values from env variable
-            def _populate_filters(key, env_var, default=None):
-                if key in recipe_settings:
-                    filters[key] = get_env(env_var, getattr(self._settings, key).values_range)
-                else:
-                    filters[key] = default or getattr(self._settings, key).values_range[0]  # TODO: Choose the best one
+        # Helper function to avoid duplication getting values from env variable
+        def _populate_filters(key, env_var, default=None):
+            if key in recipe_settings:
+                filters[key] = get_env(env_var, getattr(self._settings, key).values_range)
+            else:
+                filters[key] = default or getattr(self._settings, key).values_range[0]  # TODO: Choose the best one
 
-            _populate_filters('arch', "CONAN_ARCHS")
-            _populate_filters('build_type', "CONAN_BUILD_TYPES")
+        _populate_filters('arch', "CONAN_ARCHS")
+        _populate_filters('build_type', "CONAN_BUILD_TYPES")
 
-            # Get all filters related to compilers (versions, runtimes,...)
-            env_filters = CompilerRegistry.environment_filters()
-            filters.update(env_filters)
+        # Get all filters related to compilers (versions, runtimes,...)
+        env_filters = CompilerRegistry.environment_filters()
+        filters.update(env_filters)
 
-        else:
-            # If recipe does not depend on compiler, use "no-compiler" to get one run
-            filters['version'] = [(NoCompiler.id, NoCompiler.VERSION), ]
         log.debug(" - got filters: {}".format(filters))
         return filters
 
     def get_compilers(self):
         log.debug("Executor::get_compilers()")
-        filters = self.get_filters_for_compilers(recipe_settings=self.recipe.settings._data.keys())
-        return CompilerRegistry.get_compilers(**filters)
+        recipe_settings = self.recipe.settings._data.keys()
+        if 'compiler' in recipe_settings:
+            filters = self.get_filters_for_compilers(recipe_settings=self.recipe.settings._data.keys())
+            return CompilerRegistry.get_compilers(**filters)
+        else:
+            return None
 
     def enumerate_jobs(self):
         log.debug("Executor::enumerate_jobs()")
 
         # Get compilers
-        compilers = list(self.get_compilers())
-        log.debug(" - got {} compilers: {}".format(len(compilers), compilers))
+        generator = self.get_compilers()
+        if generator is not None:
+            compilers = list(self.get_compilers())
+            log.debug(" - got {} compilers: {}".format(len(compilers), compilers))
 
-        # Enumerate options
-        exploded_options = self._conanfile_wrapper.conjugate_options(self.recipe.options._data.keys())
-        if not exploded_options:
             for compiler in compilers:
-                yield (compiler, {})  # Empty dict for options.
+                compiler.update_settings(self._settings)
+                try:
+                    self.recipe.configure()
+
+                    # Enumerate options
+                    exploded_options = self._conanfile_wrapper.conjugate_options(self.recipe.options._data.keys())
+                    if not exploded_options:
+                        yield (compiler, {})  # Empty dict for options.
+                    else:
+                        options = [{key: value for key, value in zip(self.recipe.options._data.keys(), pack)} for pack in exploded_options]
+                        log.debug(" - got {} options combinations: {}".format(len(options), options))
+                        for it in itertools.product([compiler, ], options):
+                            yield it
+                except ConanException as e:  # TODO: Something like ConanInvalidConfiguration would fit better
+                    pass
         else:
-            options = [{key: value for key, value in zip(self.recipe.options._data.keys(), pack)} for pack in exploded_options]
-            log.debug(" - got {} options combinations: {}".format(len(options), options))
-            for it in itertools.product(compilers, options):
-                yield it
+            exploded_options = self._conanfile_wrapper.conjugate_options(self.recipe.options._data.keys())
+            if not exploded_options:
+                yield (NoCompiler(os=str(self._settings.os)), {})
+            else:
+                options = [{key: value for key, value in zip(self.recipe.options._data.keys(), pack)} for pack in exploded_options]
+                compilers = [NoCompiler(os=str(self._settings.os)), ]
+                log.debug(" - got {} options combinations: {}".format(len(options), options))
+                for it in itertools.product(compilers, options):
+                    yield it
 
     def filter_jobs(self, filter):
         for compiler, options in self.enumerate_jobs():

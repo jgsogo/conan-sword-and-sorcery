@@ -18,6 +18,12 @@ class BaseCompiler:
     def __getattr__(self, item):
         return self._data.get(item)
 
+    def update_settings(self, settings):
+        settings.build_type = self.build_type
+        settings.arch = self.arch
+        settings.compiler = self.id
+        settings.compiler.version = self.version
+
     @classmethod
     def validate(self, **kwargs):
         # Raise error if given configuration is not supported
