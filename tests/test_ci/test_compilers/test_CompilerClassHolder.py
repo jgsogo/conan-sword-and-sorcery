@@ -12,8 +12,12 @@ from conan.ci.compilers.base_compiler import BaseCompiler
 
 
 class TestCompiler(BaseCompiler):
-    def __init__(self, **kwargs):
-        super(TestCompiler, self).__init__(name='test', **kwargs)
+    id = 'test_compiler'
+    osys = 'test_os'
+
+    @classmethod
+    def validate(self, param3=None, **kwargs):
+        return param3 != 'invalid'
 
 
 class TestCompilerClassHolder(unittest.TestCase):
@@ -21,7 +25,8 @@ class TestCompilerClassHolder(unittest.TestCase):
     def setUp(self):
         self.param1_values = ["a", "b", "c", ]
         self.param2_values = ["1", "2"]
-        self.holder = CompilerClassHolder(TestCompiler, param1=self.param1_values, param2=self.param2_values)
+        self.param3_values = ["invalid", "valid", ]
+        self.holder = CompilerClassHolder(TestCompiler, param1=self.param1_values, param2=self.param2_values, param3=self.param3_values)
 
     def test_base(self):
         self.assertListEqual(self.holder.get_configurations(key='param1'), self.param1_values)

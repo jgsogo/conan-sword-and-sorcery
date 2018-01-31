@@ -21,7 +21,10 @@ class TestConanfile01(unittest.TestCase):
 
     def test_total_linux(self):
         platform.system = mock.Mock(return_value="Linux")
-        self.assertEqual(len(list(self.executor.enumerate_jobs())), 224)
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
+
+        with context_env(CONAN_GCC_VERSIONS="7"):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 384)
 
         with context_env(CONAN_BUILD_TYPES='Debug'):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 112)

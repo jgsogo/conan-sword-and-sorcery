@@ -2,8 +2,9 @@
 
 import itertools
 import logging
-
+from collections import defaultdict
 from conan.ci.compilers.base_compiler import BaseCompiler
+from conan.utils import isstr
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +24,9 @@ class CompilerClassHolder:
     def __str__(self):
         return self.compiler_class.__name__
 
+    def environment_filters(self):
+        return self.compiler_class.environment_filters()
+
     def get_configurations(self, key):
         return self.configurations.get(key)
 
@@ -36,11 +40,20 @@ class CompilerClassHolder:
 
         for pack in itertools.product(*explode_vector):
             args_dict = {key: value for key, value in zip(self.configurations.keys(), pack)}
-            yield self.compiler_class(**args_dict)
+            if self.compiler_class.validate(**args_dict):
+                yield self.compiler_class(**args_dict)
 
 
 class CompilerRegistry:
     _registry = []
+
+    @classmethod
+    def environment_filters(cls):
+        env_filters = defaultdict(list)
+        for holder in cls._registry:
+            for key, values in holder.environment_filters().items():
+                env_filters[key] += values
+        return env_filters
 
     @classmethod
     def register(cls, **kwargs):
@@ -51,9 +64,15 @@ class CompilerRegistry:
         return real_decorator
 
     @classmethod
-    def get_compilers(cls, **filters):
+    def get_compilers(cls, os=[], version=None, **filters):
         filter_keys = list(filters.keys())
         for compiler_holder in cls._registry:
+            if compiler_holder.compiler_class.osys not in os:
+                continue
+            # Filter versions for compiler id.
+            if version is not None:
+                assert all(not isstr(it) for it in version), "Version should be a list of tuples [('compiler.id', 'version'), ...]"
+                filters['version'] = [it[1] for it in version if it[0] == compiler_holder.compiler_class.id]
             try:
                 for it in compiler_holder.explode(**filters):
                     yield it

@@ -1,21 +1,28 @@
 # -*- coding: utf-8 -*-
 
-from functools import reduce
-from operator import mul
+from conan.utils import isstr
 
 
 class BaseCompiler:
-    def __init__(self, name, **kwargs):
-        self.name = name
+    id = None
+    os = None
+
+    def __init__(self, **kwargs):
         self._data = kwargs
 
         # Validate input arguments
         for key, val in kwargs.items():
-            if not len(val):
-                raise ValueError("Invalid configuration argument for compiler '{}': argument '{}' must be a list.".format(name, key))
+            if not val or not isstr(val):
+                raise ValueError("Invalid configuration argument for compiler '{}': argument '{}' must be a non empty string.".format(self.id, key))
 
     def __getattr__(self, item):
         return getattr(self._data, item)
 
-    def max_configurations(self):
-        return reduce(mul, [len(values) for values in self._data.values()], 1)
+    @classmethod
+    def validate(self, **kwargs):
+        # Raise error if given configuration is not supported
+        return True
+
+    @classmethod
+    def environment_filters(cls):
+        raise NotImplementedError

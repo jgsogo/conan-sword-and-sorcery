@@ -7,12 +7,23 @@ from conan.ci.compilers.base_compiler import BaseCompiler
 
 
 @CompilerRegistry.register(
-    archs=get_env("CONAN_ARCHS", ["x86", "x86_64"]),
-    build_types=get_env("CONAN_BUILD_TYPES", ["Release", "Debug"]),
-    versions=get_env("CONAN_VISUAL_VERSIONS", ["8", "9", "10", "11", "12", "14", "15"]),
-    runtimes=get_env("CONAN_VISUAL_RUNTIMES", ["MT", "MD", "MTd", "MDd"])
+    arch=["x86", "x86_64"],
+    build_type=["Release", "Debug"],
+    version=["12", "14", "15"],
+    runtime=["MT", "MD", "MTd", "MDd"],
     # TODO: Add toolset
 )
 class CompilerVisualStudio(BaseCompiler):
-    def __init__(self, **kwargs):
-        super(CompilerVisualStudio, self).__init__(name='visual_studio', **kwargs)
+    id = 'Visual Studio'
+    osys = "Windows"
+
+    @classmethod
+    def environment_filters(cls):
+        visual_versions = get_env("CONAN_VISUAL_VERSIONS", [])
+        visual_runtimes = get_env("CONAN_VISUAL_RUNTIMES", [])
+        r = {}
+        if len(visual_versions):
+            r['version'] = [(cls.id, v) for v in visual_versions]
+        if len(visual_runtimes):
+            r['runtime'] = visual_runtimes
+        return r

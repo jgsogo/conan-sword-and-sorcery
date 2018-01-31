@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-import itertools
 import logging
-import platform
-from collections import defaultdict
 
-from conans.util.env_reader import get_env
-from conan.utils import isstr
-from conan.ci.compilers import Compiler
 from conans.model.settings import Settings as ConanSettings
 
 log = logging.getLogger(__name__)
@@ -18,7 +12,7 @@ class Settings:
 
     @classmethod
     def default(cls):
-        filename = os.path.join(os.path.dirname(__file__), '..', 'conan_settings.yaml')
+        filename = os.path.join(os.path.dirname(__file__), '..', 'conan_settings.yaml')  # TODO: Use conan distributed one as default.
         with open(filename, 'r') as f:
             return ConanSettings.loads(f.read())
 
@@ -40,4 +34,4 @@ class Settings:
         self.conan_settings.compiler.version = version
         return self.conan_settings
 
-
+CONAN_DEFAULTS = Settings.default()

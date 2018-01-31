@@ -10,15 +10,17 @@ except ImportError:
 from conan.ci.compilers.base_compiler import BaseCompiler
 
 
+class TestCompiler(BaseCompiler):
+    id = 'test_compiler'
+    osys = 'test_os'
+
+
 class TestBaseCompiler(unittest.TestCase):
 
     def test_invalid_constructor(self):
         with self.assertRaises(ValueError):
-            compiler = BaseCompiler(name='testing', tt=[])
+            TestCompiler(tt=[])
 
-    def test_max_configurations(self):
-        compiler = BaseCompiler(name='testing', archs=["1", "2", ], rrs=["a", "b", "c", ])
-        self.assertEqual(compiler.max_configurations(), 2*3)
 
 
 if __name__ == '__main__':
