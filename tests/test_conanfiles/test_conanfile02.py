@@ -12,19 +12,16 @@ from conan.ci.Executor import Executor
 from tests.utils import context_env
 
 
-class TestConanfile01(unittest.TestCase):
+class TestConanfile02(unittest.TestCase):
     def setUp(self):
         me = os.path.dirname(__file__)
-        single_files = os.path.join(me, '..', '..', 'files', 'single')
-        conanfile01 = os.path.join(single_files, 'conanfile01.py')
-        self.executor = Executor(conanfile01)
+        single_files = os.path.join(me, '..', 'files', 'single')
+        conanfile = os.path.join(single_files, 'conanfile02.py')
+        self.executor = Executor(conanfile)
 
     def test_total_linux(self):
         platform.system = mock.Mock(return_value="Linux")
-        self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
-
-        with context_env(CONAN_GCC_VERSIONS="7"):
-            self.assertEqual(len(list(self.executor.enumerate_jobs())), 384)
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 224)
 
         with context_env(CONAN_BUILD_TYPES='Debug'):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 112)

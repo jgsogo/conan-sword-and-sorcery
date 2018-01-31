@@ -16,7 +16,7 @@ class BaseCompiler:
                 raise ValueError("Invalid configuration argument for compiler '{}': argument '{}' must be a non empty string.".format(self.id, key))
 
     def __getattr__(self, item):
-        return getattr(self._data, item)
+        return self._data.get(item)
 
     @classmethod
     def validate(self, **kwargs):

@@ -28,13 +28,17 @@ class TestExecutorAllSettings(unittest.TestCase):
             jobs = list(self.executor.enumerate_jobs())
             self.assertEqual(len(jobs), 8*self.options_multiplier)
 
-        with context_env(CONAN_GCC_VERSIONS="0"):  # Invalid version
-            jobs = list(self.executor.enumerate_jobs())
-            self.assertEqual(len(jobs), 0*self.options_multiplier)
-
         with context_env(CONAN_GCC_VERSIONS="6,7"):
             jobs = list(self.executor.enumerate_jobs())
             self.assertEqual(len(jobs), 16*self.options_multiplier)
+
+        with context_env(CONAN_GCC_VERSIONS="0"):  # Invalid version
+            jobs = list(self.executor.enumerate_jobs())
+            self.assertEqual(len(jobs), 0 * self.options_multiplier)
+
+        with context_env(CONAN_GCC_VERSIONS="0,7"):  # Invalid version (fail-safe)
+            jobs = list(self.executor.enumerate_jobs())
+            self.assertEqual(len(jobs), 0 * self.options_multiplier)
 
     def test_linux_gcc_and_clang(self):
         self.executor = Executor(self.conanfile, osys="Linux")
@@ -50,7 +54,6 @@ class TestExecutorAllSettings(unittest.TestCase):
 
         with context_env(CONAN_APPLE_CLANG_VERSIONS="8.1"):
             jobs = list(self.executor.enumerate_jobs())
-            print(jobs[0])
             self.assertEqual(len(jobs), 8*self.options_multiplier)
 
 
@@ -73,5 +76,14 @@ class TestExecutorSettingsNoCompiler(unittest.TestCase):
 
     def test_linux(self):
         self.executor = Executor(self.conanfile, osys="Linux")
-        self.assertEqual(len(list(self.executor.enumerate_jobs())), 0 * self.options_multiplier)
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)
+
+    def test_windows(self):
+        self.executor = Executor(self.conanfile, osys="Windows")
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)
+
+
+    def test_macos(self):
+        self.executor = Executor(self.conanfile, osys="Macos")
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)
 

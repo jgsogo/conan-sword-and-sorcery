@@ -52,7 +52,7 @@ class Executor:
 
         else:
             # If recipe does not depend on compiler, use "no-compiler" to get one run
-            filters['version'] = [(NoCompiler.id, ''), ]
+            filters['version'] = [(NoCompiler.id, NoCompiler.VERSION), ]
         log.debug(" - got filters: {}".format(filters))
         return filters
 
@@ -79,11 +79,10 @@ class Executor:
             for it in itertools.product(compilers, options):
                 yield it
 
-
     def filter_jobs(self, filter):
-        for it in self.enumerate_jobs():
-            if not filter or filter(*it):
-                yield it
+        for compiler, options in self.enumerate_jobs():
+            if not filter or filter(compiler, options):
+                yield compiler, options
 
     def paginate(self, page, page_size, filter=None):
         jobs = list(self.filter_jobs(filter=filter))
