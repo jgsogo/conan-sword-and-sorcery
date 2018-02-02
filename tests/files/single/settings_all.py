@@ -5,7 +5,7 @@ from conans import ConanFile
 
 
 class JustAllSettings(ConanFile):
-    name = "-"
+    name = "settings_all"
     version = "1.8.0"
     settings = "os", "arch", "compiler", "build_type"
 

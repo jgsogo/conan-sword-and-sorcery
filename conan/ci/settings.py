@@ -8,7 +8,7 @@ from conans.model.settings import Settings as ConanSettings
 log = logging.getLogger(__name__)
 
 
-class Settings:
+class Settings(object):
 
     @classmethod
     def default(cls):
@@ -33,5 +33,3 @@ class Settings:
             self.conan_settings.compiler = compiler.compiler
         self.conan_settings.compiler.version = version
         return self.conan_settings
-
-CONAN_DEFAULTS = Settings.default()

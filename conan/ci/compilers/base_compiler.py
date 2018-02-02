@@ -3,7 +3,7 @@
 from conan.utils import isstr
 
 
-class BaseCompiler:
+class BaseCompiler(object):
     id = None
     os = None
 
@@ -25,7 +25,7 @@ class BaseCompiler:
         settings.compiler.version = self.version
 
     @classmethod
-    def validate(self, **kwargs):
+    def validate(cls, **kwargs):
         # Raise error if given configuration is not supported
         return True
 

@@ -17,6 +17,9 @@ class CompilerVisualStudio(BaseCompiler):
     id = 'Visual Studio'
     osys = "Windows"
 
+    def __str__(self):
+        return "{} {} ({}) {} {}".format(self.id, self.version, self.arch, self.build_type, self.runtime)
+
     def update_settings(self, settings):
         super(CompilerVisualStudio, self).update_settings(settings)
         settings.compiler.runtime = self.runtime

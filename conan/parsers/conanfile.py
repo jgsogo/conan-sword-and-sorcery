@@ -26,7 +26,7 @@ class ConanfileWrapper(object):
         # Follow https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
         if sys.version_info[0] < 3:
             import imp
-            foo = imp.load_source('r', filename)
+            foo = imp.load_source(filename, filename)  # First parameter uses filename so each .py is loaded in a module with a different name
         else:
             try:
                 # Python 3.5+

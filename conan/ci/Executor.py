@@ -16,7 +16,7 @@ from conan.ci.compilers import CompilerRegistry, NoCompiler
 log = logging.getLogger(__name__)
 
 
-class Executor:
+class Executor(object):
     def __init__(self, conanfile, osys=platform.system()):
         log.debug("Executor::__init__(conanfile='{}', osys='{}')".format(conanfile, osys))
         self._settings = Settings.default()
@@ -57,7 +57,7 @@ class Executor:
         recipe_settings = self.recipe.settings._data.keys()
         if 'compiler' in recipe_settings:
             filters = self.get_filters_for_compilers(recipe_settings=self.recipe.settings._data.keys())
-            return CompilerRegistry.get_compilers(**filters)
+            return list(CompilerRegistry.get_compilers(**filters))
         else:
             return None
 
@@ -65,9 +65,8 @@ class Executor:
         log.debug("Executor::enumerate_jobs()")
 
         # Get compilers
-        generator = self.get_compilers()
-        if generator is not None:
-            compilers = list(self.get_compilers())
+        compilers = self.get_compilers()
+        if compilers is not None:
             log.debug(" - got {} compilers: {}".format(len(compilers), compilers))
 
             for compiler in compilers:

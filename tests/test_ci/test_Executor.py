@@ -9,10 +9,10 @@ except ImportError:
     import mock
 
 from conan.ci.Executor import Executor
-from tests.utils import context_env
+from tests.utils import context_env, TestCaseEnvClean
 
 
-class TestExecutorAllSettings(unittest.TestCase):
+class TestExecutorAllSettings(TestCaseEnvClean):
     def setUp(self):
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
@@ -66,8 +66,11 @@ class TestExecutorAllSettingsAndOptions(TestExecutorAllSettings):
         self.options_multiplier = pow(2, self.n_options)
 
 
-class TestExecutorSettingsNoCompiler(unittest.TestCase):
+class TestExecutorSettingsNoCompiler(TestCaseEnvClean):
     def setUp(self):
+        import logging
+        logging.basicConfig(level=logging.DEBUG)
+
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
         self.conanfile = os.path.join(single_files, 'settings_no_compiler.py')
@@ -82,8 +85,6 @@ class TestExecutorSettingsNoCompiler(unittest.TestCase):
         self.executor = Executor(self.conanfile, osys="Windows")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)
 
-
     def test_macos(self):
         self.executor = Executor(self.conanfile, osys="Macos")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)
-
