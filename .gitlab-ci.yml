@@ -7,14 +7,6 @@ python_2_7:
      - pip install mock
      - python -m unittest discover tests
 
-python_3_4:
-   image: python:3.4
-   script:
-     - apt-get update -qy
-     - apt-get install -y python-pip
-     - pip install -r requirements.txt
-     - python -m unittest discover tests
-
 python_3_5:
    image: python:3.5
    script:
