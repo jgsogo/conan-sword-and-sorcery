@@ -3,8 +3,7 @@ python_2_7:
    script:
      - apt-get update -qy
      - apt-get install -y python-pip
-     - pip install -r requirements.txt
-     - pip install mock
+     - pip install -r tests/requirements.txt
      - python -m unittest discover tests
 
 python_3_5:
@@ -12,5 +11,5 @@ python_3_5:
    script:
      - apt-get update -qy
      - apt-get install -y python-pip
-     - pip install -r requirements.txt
+     - pip install -r tests/requirements.txt
      - python -m unittest discover tests
