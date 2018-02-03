@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import itertools
 import logging
 import platform
@@ -95,6 +96,7 @@ class Executor(object):
                 log.debug(" - got {} options combinations: {}".format(len(options), options))
                 for it in itertools.product(compilers, options):
                     yield it
+        return
 
     def filter_jobs(self, filter):
         for compiler, options in self.enumerate_jobs():
@@ -106,3 +108,28 @@ class Executor(object):
         init = page*page_size
         end = min((page+1)*page_size, len(jobs))
         return jobs[init:end]
+
+
+def print_jobs(all_jobs, printer=sys.stdout.write):
+    compiler_headers_ext = set()
+    option_headers = set()
+    for compiler, options in all_jobs:
+        compiler_headers_ext.update(compiler._data.keys())
+        option_headers.update(options.keys())
+
+    compiler_headers = ['id', 'version', 'arch', 'build_type']
+    compiler_headers += [it for it in compiler_headers_ext if it not in compiler_headers]
+
+    table = []
+    for compiler, options in all_jobs:
+        table.append([getattr(compiler, it, '') for it in compiler_headers] +
+                     [options.get(it, '') for it in option_headers])
+
+    if len(table):
+        from tabulate import tabulate
+        printer(tabulate(table, headers=list(compiler_headers)+list(option_headers),
+                         showindex=True,
+                         tablefmt='psql'))
+        printer("\n")
+    else:
+        sys.stdout.write("There are no jobs!\n")

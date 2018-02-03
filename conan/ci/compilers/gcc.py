@@ -15,6 +15,9 @@ class CompilerGCC(BaseCompiler):
     id = 'gcc'
     osys = 'Linux'
 
+    def __str__(self):
+        return "{} {} ({}) {} {}".format(self.id, self.version, self.arch, self.build_type, self.libcxx)
+
     @classmethod
     def environment_filters(cls):
         gcc_versions = get_env("CONAN_GCC_VERSIONS", [])
