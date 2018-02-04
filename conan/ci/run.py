@@ -35,6 +35,7 @@ def run(filter_func=None):
     # Do the work
     executor = Executor(conanfile=conanfile)
     all_jobs = list(executor.filter_jobs(filter=filter_func))
+    sys.stdout.write("All combinations sum up to {} jobs\n".format(len(all_jobs)))
 
     # - may paginate
     total_pages = os.environ.get("CONAN_TOTAL_PAGES", None)
@@ -54,7 +55,6 @@ def run(filter_func=None):
     for i, (compiler, options) in enumerate(all_jobs, 1):
         options_str = ["{}={}".format(key, value) for key, value in options.items()]
         sys.stdout.write("==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
-
 
 
 if __name__ == '__main__':

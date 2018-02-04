@@ -128,7 +128,7 @@ def print_jobs(all_jobs, printer=sys.stdout.write):
     if len(table):
         from tabulate import tabulate
         printer(tabulate(table, headers=list(compiler_headers)+list(option_headers),
-                         showindex=True,
+                         # showindex=True,
                          tablefmt='psql'))
         printer("\n")
     else:
