@@ -41,6 +41,7 @@ python_3_5:
 
 coverage:
   stage: coverage
+  image: python:3.5
   script:
     - pip -q install coverage
     - coverage report -m
