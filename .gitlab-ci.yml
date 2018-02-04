@@ -46,7 +46,8 @@ coverage:
     - pip -q install coverage
     - coverage report '--include=conan_sword_and_sorcery/*'
   dependencies:
-    - unittest
+    - python_2_7
+    - python_3_5
   except:
     - /^notest/
 
