@@ -39,12 +39,22 @@ def run(filter_func=None):
     # - may paginate
     total_pages = os.environ.get("CONAN_TOTAL_PAGES", None)
     current_page = os.environ.get("CONAN_CURRENT_PAGE", None)
+    msg = ''
     if total_pages or current_page:
         assert total_pages and current_page, "Both environment variables must be set: CONAN_TOTAL_PAGES and CONAN_CURRENT_PAGE"
         init, end = slice(len(all_jobs), int(current_page), int(total_pages))
         all_jobs = all_jobs[init:end]
+        msg = "page {}/{}".format(current_page, total_pages)
 
+    # Print jobs to run
+    sys.stdout.write("Jobs to run... {}\n".format(msg))
     print_jobs(all_jobs)
+
+    # Iterate jobs
+    for i, (compiler, options) in enumerate(all_jobs, 1):
+        options_str = ["{}={}".format(key, value) for key, value in options.items()]
+        sys.stdout.write("==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
+
 
 
 if __name__ == '__main__':
