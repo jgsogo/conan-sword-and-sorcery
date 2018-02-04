@@ -61,7 +61,6 @@ deploy_pypi:
     - echo "    pypi" >> ~/.pypirc
     - echo "" >> ~/.pypirc
     - echo "[pypi]" >> ~/.pypirc
-    - echo "repository=http://www.python.org/pypi" >> ~/.pypirc
     - echo "username=" ${PYPI_USER} >> ~/.pypirc
     - echo "password=" ${PYPI_PASSWORD} >> ~/.pypirc
     - python setup.py check sdist bdist upload   # This will fail if your creds are bad.
