@@ -44,7 +44,7 @@ def run(filter_func=None):
         assert total_pages and current_page, "Both environment variables must be set: CONAN_TOTAL_PAGES and CONAN_CURRENT_PAGE"
         init, end = slice(len(all_jobs), int(current_page), int(total_pages))
         all_jobs = all_jobs[init:end]
-        msg = "page {}/{}".format(current_page, total_pages)
+        msg = "(page {}/{})".format(current_page, total_pages)
 
     # Print jobs to run
     sys.stdout.write("Jobs to run... {}\n".format(msg))
