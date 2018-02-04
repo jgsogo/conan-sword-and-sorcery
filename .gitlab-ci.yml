@@ -5,6 +5,7 @@ variables:
 cache:
   paths:
     - .coverage
+    - reports
 
 stages:
   - test
@@ -19,12 +20,9 @@ python_2_7:
      - apt-get update -qy
      - apt-get install -y python-pip
      - pip install -r tests/requirements.txt
-     - python -m unittest discover tests
+     - py.test --cov=conan_sword_and_sorcery tests/  # Run with coverage (but do not store)
    except:
      - /^notest/
-   artifacts:
-     paths:
-      - .coverage
 
 python_3_5:
    stage: test
@@ -33,18 +31,20 @@ python_3_5:
      - apt-get update -qy
      - apt-get install -y python-pip
      - pip install -r tests/requirements.txt
-     - python -m unittest discover tests
+     - py.test --cov=conan_sword_and_sorcery --cov-report=html:reports/html tests/  # Run with coverage
    except:
      - /^notest/
    artifacts:
      paths:
       - .coverage
+      - reports
 
 coverage:
   stage: coverage
   script:
     - pip -q install coverage
-    - coverage report '--include=conan_sword_and_sorcery/*'
+    - coverage report -m
+  coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
   dependencies:
     - python_2_7
     - python_3_5
