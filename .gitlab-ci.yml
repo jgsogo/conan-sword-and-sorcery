@@ -54,6 +54,7 @@ coverage:
 
 deploy_pypi:
   stage: deploy
+  image: python:3.5
   script:   # Configure the PyPI credentials, then push the package, and cleanup the creds.
     - echo "[server-login]" >> ~/.pypirc
     - echo "username=" ${PYPI_USER} >> ~/.pypirc
