@@ -5,14 +5,14 @@ import sys
 import argparse
 import logging
 
-from conan.ci.Executor import Executor, print_jobs
-from conan.utils import slice
+from conan_sword_and_sorcery.ci.Executor import Executor, print_jobs
+from conan_sword_and_sorcery.utils import slice
 
 log = logging.getLogger(__name__)
 
 
 def run(filter_func=None):
-    sys.stdout.write("=== Sword & Sorcery: Conan: RUN CI! ===\n")
+    sys.stdout.write("=== Conan - Sword & Sorcery ===\n")
 
     parser = argparse.ArgumentParser(description='Run CI for given conanfile')
     parser.add_argument('conanfile', help='Path to conanfile.py')

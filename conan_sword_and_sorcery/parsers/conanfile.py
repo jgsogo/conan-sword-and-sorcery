@@ -44,7 +44,7 @@ class ConanfileWrapper(object):
             if issubclass(obj, ConanFile) and name != ConanFile.__name__:
                 return ConanfileWrapper(obj)
 
-        raise ValueError("Cannot load conan recipe from filename '{}'".format(filename))
+        raise ValueError("Cannot load conan_sword_and_sorcery recipe from filename '{}'".format(filename))
 
     def __getattr__(self, item):
         return getattr(self.recipe_class, item)

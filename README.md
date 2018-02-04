@@ -1,4 +1,4 @@
-Conan - sword and sorcery
+Conan - Sword and Sorcery
 =========================
 
 Utilities for Conan.io

@@ -7,7 +7,7 @@ except ImportError:
     import mock
 
 
-from conan.ci.compilers import CompilerRegistry
+from conan_sword_and_sorcery.ci.compilers import CompilerRegistry
 from tests.utils import context_env, TestCaseEnvClean
 
 

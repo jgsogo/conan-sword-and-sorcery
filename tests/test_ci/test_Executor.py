@@ -8,7 +8,7 @@ try:
 except ImportError:
     import mock
 
-from conan.ci.Executor import Executor
+from conan_sword_and_sorcery.ci.Executor import Executor
 from tests.utils import context_env, TestCaseEnvClean
 
 

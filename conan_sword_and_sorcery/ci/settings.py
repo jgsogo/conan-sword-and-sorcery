@@ -12,7 +12,7 @@ class Settings(object):
 
     @classmethod
     def default(cls):
-        filename = os.path.join(os.path.dirname(__file__), '..', 'conan_settings.yaml')  # TODO: Use conan distributed one as default.
+        filename = os.path.join(os.path.dirname(__file__), '..', 'conan_settings.yaml')  # TODO: Use conan_sword_and_sorcery distributed one as default.
         with open(filename, 'r') as f:
             return ConanSettings.loads(f.read())
 

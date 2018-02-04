@@ -7,7 +7,7 @@ except ImportError:
     import mock
 
 
-from conan.ci.compilers.base_compiler import BaseCompiler
+from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
 
 
 class TestCompiler(BaseCompiler):

@@ -3,7 +3,7 @@
 import os
 import unittest
 
-from conan.parsers.conanfile import ConanfileWrapper
+from conan_sword_and_sorcery.parsers.conanfile import ConanfileWrapper
 
 
 class TestParserConanfile01(unittest.TestCase):

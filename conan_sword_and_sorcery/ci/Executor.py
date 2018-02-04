@@ -10,9 +10,9 @@ from operator import itemgetter
 from conans.errors import ConanException
 from conans.util.env_reader import get_env
 
-from conan.parsers.conanfile import ConanfileWrapper
-from conan.ci.settings import Settings
-from conan.ci.compilers import CompilerRegistry, NoCompiler
+from conan_sword_and_sorcery.parsers.conanfile import ConanfileWrapper
+from conan_sword_and_sorcery.ci.settings import Settings
+from conan_sword_and_sorcery.ci.compilers import CompilerRegistry, NoCompiler
 
 log = logging.getLogger(__name__)
 

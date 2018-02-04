@@ -3,7 +3,7 @@
 import os
 import unittest
 
-from conan.utils import slice
+from conan_sword_and_sorcery.utils import slice
 
 
 class TestSlice(unittest.TestCase):

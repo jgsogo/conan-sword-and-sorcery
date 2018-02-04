@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from conan.utils import isstr
+from conan_sword_and_sorcery.utils import isstr
 
 
 class BaseCompiler(object):

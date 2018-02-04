@@ -2,7 +2,7 @@
 
 from conans.util.env_reader import get_env
 from .registry import CompilerRegistry
-from conan.ci.compilers.base_compiler import BaseCompiler
+from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
 
 
 @CompilerRegistry.register(

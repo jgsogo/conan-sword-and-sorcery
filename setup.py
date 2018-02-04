@@ -17,7 +17,7 @@ def get_requirements(filename):
 
 
 def get_version():
-    file_with_version = os.path.join(here, 'conan', '__init__.py')
+    file_with_version = os.path.join(here, 'conan_sword_and_sorcery', '__init__.py')
     with codecs.open(file_with_version, "rt") as f:
         return re.search("__version__ = '([0-9a-z.-]+)'", f.read()).group(1)
 
@@ -57,7 +57,7 @@ setup(
 
     package_data={
         '': ['*.md'],
-        'conan' : ['*.yaml'],
+        'conan_sword_and_sorcery' : ['*.yaml'],
     },
 
     # To provide executable scripts, use entry points in preference to the
@@ -65,7 +65,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'run_ci=conan.ci.run:run',
+            'run_ci=conan_sword_and_sorcery.ci.run:run',
         ],
     },
 )
