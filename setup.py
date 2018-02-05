@@ -29,7 +29,7 @@ setup(
     description="Utilities to work with conan.io stuf",
     url='https://gitlab.com/jgsogo/conan-sword-and-sorcery',
     author='jgsogo',
-    author_email='@jgsogo',
+    author_email='jgsogo@gmail.com',
     license='MIT',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -56,8 +56,9 @@ setup(
     },
 
     package_data={
-        '': ['*.md'],
-        'conan_sword_and_sorcery': ['*.yaml'],
+        '': ['*.md', '*.txt'],
+        'conan_sword_and_sorcery': ['*.yaml',],
+        'tests': ['*.txt', ],
     },
 
     # To provide executable scripts, use entry points in preference to the
