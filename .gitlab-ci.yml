@@ -58,12 +58,12 @@ deploy_pypi:
   script:   # Configure the PyPI credentials, then push the package, and cleanup the creds.
     - echo "[distutils]" >> ~/.pypirc
     - echo "index-servers =" >> ~/.pypirc
-    - echo "    pypi" >> ~/.pypirc
+    - echo "pypi" >> ~/.pypirc
     - echo "" >> ~/.pypirc
     - echo "[pypi]" >> ~/.pypirc
-    - echo "username=" ${PYPI_USER} >> ~/.pypirc
-    - echo "password=" ${PYPI_PASSWORD} >> ~/.pypirc
-    - python setup.py check sdist bdist upload   # This will fail if your creds are bad.
+    - echo "username = " ${PYPI_USER} >> ~/.pypirc
+    - echo "password = " ${PYPI_PASSWORD} >> ~/.pypirc
+    - python3 setup.py check sdist bdist upload   # This will fail if your creds are bad.
     - echo "" > ~/.pypirc && rm ~/.pypirc  # If the above fails, this won't run.
   only:
     - /^v(\d+!)?(\d+)(\.\d+)+([\.\-\_])?((a(lpha)?|b(eta)?|c|r(c|ev)?|pre(view)?)\d*)?(\.?(post|dev)\d*)?$/  # PEP-440 compliant version (with 'v' at the beginning)
