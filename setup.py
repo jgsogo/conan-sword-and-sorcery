@@ -56,6 +56,7 @@ setup(
     },
 
     # package_data= Forget about it and use MANIFEST.in (http://blog.codekills.net/2011/07/15/lies,-more-lies-and-python-packaging-documentation-on--package_data-/)
+    include_package_data=True,
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
