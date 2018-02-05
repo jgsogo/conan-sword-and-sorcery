@@ -5,3 +5,4 @@ reports/
 .coverage
 build/
 dist/
+.cache/
