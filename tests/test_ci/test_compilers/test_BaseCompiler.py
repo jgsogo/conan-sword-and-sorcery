@@ -10,7 +10,7 @@ except ImportError:
 from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
 
 
-class TestCompiler(BaseCompiler):
+class ATestCompiler(BaseCompiler):
     id = 'test_compiler'
     osys = 'test_os'
 
@@ -19,7 +19,7 @@ class TestBaseCompiler(unittest.TestCase):
 
     def test_invalid_constructor(self):
         with self.assertRaises(ValueError):
-            TestCompiler(tt=[])
+            ATestCompiler(tt=[])
 
 
 
