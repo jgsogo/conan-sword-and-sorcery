@@ -55,11 +55,7 @@ setup(
         'test': get_requirements(os.path.join(here, 'tests', 'requirements.txt'))
     },
 
-    package_data={
-        '': ['*.md', '*.txt'],
-        'conan_sword_and_sorcery': ['*.yaml',],
-        'tests': ['*.txt', ],
-    },
+    # package_data= Forget about it and use MANIFEST.in (http://blog.codekills.net/2011/07/15/lies,-more-lies-and-python-packaging-documentation-on--package_data-/)
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
