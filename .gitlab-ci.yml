@@ -58,7 +58,7 @@ deploy_pypi:
   script:   # Configure the PyPI credentials, then push the package, and cleanup the creds.
     - echo "[distutils]" >> ~/.pypirc
     - echo "index-servers =" >> ~/.pypirc
-    - echo "pypi" >> ~/.pypirc
+    - echo "    pypi" >> ~/.pypirc
     - echo "" >> ~/.pypirc
     - echo "[pypi]" >> ~/.pypirc
     - echo "username = " ${PYPI_USER} >> ~/.pypirc
