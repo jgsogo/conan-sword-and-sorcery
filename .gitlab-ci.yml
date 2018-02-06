@@ -66,6 +66,7 @@ deploy_pypi:
     - echo "username = " ${PYPI_USER} >> ~/.pypirc
     - echo "password = " ${PYPI_PASSWORD} >> ~/.pypirc
     - python3 setup.py check sdist bdist  # This will fail if your creds are bad.
+    - cat ~/.pypirc
     - twine upload dist/* --config-file ~/.pypirc
     - echo "" > ~/.pypirc && rm ~/.pypirc  # If the above fails, this won't run.
   only:
