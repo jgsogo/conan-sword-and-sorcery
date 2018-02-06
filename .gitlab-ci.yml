@@ -63,7 +63,7 @@ deploy_pypi:
     - echo "[pypi]" >> ~/.pypirc
     - echo "username = " ${PYPI_USER} >> ~/.pypirc
     - echo "password = " ${PYPI_PASSWORD} >> ~/.pypirc
-    - python3 setup.py check sdist bdist upload   # This will fail if your creds are bad.
+    - python3 setup.py check sdist bdist upload --show-response  # This will fail if your creds are bad.
     - echo "" > ~/.pypirc && rm ~/.pypirc  # If the above fails, this won't run.
   only:
     - /^v(\d+!)?(\d+)(\.\d+)+([\.\-\_])?((a(lpha)?|b(eta)?|c|r(c|ev)?|pre(view)?)\d*)?(\.?(post|dev)\d*)?$/  # PEP-440 compliant version (with 'v' at the beginning)
