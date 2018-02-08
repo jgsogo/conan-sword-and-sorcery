@@ -63,8 +63,8 @@ deploy_pypi:
     - echo "" >> ~/.pypirc
     - echo "[pypi]" >> ~/.pypirc
     - 'echo "repository: https://upload.pypi.org/legacy/" >> ~/.pypirc'
-    - 'echo "username: ${PYPI_USER}" >> ~/.pypirc'
-    - 'echo "password: ${PYPI_PASSWORD}" >> ~/.pypirc'
+    - 'echo "username: $PYPI_USER" >> ~/.pypirc'
+    - 'echo "password: $PYPI_PASSWORD" >> ~/.pypirc'
     - python3 setup.py check sdist bdist  # This will fail if your creds are bad.
     - cat ~/.pypirc
     - twine upload dist/* --config-file ~/.pypirc
