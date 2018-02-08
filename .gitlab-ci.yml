@@ -58,7 +58,7 @@ deploy_pypi:
   script:   # Configure the PyPI credentials, then push the package, and cleanup the creds.
     - pip -q install twine
     - python3 setup.py check sdist bdist  # This will fail if your creds are bad.
-    - twine upload dist/* -u $PYPI_USER -p $PYPI_PASSWORD
+    - twine upload dist/*  # Uses env variables TWINE_USERNAME and TWINE_PASSWORD
   only:
     - /^v(\d+!)?(\d+)(\.\d+)+([\.\-\_])?((a(lpha)?|b(eta)?|c|r(c|ev)?|pre(view)?)\d*)?(\.?(post|dev)\d*)?$/  # PEP-440 compliant version (with 'v' at the beginning)
   except:
