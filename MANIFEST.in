@@ -1,0 +1,4 @@
+include requirements.txt
+include README.md
+include conan_sword_and_sorcery/conan_settings.yaml
+include tests/requirements.txt

@@ -29,7 +29,7 @@ setup(
     description="Utilities to work with conan.io stuf",
     url='https://gitlab.com/jgsogo/conan-sword-and-sorcery',
     author='jgsogo',
-    author_email='@jgsogo',
+    author_email='jgsogo@gmail.com',
     license='MIT',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -55,10 +55,8 @@ setup(
         'test': get_requirements(os.path.join(here, 'tests', 'requirements.txt'))
     },
 
-    package_data={
-        '': ['*.md'],
-        'conan_sword_and_sorcery': ['*.yaml'],
-    },
+    # package_data= Forget about it and use MANIFEST.in (http://blog.codekills.net/2011/07/15/lies,-more-lies-and-python-packaging-documentation-on--package_data-/)
+    include_package_data=True,
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
