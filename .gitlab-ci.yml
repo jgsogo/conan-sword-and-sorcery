@@ -55,9 +55,14 @@ coverage:
 deploy_pypi:
   stage: deploy
   image: python:3.5
+  variables:
+    CI_DEBUG_TRACE: "true"
   script:   # Configure the PyPI credentials, then push the package, and cleanup the creds.
     - pip -q install twine
     - python3 setup.py check sdist bdist  # This will fail if your creds are bad.
+    - echo $PYPI_USER
+    - echo $TWINE_USERNAME
+    - echo $PYPI_USER
     - printenv
     - twine upload dist/*  # Uses env variables TWINE_USERNAME and TWINE_PASSWORD
   only:
