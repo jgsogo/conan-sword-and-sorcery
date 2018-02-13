@@ -24,6 +24,12 @@ class BaseCompiler(object):
         settings.compiler = self.id
         settings.compiler.version = self.version
 
+    def populate_profile_settings(self, f):
+        f.write("arch={}\n".format(self.arch))
+        f.write("build_type={}\n".format(self.build_type))
+        f.write("compiler={}\n".format(self.id))
+        f.write("compiler.version={}\n".format(self.version))
+
     @classmethod
     def validate(cls, **kwargs):
         # Raise error if given configuration is not supported

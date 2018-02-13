@@ -24,6 +24,10 @@ class CompilerVisualStudio(BaseCompiler):
         super(CompilerVisualStudio, self).update_settings(settings)
         settings.compiler.runtime = self.runtime
 
+    def populate_profile_settings(self, f):
+        super(CompilerVisualStudio, self).populate_profile_settings(f)
+        f.write("compiler.runtime={}\n".format(self.runtime))
+
     @classmethod
     def environment_filters(cls):
         visual_versions = get_env("CONAN_VISUAL_VERSIONS", [])

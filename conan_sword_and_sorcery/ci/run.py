@@ -4,8 +4,11 @@ import os
 import sys
 import argparse
 import logging
+from itertools import groupby
+from operator import itemgetter
 
 from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
+from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.utils import slice
 
 log = logging.getLogger(__name__)
@@ -51,10 +54,17 @@ def run(filter_func=None):
     sys.stdout.write("Jobs to run... {}\n".format(msg))
     print_jobs(all_jobs)
 
-    # Iterate jobs
-    for i, (compiler, options) in enumerate(all_jobs, 1):
-        options_str = ["{}={}".format(key, value) for key, value in options.items()]
-        sys.stdout.write("==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
+    # Aggregate jobs by compiler and iterate
+    grouped_jobs = groupby(all_jobs, itemgetter(0))
+    i = 0
+    for compiler, options in grouped_jobs:
+        # Get a runner for each compiler (will modify profile)
+        runner = next(RunnerRegistry.get_runner(compiler))
+        for _, opt in options:
+            i += 1
+            options_str = ["{}={}".format(key, value) for key, value in opt.items()]
+            sys.stdout.write("==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
+            runner.run(opt)
 
 
 if __name__ == '__main__':
