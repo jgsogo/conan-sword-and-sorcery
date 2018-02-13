@@ -8,7 +8,7 @@ try:
 except ImportError:
     import mock
 
-from conan_sword_and_sorcery.ci.Executor import Executor
+from conan_sword_and_sorcery.ci.job_generator import JobGenerator
 from tests.utils import context_env, TestCaseEnvClean
 
 
@@ -19,7 +19,7 @@ class TestConanfile01(TestCaseEnvClean):
         self.conanfile01 = os.path.join(single_files, 'conanfile01.py')
 
     def test_total_linux(self):
-        self.executor = Executor(self.conanfile01, osys="Linux")
+        self.executor = JobGenerator(self.conanfile01, osys="Linux")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
 
         with context_env(CONAN_GCC_VERSIONS="7"):
@@ -32,7 +32,7 @@ class TestConanfile01(TestCaseEnvClean):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 16)
 
     def test_total_windows(self):
-        self.executor = Executor(self.conanfile01, osys="Windows")
+        self.executor = JobGenerator(self.conanfile01, osys="Windows")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
 
         with context_env(CONAN_VISUAL_VERSIONS='12'):
@@ -51,7 +51,7 @@ class TestConanfile01(TestCaseEnvClean):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
 
     def test_filter_jobs(self):
-        self.executor = Executor(self.conanfile01, osys="Windows")
+        self.executor = JobGenerator(self.conanfile01, osys="Windows")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
 
         with context_env(CONAN_VISUAL_VERSIONS='12'):
@@ -64,7 +64,7 @@ class TestConanfile01(TestCaseEnvClean):
             self.assertEqual(len(x86_discarded), 32)
 
     def test_pagination(self):
-        self.executor = Executor(self.conanfile01, osys="Windows")
+        self.executor = JobGenerator(self.conanfile01, osys="Windows")
         with context_env(CONAN_VISUAL_VERSIONS='12'):
             all_jobs = list(self.executor.enumerate_jobs())
             self.assertEqual(len(all_jobs), 64)

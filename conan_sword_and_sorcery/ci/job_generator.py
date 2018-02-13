@@ -17,7 +17,7 @@ from conan_sword_and_sorcery.ci.compilers import CompilerRegistry, NoCompiler
 log = logging.getLogger(__name__)
 
 
-class Executor(object):
+class JobGenerator(object):
     def __init__(self, conanfile, osys=platform.system()):
         log.debug("Executor::__init__(conanfile='{}', osys='{}')".format(conanfile, osys))
         self._settings = Settings.default()

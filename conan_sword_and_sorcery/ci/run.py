@@ -5,7 +5,7 @@ import sys
 import argparse
 import logging
 
-from conan_sword_and_sorcery.ci.Executor import Executor, print_jobs
+from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.utils import slice
 
 log = logging.getLogger(__name__)
@@ -33,8 +33,8 @@ def run(filter_func=None):
         exit(-1)
 
     # Do the work
-    executor = Executor(conanfile=conanfile)
-    all_jobs = list(executor.filter_jobs(filter=filter_func))
+    job_generator = JobGenerator(conanfile=conanfile)
+    all_jobs = list(job_generator.filter_jobs(filter=filter_func))
     sys.stdout.write("All combinations sum up to {} jobs\n".format(len(all_jobs)))
 
     # - may paginate
