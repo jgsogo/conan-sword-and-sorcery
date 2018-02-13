@@ -79,6 +79,7 @@ class Executor(object):
                     options_to_conjugate = set(self.recipe.options._data.keys())
                     options_to_conjugate = options_to_conjugate.intersection(set(get_env("CONAN_OPTIONS", list(options_to_conjugate))))
 
+                    # Explode options
                     exploded_options = self._conanfile_wrapper.conjugate_options(options_to_conjugate)
                     if not exploded_options:
                         yield (compiler, {})  # Empty dict for options.
