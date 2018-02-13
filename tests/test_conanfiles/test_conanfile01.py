@@ -28,6 +28,9 @@ class TestConanfile01(TestCaseEnvClean):
         with context_env(CONAN_GCC_VERSIONS="7", CONAN_BUILD_TYPES='Debug'):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 32)
 
+        with context_env(CONAN_GCC_VERSIONS="7", CONAN_BUILD_TYPES='Debug', CONAN_OPTIONS='build_gmock,shared'):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 16)
+
     def test_total_windows(self):
         self.executor = Executor(self.conanfile01, osys="Windows")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
@@ -36,6 +39,9 @@ class TestConanfile01(TestCaseEnvClean):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 64)
 
         with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug'):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 32)
+
+        with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug', CONAN_OPTIONS='build_gmock,shared'):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 32)
 
         with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug', CONAN_VISUAL_RUNTIMES="MT"):

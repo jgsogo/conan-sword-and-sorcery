@@ -75,12 +75,15 @@ class Executor(object):
                 try:
                     self.recipe.configure()
 
-                    # Enumerate options
-                    exploded_options = self._conanfile_wrapper.conjugate_options(self.recipe.options._data.keys())
+                    # Enumerate (and filter) options
+                    options_to_conjugate = set(self.recipe.options._data.keys())
+                    options_to_conjugate = options_to_conjugate.intersection(set(get_env("CONAN_OPTIONS", list(options_to_conjugate))))
+
+                    exploded_options = self._conanfile_wrapper.conjugate_options(options_to_conjugate)
                     if not exploded_options:
                         yield (compiler, {})  # Empty dict for options.
                     else:
-                        options = [{key: value for key, value in zip(self.recipe.options._data.keys(), pack)} for pack in exploded_options]
+                        options = [{key: value for key, value in zip(options_to_conjugate, pack)} for pack in exploded_options]
                         log.debug(" - got {} options combinations: {}".format(len(options), options))
                         for it in itertools.product([compiler, ], options):
                             yield it
