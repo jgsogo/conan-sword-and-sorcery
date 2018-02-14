@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import itertools
 import logging
 import os
-import tempfile
-from collections import defaultdict
-from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
-from conan_sword_and_sorcery.ci.runners.base_runner import BaseRunner
-from conan_sword_and_sorcery.utils import isstr
 
 log = logging.getLogger(__name__)
 
@@ -32,22 +26,7 @@ class RunnerRegistry(object):
         for key, runner_class in cls._registry.items():
             if os.environ.get(key, False):
                 runner = runner_class(compiler)
-                break
+                return runner
+
         if not runner:
             raise ValueError("Runner not found: no environment variable is registered from available ones ('{}')".format("', '".join(cls._registry.keys())))
-
-        try:
-            # Create profile file
-            tmp, path = tempfile.mkstemp()
-            #tmp = tempfile.NamedTemporaryFile(delete=False)
-            tmp.write("include(default)\n\n")  # Profile 'default'
-            tmp.write("[settings]\n")
-            compiler.populate_profile_settings(tmp)
-            tmp.write("[options]\n[build_requires]\n[env]\n")  # TODO: Is it needed?
-            tmp.close()
-
-            # Add profile to runner cli
-            runner.set_profile_file(path)
-            yield runner
-        finally:
-            os.remove(tmp.name)

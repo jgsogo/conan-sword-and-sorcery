@@ -10,6 +10,7 @@ from operator import itemgetter
 from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.utils import slice
+from conan_sword_and_sorcery.profile import profile_for
 
 log = logging.getLogger(__name__)
 
@@ -59,12 +60,14 @@ def run(filter_func=None):
     i = 0
     for compiler, options in grouped_jobs:
         # Get a runner for each compiler (will modify profile)
-        runner = next(RunnerRegistry.get_runner(compiler))
-        for _, opt in options:
-            i += 1
-            options_str = ["{}={}".format(key, value) for key, value in opt.items()]
-            sys.stdout.write("==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
-            runner.run(opt)
+        runner = RunnerRegistry.get_runner(compiler)
+        with profile_for(compiler) as profile_file:
+            runner.set_profile_file(profile_file)
+            for _, opt in options:
+                i += 1
+                options_str = ["{}={}".format(key, value) for key, value in opt.items()]
+                sys.stdout.write("\n\n==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
+                runner.run(opt)
 
 
 if __name__ == '__main__':
