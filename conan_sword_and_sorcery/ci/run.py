@@ -4,9 +4,13 @@ import os
 import sys
 import argparse
 import logging
+from itertools import groupby
+from operator import itemgetter
 
-from conan_sword_and_sorcery.ci.Executor import Executor, print_jobs
+from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
+from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.utils import slice
+from conan_sword_and_sorcery.profile import profile_for
 
 log = logging.getLogger(__name__)
 
@@ -33,8 +37,8 @@ def run(filter_func=None):
         exit(-1)
 
     # Do the work
-    executor = Executor(conanfile=conanfile)
-    all_jobs = list(executor.filter_jobs(filter=filter_func))
+    job_generator = JobGenerator(conanfile=conanfile)
+    all_jobs = list(job_generator.filter_jobs(filter=filter_func))
     sys.stdout.write("All combinations sum up to {} jobs\n".format(len(all_jobs)))
 
     # - may paginate
@@ -51,10 +55,20 @@ def run(filter_func=None):
     sys.stdout.write("Jobs to run... {}\n".format(msg))
     print_jobs(all_jobs)
 
-    # Iterate jobs
-    for i, (compiler, options) in enumerate(all_jobs, 1):
-        options_str = ["{}={}".format(key, value) for key, value in options.items()]
-        sys.stdout.write("==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
+    # Aggregate jobs by compiler and iterate
+    grouped_jobs = groupby(all_jobs, itemgetter(0))
+    i = 0
+    for compiler, options in grouped_jobs:
+        # Get a runner for each compiler (will modify profile)
+        runner = RunnerRegistry.get_runner(compiler)
+        runner.conanfile = conanfile
+        with profile_for(compiler) as profile_file:
+            runner.profile = profile_file
+            for _, opt in options:
+                i += 1
+                options_str = ["{}={}".format(key, value) for key, value in opt.items()]
+                sys.stdout.write("\n\n==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
+                runner.run(opt)
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ try:
 except ImportError:
     import mock
 
-from conan_sword_and_sorcery.ci.Executor import Executor
+from conan_sword_and_sorcery.ci.job_generator import JobGenerator
 from tests.utils import context_env, TestCaseEnvClean
 
 
@@ -21,7 +21,7 @@ class TestExecutorAllSettings(TestCaseEnvClean):
         self.options_multiplier = pow(2, self.n_options)
 
     def test_linux_gcc(self):
-        self.executor = Executor(self.conanfile, osys="Linux")
+        self.executor = JobGenerator(self.conanfile, osys="Linux")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0*self.options_multiplier)
 
         with context_env(CONAN_GCC_VERSIONS="7"):
@@ -41,7 +41,7 @@ class TestExecutorAllSettings(TestCaseEnvClean):
             self.assertEqual(len(jobs), 0 * self.options_multiplier)
 
     def test_linux_gcc_and_clang(self):
-        self.executor = Executor(self.conanfile, osys="Linux")
+        self.executor = JobGenerator(self.conanfile, osys="Linux")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0*self.options_multiplier)
 
         with context_env(CONAN_GCC_VERSIONS="7", CONAN_CLANG_VERSIONS="5.0"):
@@ -49,7 +49,7 @@ class TestExecutorAllSettings(TestCaseEnvClean):
             self.assertEqual(len(jobs), 20*self.options_multiplier)
 
     def test_macos(self):
-        self.executor = Executor(self.conanfile, osys="Macos")
+        self.executor = JobGenerator(self.conanfile, osys="Macos")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0*self.options_multiplier)
 
         with context_env(CONAN_APPLE_CLANG_VERSIONS="8.1"):
@@ -78,13 +78,13 @@ class TestExecutorSettingsNoCompiler(TestCaseEnvClean):
         self.options_multiplier = pow(2, self.n_options)
 
     def test_linux(self):
-        self.executor = Executor(self.conanfile, osys="Linux")
+        self.executor = JobGenerator(self.conanfile, osys="Linux")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)
 
     def test_windows(self):
-        self.executor = Executor(self.conanfile, osys="Windows")
+        self.executor = JobGenerator(self.conanfile, osys="Windows")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)
 
     def test_macos(self):
-        self.executor = Executor(self.conanfile, osys="Macos")
+        self.executor = JobGenerator(self.conanfile, osys="Macos")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)

@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import os
+import logging
 from conan_sword_and_sorcery.utils import isstr
+
+log = logging.getLogger(__name__)
 
 
 class BaseCompiler(object):
     id = None
-    os = None
+    osys = None
 
     def __init__(self, **kwargs):
         self._data = kwargs
@@ -16,6 +20,8 @@ class BaseCompiler(object):
                 raise ValueError("Invalid configuration argument for compiler '{}': argument '{}' must be a non empty string.".format(self.id, key))
 
     def __getattr__(self, item):
+        if item == 'os':
+            return self.osys
         return self._data.get(item)
 
     def update_settings(self, settings):
@@ -23,6 +29,12 @@ class BaseCompiler(object):
         settings.arch = self.arch
         settings.compiler = self.id
         settings.compiler.version = self.version
+
+    def populate_profile_settings(self, f):
+        f.write("arch={}\n".format(self.arch))
+        f.write("build_type={}\n".format(self.build_type))
+        f.write("compiler={}\n".format(self.id))
+        f.write("compiler.version={}\n".format(self.version))
 
     @classmethod
     def validate(cls, **kwargs):
@@ -32,3 +44,8 @@ class BaseCompiler(object):
     @classmethod
     def environment_filters(cls):
         raise NotImplementedError
+
+    def run(self, command):
+        log.debug("CompilerVisualStudio::run")
+        log.info("command to run: {}".format(command))
+        os.system(command)  # TODO: May use subprocess
