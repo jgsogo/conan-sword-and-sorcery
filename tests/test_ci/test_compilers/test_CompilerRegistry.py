@@ -18,8 +18,8 @@ class TestCompilerRegistry(TestCaseEnvClean):
         self.os = ["Windows", "Linux", "Macos",]
 
     def test_base(self):
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os))), 140)
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ]))), 70)
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os))), 156)
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ]))), 78)
         self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ], version=[("gcc", "7"), ]))), 4)
         self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ], version=[("gcc", "7"), ("Visual Studio", "12"), ]))), 12)
 

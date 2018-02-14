@@ -61,8 +61,9 @@ def run(filter_func=None):
     for compiler, options in grouped_jobs:
         # Get a runner for each compiler (will modify profile)
         runner = RunnerRegistry.get_runner(compiler)
+        runner.conanfile = conanfile
         with profile_for(compiler) as profile_file:
-            runner.set_profile_file(profile_file)
+            runner.profile = profile_file
             for _, opt in options:
                 i += 1
                 options_str = ["{}={}".format(key, value) for key, value in opt.items()]

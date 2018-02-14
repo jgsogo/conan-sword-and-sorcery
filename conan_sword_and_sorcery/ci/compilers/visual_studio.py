@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
 
+import logging
+from collections import namedtuple
+
 from conans.util.env_reader import get_env
+from conans.tools import vcvars_command
 
 from .registry import CompilerRegistry
 from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
+
+log = logging.getLogger(__name__)
 
 
 @CompilerRegistry.register(
     arch=["x86", "x86_64"],
     build_type=["Release", "Debug"],
-    version=["12", "14", "15"],
+    version=["11", "12", "14", "15"],
     runtime=["MT", "MD", "MTd", "MDd"],
     # TODO: Add toolset
 )
@@ -38,3 +44,19 @@ class CompilerVisualStudio(BaseCompiler):
         if len(visual_runtimes):
             r['runtime'] = visual_runtimes
         return r
+
+    def run(self, command):
+        # Need to call vcvars before compiler
+        log.debug("CompilerVisualStudio::run")
+
+        def get_safe(x):
+            print("get_safe(x={})".format(x))
+
+            return None
+        compiler_set = namedtuple("compiler", "version")(self.version)
+        mock_sets = namedtuple("mock_settings",
+                               ["arch", "compiler", "get_safe", ])(self.arch, compiler_set,
+                                                         lambda x: get_safe(x))
+        pre_command = vcvars_command(mock_sets, arch=self.arch, compiler_version=self.version)
+        command = "{} && {}".format(pre_command, ' '.join(command))
+        super(CompilerVisualStudio, self).run(command)
