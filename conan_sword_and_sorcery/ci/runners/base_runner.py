@@ -10,6 +10,7 @@ from conans.tools import vcvars_command
 class BaseRunner(object):
     profile = None
     conanfile = None
+    recipe = None
 
     def __init__(self, compiler):
         self.compiler = compiler
@@ -26,7 +27,9 @@ class BaseRunner(object):
         # TODO: Code to get user/channel
 
         command = ['conan', 'create', self.conanfile, 'jgsogo/testing',
-                   '--profile', self.profile]
+                   '--profile', self.profile, '--build=missing']
+        for k, v in options.items():
+            command += ['-o', '{}:{}={}'.format(self.recipe.name, k, v)]
         self.compiler.run(command)
         # os.system(' '.join(command))
         """

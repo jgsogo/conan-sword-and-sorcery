@@ -62,6 +62,7 @@ def run(filter_func=None):
         # Get a runner for each compiler (will modify profile)
         runner = RunnerRegistry.get_runner(compiler)
         runner.conanfile = conanfile
+        runner.recipe = job_generator.recipe
         with profile_for(compiler) as profile_file:
             runner.profile = profile_file
             for _, opt in options:

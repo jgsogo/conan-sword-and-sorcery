@@ -73,7 +73,7 @@ class JobGenerator(object):
             for compiler in compilers:
                 compiler.update_settings(self._settings)
                 try:
-                    self.recipe.configure()
+                    self.recipe.configure()  # Check if settings configuration is supported
 
                     # Enumerate (and filter) options
                     options_to_conjugate = set(self.recipe.options._data.keys())
@@ -86,8 +86,15 @@ class JobGenerator(object):
                     else:
                         options = [{key: value for key, value in zip(options_to_conjugate, pack)} for pack in exploded_options]
                         log.debug(" - got {} options combinations: {}".format(len(options), options))
-                        for it in itertools.product([compiler, ], options):
-                            yield it
+                        for compiler, option_pack in itertools.product([compiler, ], options):
+                            for k, v in option_pack.items():
+                                setattr(self.recipe.options, k, v)
+                            try:
+                                self.recipe.configure()
+                                yield compiler, option_pack
+                            except ConanException as e:
+                                pass
+
                 except ConanException as e:  # TODO: Something like ConanInvalidConfiguration would fit better
                     pass
         else:
