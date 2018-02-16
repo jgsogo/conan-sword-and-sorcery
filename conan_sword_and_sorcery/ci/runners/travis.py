@@ -11,6 +11,7 @@ log = logging.getLogger(__name__)
 
 @RunnerRegistry.register("TRAVIS")
 class TravisRunner(BaseRunner):
+    docker_conan_project_dirname = "/home/conan/project"
 
     def __init__(self, compiler, *args, **kwargs):
         super(TravisRunner, self).__init__(compiler=compiler, *args, **kwargs)
@@ -22,9 +23,11 @@ class TravisRunner(BaseRunner):
             self._run_in_docker('sudo pip install -U conan conan_sword_and_sorcery=={} && conan user'.format(__version__))
 
     def _run_in_docker(self, command):
-        docker_command = 'docker run --rm -v {cwd}:/home/conan/project /bin/sh -c "{command}"'.format(
+        docker_command = 'docker run --rm -v {cwd}:{docker_dirname} {image} /bin/sh -c "{command}"'.format(
             cwd=os.getcwd(),
-            command=command
+            image=self.docker_image,
+            command=command,
+            docker_dirname=self.docker_conan_project_dirname,
         )
         return super(TravisRunner, self).cmd(docker_command)
 
@@ -32,6 +35,7 @@ class TravisRunner(BaseRunner):
         if not self.use_docker:
             return super(TravisRunner, self).cmd(command)
         else:
+            command = command.replace(os.getcwd(), self.docker_conan_project_dirname)  # TODO: Make a better approach
             return self._run_in_docker(command)
 
 
