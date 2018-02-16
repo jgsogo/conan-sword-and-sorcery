@@ -23,4 +23,4 @@ class BaseRunner(object):
                    '--profile', self.profile, '--build=missing']
         for k, v in options.items():
             command += ['-o', '{}:{}={}'.format(self.recipe.name, k, v)]
-        return self.compiler.run(command, dry_run=dry_run)
+        return self.compiler.run(' '.join(command), dry_run=dry_run)

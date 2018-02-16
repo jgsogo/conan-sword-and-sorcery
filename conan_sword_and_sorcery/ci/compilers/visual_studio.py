@@ -45,7 +45,7 @@ class CompilerVisualStudio(BaseCompiler):
             r['runtime'] = visual_runtimes
         return r
 
-    def run(self, command, dry_run=False):
+    def run(self, command_plain, dry_run=False):
         log.debug("CompilerVisualStudio::run")
 
         # Need to call vcvars before compiler
@@ -60,5 +60,5 @@ class CompilerVisualStudio(BaseCompiler):
                                                          lambda x: get_safe(x))
         pre_command = vcvars_command(mock_sets, arch=self.arch, compiler_version=self.version)
 
-        command = "{} && {}".format(pre_command, ' '.join(command))
+        command = "{} && {}".format(pre_command, command_plain)
         return super(CompilerVisualStudio, self).run(command, dry_run=dry_run)

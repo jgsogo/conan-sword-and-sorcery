@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import subprocess
 import logging
 from conan_sword_and_sorcery.utils import isstr
 
@@ -45,10 +46,11 @@ class BaseCompiler(object):
     def environment_filters(cls):
         raise NotImplementedError
 
-    def run(self, command, dry_run=False):
+    def run(self, command_plain, dry_run=False):
         log.debug("BaseCompiler::run")
-        log.info("command to run: {}".format(command))
+        log.info("command to run: {}".format(command_plain))
         if not dry_run:
-            os.system(command)  # TODO: May use subprocess
+            ret = os.system(command_plain)  # TODO: May use subprocess
+            return "OK" if ret == 0 else "FAIL"
         return "DRY_RUN"
 
