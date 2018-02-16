@@ -77,6 +77,7 @@ def run(filter_func=None):
                 results.append(ret)
 
     # Summary of jobs status
+    sys.stdout.write("\nSumming up... {}\n".format(msg))
     print_jobs(all_jobs, job_status=results)
 
 
