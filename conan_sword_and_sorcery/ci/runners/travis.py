@@ -18,18 +18,6 @@ class TravisRunner(BaseRunner):
         if self.use_docker:
             self.docker_image = os.environ.get("CONAN_DOCKER_IMAGE", None)
             log.info("TravisRunner will use docker image '{}'".format(self.docker_image))
-
-            # Impostor for compiler.cmd method
-            compiler_cmd = compiler.cmd
-
-            def run_in_docker(command_plain):
-                log.info("inside docker!")
-                compiler_cmd('docker run --rm -v {cwd}:/home/conan/project /bin/sh -c "{command}"'.format(
-                    cwd=os.getcwd(),
-                    command=command_plain
-                ))
-            compiler.cmd = run_in_docker
-
             os.system("docker pull {}".format(self.docker_image))
             self._run_in_docker('sudo pip install -U conan conan_sword_and_sorcery=={} && conan user'.format(__version__))
 

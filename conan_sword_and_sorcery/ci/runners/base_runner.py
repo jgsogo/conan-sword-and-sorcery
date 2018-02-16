@@ -33,4 +33,4 @@ class BaseRunner(object):
         if not self.dry_run:
             ret = os.system(command)  # TODO: May use subprocess
             return "OK" if ret == 0 else "FAIL"
-        return "DRY_RUN" \
+        return "DRY_RUN"
