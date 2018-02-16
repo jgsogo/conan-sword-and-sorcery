@@ -14,6 +14,7 @@ class BaseCompiler(object):
 
     def __init__(self, **kwargs):
         self._data = kwargs
+        self.cmd = os.system
 
         # Validate input arguments
         for key, val in kwargs.items():
@@ -50,7 +51,7 @@ class BaseCompiler(object):
         log.debug("BaseCompiler::run")
         log.info("command to run: {}".format(command_plain))
         if not dry_run:
-            ret = os.system(command_plain)  # TODO: May use subprocess
+            ret = self.cmd(command_plain)  # TODO: May use subprocess
             return "OK" if ret == 0 else "FAIL"
         return "DRY_RUN"
 
