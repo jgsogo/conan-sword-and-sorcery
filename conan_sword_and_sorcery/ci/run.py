@@ -23,6 +23,9 @@ def run(filter_func=None):
     parser.add_argument("-v", "--verbose", dest="verbose_count",
                         action="count", default=0,
                         help="increases log verbosity for each occurence.")
+    parser.add_argument("--dry-run", dest="dry_run",
+                        action='store_true', default=False,
+                        help="do not create package (won't compile recipes)")
     args = parser.parse_args()
 
     # Configure logging
@@ -54,6 +57,7 @@ def run(filter_func=None):
     # Print jobs to run
     sys.stdout.write("Jobs to run... {}\n".format(msg))
     print_jobs(all_jobs)
+    results = []
 
     # Aggregate jobs by compiler and iterate
     grouped_jobs = groupby(all_jobs, itemgetter(0))
@@ -68,8 +72,12 @@ def run(filter_func=None):
             for _, opt in options:
                 i += 1
                 options_str = ["{}={}".format(key, value) for key, value in opt.items()]
-                sys.stdout.write("\n\n==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
-                runner.run(opt)
+                sys.stdout.write("\n==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
+                ret = runner.run(opt, dry_run=args.dry_run)
+                results.append(ret)
+
+    # Summary of jobs status
+    print_jobs(all_jobs, job_status=results)
 
 
 if __name__ == '__main__':

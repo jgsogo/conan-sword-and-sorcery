@@ -45,18 +45,20 @@ class CompilerVisualStudio(BaseCompiler):
             r['runtime'] = visual_runtimes
         return r
 
-    def run(self, command):
-        # Need to call vcvars before compiler
+    def run(self, command, dry_run=False):
         log.debug("CompilerVisualStudio::run")
 
+        # Need to call vcvars before compiler
         def get_safe(x):
-            print("get_safe(x={})".format(x))
-
+            if x == 'os':
+                return self.osys
+            log.error("CompilerVisualStudio requested '{}' from setting, but it is not available.".format(x))
             return None
         compiler_set = namedtuple("compiler", "version")(self.version)
         mock_sets = namedtuple("mock_settings",
                                ["arch", "compiler", "get_safe", ])(self.arch, compiler_set,
                                                          lambda x: get_safe(x))
         pre_command = vcvars_command(mock_sets, arch=self.arch, compiler_version=self.version)
+
         command = "{} && {}".format(pre_command, ' '.join(command))
-        super(CompilerVisualStudio, self).run(command)
+        return super(CompilerVisualStudio, self).run(command, dry_run=dry_run)
