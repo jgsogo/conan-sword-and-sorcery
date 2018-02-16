@@ -21,14 +21,30 @@ class TravisRunner(BaseRunner):
 
             # Impostor for compiler.cmd method
             compiler_cmd = compiler.cmd
+
             def run_in_docker(command_plain):
-                compiler_cmd('docker run {} /bin/sh -c "{}"'.format(self.docker_image, command_plain))
+                log.info("inside docker!")
+                compiler_cmd('docker run --rm -v {cwd}:/home/conan/project /bin/sh -c "{command}"'.format(
+                    cwd=os.getcwd(),
+                    command=command_plain
+                ))
             compiler.cmd = run_in_docker
 
             os.system("docker pull {}".format(self.docker_image))
-            run_in_docker("sudo pip install conan --upgrade")
-            run_in_docker("sudo pip install conan_sword_and_sorcery=={} --upgrade".format(__version__))
-            run_in_docker("conan user")
+            self._run_in_docker('sudo pip install -U conan conan_sword_and_sorcery=={} && conan user'.format(__version__))
+
+    def _run_in_docker(self, command):
+        docker_command = 'docker run --rm -v {cwd}:/home/conan/project /bin/sh -c "{command}"'.format(
+            cwd=os.getcwd(),
+            command=command
+        )
+        return super(TravisRunner, self).cmd(docker_command)
+
+    def cmd(self, command):
+        if not self.use_docker:
+            return super(TravisRunner, self).cmd(command)
+        else:
+            return self._run_in_docker(command)
 
 
 

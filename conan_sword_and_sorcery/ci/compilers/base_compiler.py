@@ -47,11 +47,7 @@ class BaseCompiler(object):
     def environment_filters(cls):
         raise NotImplementedError
 
-    def run(self, command_plain, dry_run=False):
+    def run(self, command_plain):
         log.debug("BaseCompiler::run")
-        log.info("command to run: {}".format(command_plain))
-        if not dry_run:
-            ret = self.cmd(command_plain)  # TODO: May use subprocess
-            return "OK" if ret == 0 else "FAIL"
-        return "DRY_RUN"
+        return self.cmd(command_plain)
 

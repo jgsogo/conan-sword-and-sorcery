@@ -64,7 +64,7 @@ def run(filter_func=None):
     i = 0
     for compiler, options in grouped_jobs:
         # Get a runner for each compiler (will modify profile)
-        runner = RunnerRegistry.get_runner(compiler)
+        runner = RunnerRegistry.get_runner(compiler, dry_run=args.dry_run)
         runner.conanfile = conanfile
         runner.recipe = job_generator.recipe
         with profile_for(compiler) as profile_file:
@@ -73,7 +73,7 @@ def run(filter_func=None):
                 i += 1
                 options_str = ["{}={}".format(key, value) for key, value in opt.items()]
                 sys.stdout.write("\n==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
-                ret = runner.run(opt, dry_run=args.dry_run)
+                ret = runner.run(opt)
                 results.append(ret)
 
     # Summary of jobs status

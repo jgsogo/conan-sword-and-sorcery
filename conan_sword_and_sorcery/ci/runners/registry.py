@@ -20,12 +20,12 @@ class RunnerRegistry(object):
         return real_decorator
 
     @classmethod
-    def get_runner(cls, compiler):
+    def get_runner(cls, compiler, *args, **kwargs):
         log.debug("RunnerRegistry::get_runner()")
         runner = None
         for key, runner_class in cls._registry.items():
             if os.environ.get(key, False):
-                runner = runner_class(compiler)
+                runner = runner_class(compiler, *args, **kwargs)
                 return runner
 
         if not runner:
