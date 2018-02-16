@@ -14,7 +14,7 @@ class TravisRunner(BaseRunner):
 
     def __init__(self, compiler, *args, **kwargs):
         super(TravisRunner, self).__init__(compiler=compiler, *args, **kwargs)
-        self.use_docker = os.environ.has_key("CONAN_DOCKER_IMAGE") or os.environ.get("CONAN_USE_DOCKER", False)
+        self.use_docker = ("CONAN_DOCKER_IMAGE" in os.environ) or (os.environ.get("CONAN_USE_DOCKER", False))
         if self.use_docker:
             self.docker_image = os.environ.get("CONAN_DOCKER_IMAGE", None)
             log.info("TravisRunner will use docker image '{}'".format(self.docker_image))
