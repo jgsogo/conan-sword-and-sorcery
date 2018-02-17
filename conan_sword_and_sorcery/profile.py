@@ -8,7 +8,7 @@ from contextlib import contextmanager
 @contextmanager
 def profile_for(compiler):
     # Create profile file
-    tmp = tempfile.NamedTemporaryFile(mode='w', delete=False)
+    tmp = tempfile.NamedTemporaryFile(dir=os.path.expanduser("~"), mode='w', delete=False)  # In local dirname
     tmp.write("include(default)\n\n")  # Profile 'default'
     tmp.write("[settings]\n")
     compiler.populate_profile_settings(tmp)

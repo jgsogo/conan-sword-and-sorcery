@@ -62,10 +62,11 @@ def run(filter_func=None):
     # Aggregate jobs by compiler and iterate
     grouped_jobs = groupby(all_jobs, itemgetter(0))
     i = 0
+
+    runner = RunnerRegistry.get_runner(conanfile=conanfile, recipe=job_generator.recipe, dry_run=args.dry_run)
     for compiler, options in grouped_jobs:
         # Get a runner for each compiler (will modify profile)
-        runner = RunnerRegistry.get_runner(compiler=compiler, conanfile=conanfile,
-                                           recipe=job_generator.recipe, dry_run=args.dry_run)
+        runner.set_compiler(compiler)
         with profile_for(compiler) as profile_file:
             runner.set_profile(profile_file)
             for _, opt in options:
