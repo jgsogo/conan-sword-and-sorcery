@@ -64,11 +64,10 @@ def run(filter_func=None):
     i = 0
     for compiler, options in grouped_jobs:
         # Get a runner for each compiler (will modify profile)
-        runner = RunnerRegistry.get_runner(compiler, dry_run=args.dry_run)
-        runner.conanfile = conanfile
-        runner.recipe = job_generator.recipe
+        runner = RunnerRegistry.get_runner(compiler=compiler, conanfile=conanfile,
+                                           recipe=job_generator.recipe, dry_run=args.dry_run)
         with profile_for(compiler) as profile_file:
-            runner.profile = profile_file
+            runner.set_profile(profile_file)
             for _, opt in options:
                 i += 1
                 options_str = ["{}={}".format(key, value) for key, value in opt.items()]

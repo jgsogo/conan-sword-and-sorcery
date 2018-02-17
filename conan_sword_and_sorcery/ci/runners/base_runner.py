@@ -9,13 +9,16 @@ log = logging.getLogger(__name__)
 
 class BaseRunner(object):
     profile = None
-    conanfile = None
-    recipe = None
 
-    def __init__(self, compiler, dry_run=False):
+    def __init__(self, compiler, conanfile, recipe, dry_run=False):
         self.compiler = compiler
-        self.compiler.cmd = self.cmd  # TODO: There is a better way, for sure :S
+        self.conanfile = conanfile
+        self.recipe = recipe
         self.dry_run = dry_run
+        self.compiler.cmd = self.cmd  # TODO: There is a better way, for sure :S
+
+    def set_profile(self, profile):
+        self.profile = profile
 
     def run(self, options):
         log.debug("Profile file: {}\n".format(self.profile))
