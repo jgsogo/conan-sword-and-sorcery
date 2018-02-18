@@ -60,6 +60,7 @@ class JobGenerator(object):
             filters = self.get_filters_for_compilers(recipe_settings=self.recipe.settings._data.keys())
             return list(CompilerRegistry.get_compilers(**filters))
         else:
+            log.debug(" - no 'compiler' in recipe settings")
             return None
 
     def enumerate_jobs(self):

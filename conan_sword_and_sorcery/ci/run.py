@@ -14,7 +14,7 @@ from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 from conan_sword_and_sorcery.profile import profile_for
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('conan_sword_and_sorcery')
 
 
 def run(filter_func=None):

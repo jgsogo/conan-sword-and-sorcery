@@ -44,7 +44,7 @@ class DockerMixin(object):
             # Map some directories
             self.docker_helper.add_mount_unit(os.getcwd(), self.docker_project)
             self.docker_helper.add_mount_unit(os.path.expanduser("~"), self.docker_home)
-            remote_storage = os.path.join(self.docker_home, '.conan', 'data'),  # TODO: It may be other
+            remote_storage = os.path.join(self.docker_home, '.conan', 'data')  # TODO: It may be other
             self.docker_helper.add_mount_unit(new_storage, remote_storage)
 
             # Run the container
@@ -59,9 +59,11 @@ class DockerMixin(object):
         super(DockerMixin, self).set_compiler(compiler)
 
     def set_profile(self, profile):
-        tgt_name = os.path.join(self.docker_profiles, os.path.basename(profile))
-        self.docker_helper.copy(profile, tgt_name)
-        super(DockerMixin, self).set_profile(tgt_name)
+        if self.use_docker:
+            tgt_name = os.path.join(self.docker_profiles, os.path.basename(profile))
+            self.docker_helper.copy(profile, tgt_name)
+            profile = tgt_name
+        super(DockerMixin, self).set_profile(profile)
 
     def cmd(self, command):
         if not self.use_docker:

@@ -12,7 +12,7 @@ class DockerHelper(object):
 
     def __init__(self, image, name=None):
         self.image = image
-        self.name = name or image.replace('/', '-')
+        self.name = name or image.replace('/', '_')
 
     def __del__(self):
         self._stop()
@@ -34,7 +34,7 @@ class DockerHelper(object):
             options='-t' if allocate_tty else '',
             name=self.name,
             image=self.image,
-            mnt=' '.join(["-v {ori}:{tgt}" for ori, tgt in self.mnt.items()])
+            mnt=' '.join(["-v {}:{}".format(ori, tgt) for ori, tgt in self.mnt.items()])
         )
         self._run()
 
@@ -49,7 +49,6 @@ class DockerHelper(object):
 
     def _stop(self):
         r = os.system("docker stop {name}".format(name=self.name))
-        self._running = None
 
     def copy(self, origin, tgt):
         r = os.system("docker cp {origin} {name}:{tgt}".format(
@@ -62,5 +61,5 @@ class DockerHelper(object):
     def run_in_docker(self, command):
         log.info("run_in_docker: {}".format(command))
         return os.system("docker exec -it {name} /bin/sh -c \"sudo {command}\"".format(
-            name=self.docker_name, command=command
+            name=self.name, command=command
         ))
