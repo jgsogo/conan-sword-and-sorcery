@@ -45,7 +45,7 @@ class BaseCompiler(object):
 
     @classmethod
     def environment_filters(cls):
-        raise NotImplementedError
+        raise NotImplementedError("Compiler must explicitly declare its environment filters.")
 
     def run(self, command_plain):
         log.debug("BaseCompiler::run")

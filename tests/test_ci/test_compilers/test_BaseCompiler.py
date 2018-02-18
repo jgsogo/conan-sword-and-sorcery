@@ -20,7 +20,20 @@ class TestBaseCompiler(unittest.TestCase):
     def test_invalid_constructor(self):
         with self.assertRaises(ValueError):
             ATestCompiler(tt=[])
+        with self.assertRaises(ValueError):
+            ATestCompiler(anything=None)
+        with self.assertRaises(ValueError):
+            ATestCompiler(anything=23)
 
+    def test_getattr(self):
+        a = ATestCompiler(attr="attr")
+        self.assertEqual(a.id, ATestCompiler.id)
+        self.assertEqual(a.os, ATestCompiler.osys)
+        self.assertEqual(a.attr, "attr")
+
+    def test_environment_filters(self):
+        with self.assertRaises(NotImplementedError):
+            ATestCompiler.environment_filters()
 
 
 if __name__ == '__main__':

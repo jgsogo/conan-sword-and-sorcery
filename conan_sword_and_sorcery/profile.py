@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import tempfile
 from contextlib import contextmanager
 
@@ -17,3 +18,13 @@ def profile_for(compiler):
     yield tmp.name
     os.unlink(tmp.name)
 
+
+def parse_profile(profile_file):
+    eq = re.compile("^([\w\.]+)=([\w_\+\.\s]+)\s")
+    with open(profile_file) as f:
+        matches = {}
+        for line in f.readlines():
+            m = eq.match(line)
+            if m:
+                matches[m.group(1)] = m.group(2)
+    return matches

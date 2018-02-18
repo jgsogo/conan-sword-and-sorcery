@@ -42,7 +42,8 @@ class DockerMixin(object):
         # Change local storage
         local_storage = os.path.join(os.path.expanduser("~"), 'new_conan_storage')
         self.change_conan_storage(local_storage)
-        os.makedirs(local_storage)
+        if not os.path.exists(local_storage):
+            os.makedirs(local_storage)
 
         # Run detached
         os.system("docker run -t"
@@ -51,7 +52,7 @@ class DockerMixin(object):
                   " -v {host_home}:{docker_home}"
                   " --name {name} --detach {image}".format(
             cwd=os.getcwd(),
-            docker_dirname=self.project,
+            docker_dirname=self.docker_project,
             host_home=os.path.expanduser("~"),
             docker_home=self.docker_home,
             local_storage=local_storage,
@@ -64,7 +65,7 @@ class DockerMixin(object):
         self.run_in_docker("sudo pip install -U conan conan_sword_and_sorcery=={version} && conan user".format(version=__version__))
 
         # Create profiles directory
-        self.run_in_docker("sudo mkdir {profile_dir}".format(profile_dir=self.profiles))
+        self.run_in_docker("sudo mkdir {profile_dir}".format(profile_dir=self.docker_profiles))
 
     def change_conan_storage(self, new_storage):
         conan_conf = os.path.join(os.path.expanduser("~"), '.conan', 'conan.conf')

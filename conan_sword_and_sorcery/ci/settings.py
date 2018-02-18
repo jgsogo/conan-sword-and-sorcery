@@ -9,7 +9,8 @@ log = logging.getLogger(__name__)
 
 
 class Settings(object):
-
+    # TODO: Remove this class a work just with conan_settings
+    
     @classmethod
     def default(cls):
         filename = os.path.join(os.path.dirname(__file__), '..', 'conan_settings.yaml')  # TODO: Use conan_sword_and_sorcery distributed one as default.
@@ -23,13 +24,3 @@ class Settings(object):
         else:
             self.conan_settings = Settings.default()
 
-    def current(self, version=None, compiler=None, arch=None, build_type=None, **kwargs):
-        self.conan_settings.os = compiler.os_system
-        if arch:
-            self.conan_settings.arch = arch
-        if build_type:
-            self.conan_settings.build_type = build_type
-        if compiler:
-            self.conan_settings.compiler = compiler.compiler
-        self.conan_settings.compiler.version = version
-        return self.conan_settings
