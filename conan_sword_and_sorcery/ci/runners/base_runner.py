@@ -3,6 +3,7 @@
 import logging
 import sys
 import os
+import uuid
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +26,11 @@ class BaseRunner(object):
 
     def set_profile(self, profile):
         self.profile = profile
+
+    def add_remote(self, url, name=None):
+        name = name or uuid.uuid4()
+        command = "conan remote add {name} {url} --insert 0".format(name=name, url=url)
+        self.cmd(command)
 
     def run(self, options, username, channel):
         conan_ref = "{}/{}".format(username, channel)

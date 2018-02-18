@@ -19,12 +19,20 @@ class DockerMixin(object):
     docker_home = "/home/conan"
     docker_project = os.path.join(docker_home, 'project')
     docker_profiles = os.path.join(docker_home, 'profiles')
+    remotes = {}
 
     def __init__(self, conanfile, *args, **kwargs):
         self.use_docker = ("CONAN_DOCKER_IMAGE" in os.environ) or (os.environ.get("CONAN_USE_DOCKER", False))
         if self.use_docker:
             conanfile = transplant_path(conanfile, os.getcwd(), self.docker_project)
         super(DockerMixin, self).__init__(conanfile=conanfile, *args, **kwargs)
+
+    def add_remote(self, url, name=None):
+        if self.use_docker:
+            name = name or uuid.uuid4()
+            self.remotes[name] = url
+        else:
+            super(DockerMixin, self).add_remote(url=url, name=name)
 
     def set_compiler(self, compiler):
         if self.use_docker:
@@ -52,6 +60,10 @@ class DockerMixin(object):
 
             # Install what is needed
             self.docker_helper.run_in_docker("sudo pip install -U conan conan_sword_and_sorcery=={version} && conan user".format(version=__version__))
+
+            # Add remotes
+            for name, url in self.remotes.items():
+                self.docker_helper.run_in_docker("conan remote add {name} {url} --insert 0".format(name=name, url=url))
 
             # Create profiles directory
             self.docker_helper.run_in_docker("sudo mkdir {profile_dir}".format(profile_dir=self.docker_profiles))

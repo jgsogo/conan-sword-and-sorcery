@@ -13,6 +13,7 @@ from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 from conan_sword_and_sorcery.profile import profile_for
+from conan_sword_and_sorcery.uploader import Uploader
 
 log = logging.getLogger('conan_sword_and_sorcery')
 
@@ -65,11 +66,16 @@ def run(filter_func=None):
     USERNAME = os.getenv("CONAN_USERNAME", 'conan')
     CHANNEL = os.getenv("CONAN_CHANNEL", 'testing')
 
+    # Get remote
+    REMOTE = os.getenv("CONAN_UPLOAD", None)
+
     # Aggregate jobs by compiler and iterate
     grouped_jobs = groupby(all_jobs, itemgetter(0))
     i = 0
 
     runner = RunnerRegistry.get_runner(conanfile=conanfile, recipe=job_generator.recipe, dry_run=args.dry_run)
+    if REMOTE:
+        runner.add_remote(url=REMOTE)
     for compiler, options in grouped_jobs:
         # Get a runner for each compiler (will modify profile)
         runner.set_compiler(compiler)
@@ -87,12 +93,23 @@ def run(filter_func=None):
     print_jobs(all_jobs, job_status=results)
 
     succeeded = results.count(SUCCESS)
-    if succeeded == len(results):
-        log.info("All jobs succeeded!")
-        return 0
+    if succeeded != len(results):
+        sys.stdout.write("Only {} out of {} jobs succeeded (status={}) :/ \n\n".format(succeeded, len(results), SUCCESS))
+        if not args.dry_run:
+            return -1
     else:
-        log.info("Only {} out of {} jobs succeeded :/".format(succeeded, len(results)))
-        return -1
+        sys.stdout.write("All jobs succeeded!\n\n")
+
+    # Upload
+    if not Uploader.requested():
+        sys.stdout.write("... no upload requested\n")
+        return 0
+
+    sys.stdout.write("Uploader work to remote {}\n".format(REMOTE))
+    uploader = Uploader(job_generator.recipe, USERNAME, CHANNEL, args.dry_run)
+    uploader.upload(remote=REMOTE)
+
+    sys.stdout.write("=====\n")
 
 
 if __name__ == '__main__':
