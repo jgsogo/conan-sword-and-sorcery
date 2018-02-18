@@ -35,5 +35,5 @@ def context_env(**environ):
 
 class TestCaseEnvClean(unittest.TestCase):
     def run(self, *args, **kwargs):
-        with clean_context_env(pattern="CONAN_.*"):
+        with clean_context_env(pattern="(CONAN_.*)|(TRAVIS)|(APPVEYOR)"):  # TODO: What else?
             super(TestCaseEnvClean, self).run(*args, **kwargs)

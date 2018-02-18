@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import uuid
 import logging
 
 from conan_sword_and_sorcery import __version__
