@@ -1,25 +1,40 @@
 # -*- coding: utf-8 -*-
 import os
-import subprocess
 import logging
-import fileinput
 
 from conan_sword_and_sorcery import __version__
 
 log = logging.getLogger(__name__)
 
 
+def transplant_path(fullpath, ori_rel, tgt_rel):
+    return os.path.join(tgt_rel, os.path.relpath(fullpath, ori_rel))
+
+
 class DockerMixin(object):
     docker_name = 'conan_docker'
     docker_home = "/home/conan"
 
-    def __init__(self, *args, **kwargs):
-        super(DockerMixin, self).__init__(*args, **kwargs)
+    docker_project = os.path.join(docker_home, 'project')
+    docker_profiles = os.path.join(docker_home, 'profiles')
+
+    def __init__(self, conanfile, *args, **kwargs):
         self.use_docker = ("CONAN_DOCKER_IMAGE" in os.environ) or (os.environ.get("CONAN_USE_DOCKER", False))
+        if self.use_docker:
+            conanfile = transplant_path(conanfile, os.getcwd(), self.docker_project)
+        super(DockerMixin, self).__init__(conanfile=conanfile, *args, **kwargs)
+
+    def set_compiler(self, compiler):
         if self.use_docker:
             self.docker_image = os.environ.get("CONAN_DOCKER_IMAGE", None)  # TODO: Implement auto-name based on compiler
             log.info("TravisRunner will use docker image '{}'".format(self.docker_image))
             self.pull_image()
+        super(DockerMixin, self).set_compiler(compiler)
+
+    def set_profile(self, profile):
+        tgt_name = os.path.join(self.docker_profiles, os.path.basename(profile))
+        os.system("docker cp {origin} {name}:{tgt}".format(origin=profile, name=self.docker_name, tgt=tgt_name))
+        super(DockerMixin, self).set_profile(tgt_name)
 
     def pull_image(self):
         os.system("docker pull {}".format(self.docker_image))
@@ -64,30 +79,15 @@ class DockerMixin(object):
         with open(conan_conf, 'w') as file:
             file.write(filedata)
 
-    def set_profile(self, profile):
-        tgt_name = os.path.join(self.profiles, os.path.basename(profile))
-        os.system("docker cp {origin} {name}:{tgt}".format(origin=profile, name=self.docker_name, tgt=tgt_name))
-        super(DockerMixin, self).set_profile(tgt_name)
-
-    @property
-    def project(self):
-        return os.path.join(self.docker_home, 'project')
-
-    @property
-    def profiles(self):
-        return os.path.join(self.docker_home, 'profiles')
-
     def cmd(self, command):
         if not self.use_docker:
             return super(DockerMixin, self).cmd(command)
         else:
-            command = command.replace(os.getcwd(), self.project)  # TODO: Make a better approach
             return self.run_in_docker(command)
 
     def run_in_docker(self, command):
         log.info("run_in_docker: {}".format(command))
         if not self.dry_run:
             ret = os.system("docker exec -it {name} /bin/sh -c \"sudo {command}\"".format(name=self.docker_name, command=command))
-            # May need a '; exit $?' to retrieve exit code
             return "OK" if ret == 0 else "FAIL"
         return "DRY_RUN"

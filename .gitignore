@@ -6,3 +6,4 @@ reports/
 build/
 dist/
 .cache/
+.pytest_cache/
