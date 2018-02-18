@@ -3,8 +3,10 @@
 import itertools
 import logging
 from collections import defaultdict
-from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
+
 from conan_sword_and_sorcery.utils import isstr
+
+from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
 
 log = logging.getLogger(__name__)
 

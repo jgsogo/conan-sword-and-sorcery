@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import unittest
 
 from conan_sword_and_sorcery.utils import slice

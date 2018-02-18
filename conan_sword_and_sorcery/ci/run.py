@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
 import argparse
 import logging
+import os
+import sys
 from itertools import groupby
 from operator import itemgetter
 
+from conan_sword_and_sorcery.utils import slice
+
 from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
-from conan_sword_and_sorcery.utils import slice
-from conan_sword_and_sorcery.profile import profile_for
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
+from conan_sword_and_sorcery.profile import profile_for
 
 log = logging.getLogger(__name__)
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
-import subprocess
 import logging
+import os
+
 from conan_sword_and_sorcery.utils import isstr
 
 log = logging.getLogger(__name__)
