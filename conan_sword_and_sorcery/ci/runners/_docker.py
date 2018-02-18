@@ -38,36 +38,39 @@ class DockerMixin(object):
     def set_compiler(self, compiler):
         if self.use_docker:
             docker_image = os.environ.get("CONAN_DOCKER_IMAGE", None)  # TODO: Implement auto-name based on compiler
-            log.info("TravisRunner will use docker image '{}'".format(docker_image))
-            self.docker_helper = DockerHelper(image=docker_image)
-            self.docker_helper.pull()
 
-            # Change conan storage/path
-            # TODO: We need to change this only if we are going to upload packages!
-            self.conan_conf = ConanConf()
-            new_storage = os.path.join(os.path.expanduser("~"), 'new_conan_storage')
-            self.conan_conf.replace("storage", "path", new_storage)
-            if not os.path.exists(new_storage):
-                os.makedirs(new_storage)
+            if not self.docker_helper or self.docker_helper.image != docker_image:
+                # Do not pull again if it is already running
+                log.info("TravisRunner will use docker image '{}'".format(docker_image))
+                self.docker_helper = DockerHelper(image=docker_image)
+                self.docker_helper.pull()
 
-            # Map some directories
-            self.docker_helper.add_mount_unit(os.getcwd(), self.docker_project)
-            self.docker_helper.add_mount_unit(os.path.expanduser("~"), self.docker_home)
-            remote_storage = os.path.join(self.docker_home, '.conan', 'data')  # TODO: It may be other
-            self.docker_helper.add_mount_unit(new_storage, remote_storage)
+                # Change conan storage/path
+                # TODO: We need to change this only if we are going to upload packages!
+                self.conan_conf = ConanConf()
+                new_storage = os.path.join(os.path.expanduser("~"), 'new_conan_storage')
+                self.conan_conf.replace("storage", "path", new_storage)
+                if not os.path.exists(new_storage):
+                    os.makedirs(new_storage)
 
-            # Run the container
-            self.docker_helper.run()
+                # Map some directories
+                self.docker_helper.add_mount_unit(os.getcwd(), self.docker_project)
+                self.docker_helper.add_mount_unit(os.path.expanduser("~"), self.docker_home)
+                remote_storage = os.path.join(self.docker_home, '.conan', 'data')  # TODO: It may be other
+                self.docker_helper.add_mount_unit(new_storage, remote_storage)
 
-            # Install what is needed
-            self.docker_helper.run_in_docker("sudo pip install -U conan conan_sword_and_sorcery=={version} && conan user".format(version=__version__))
+                # Run the container
+                self.docker_helper.run()
 
-            # Add remotes
-            for name, url in self.remotes.items():
-                self.docker_helper.run_in_docker("conan remote add {name} {url} --insert 0".format(name=name, url=url))
+                # Install what is needed
+                self.docker_helper.run_in_docker("sudo pip install -U conan conan_sword_and_sorcery=={version} && conan user".format(version=__version__))
 
-            # Create profiles directory
-            self.docker_helper.run_in_docker("sudo mkdir {profile_dir}".format(profile_dir=self.docker_profiles))
+                # Add remotes
+                for name, url in self.remotes.items():
+                    self.docker_helper.run_in_docker("conan remote add {name} {url} --insert 0".format(name=name, url=url))
+
+                # Create profiles directory
+                self.docker_helper.run_in_docker("sudo mkdir {profile_dir}".format(profile_dir=self.docker_profiles))
 
         super(DockerMixin, self).set_compiler(compiler)
 
