@@ -34,6 +34,7 @@ class DockerMixin(object):
             self.docker_helper.pull()
 
             # Change conan storage/path
+            # TODO: We need to change this only if we are going to upload packages!
             self.conan_conf = ConanConf()
             new_storage = os.path.join(os.path.expanduser("~"), 'new_conan_storage')
             self.conan_conf.replace("storage", "path", new_storage)
@@ -61,19 +62,6 @@ class DockerMixin(object):
         tgt_name = os.path.join(self.docker_profiles, os.path.basename(profile))
         self.docker_helper.copy(profile, tgt_name)
         super(DockerMixin, self).set_profile(tgt_name)
-
-    def change_conan_storage(self, new_storage):
-        conan_conf = os.path.join(os.path.expanduser("~"), '.conan', 'conan.conf')
-        # Read in the file
-        with open(conan_conf, 'r') as file:
-            filedata = file.read()
-
-        # Replace the target string
-        filedata = filedata.replace('path = ~/.conan/data', "path = {}".format(new_storage))
-
-        # Write the file out again
-        with open(conan_conf, 'w') as file:
-            file.write(filedata)
 
     def cmd(self, command):
         if not self.use_docker:
