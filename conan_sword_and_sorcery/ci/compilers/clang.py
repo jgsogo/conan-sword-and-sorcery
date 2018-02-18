@@ -45,5 +45,5 @@ class CompilerClangLinux(CompilerClangBase):
 )
 class CompilerClangApple(CompilerClangBase):
     id = 'apple-clang'
-    osys = 'Macos'
+    osys = 'Darwin'
     clang_versions_env_variable = "CONAN_APPLE_CLANG_VERSIONS"

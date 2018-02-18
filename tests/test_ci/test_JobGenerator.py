@@ -55,7 +55,7 @@ class TestExecutorAllSettings(TestCaseEnvClean):
             self.assertEqual(len(jobs), 20*self.options_multiplier)
 
     def test_macos(self):
-        self.executor = JobGenerator(self.conanfile, osys="Macos")
+        self.executor = JobGenerator(self.conanfile, osys="Darwin")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0*self.options_multiplier)
 
         with context_env(CONAN_APPLE_CLANG_VERSIONS="8.1", CONAN_OPTIONS=self.options):
@@ -95,5 +95,5 @@ class TestExecutorSettingsNoCompiler(TestCaseEnvClean):
 
     def test_macos(self):
         with context_env(CONAN_OPTIONS='shared'):
-            self.executor = JobGenerator(self.conanfile, osys="Macos")
+            self.executor = JobGenerator(self.conanfile, osys="Darwin")
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 1 * self.options_multiplier)

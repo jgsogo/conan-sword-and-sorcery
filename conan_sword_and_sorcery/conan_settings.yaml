@@ -1,7 +1,7 @@
 os:
     Windows:
     Linux:
-    Macos:
+    Darwin:
 arch: [x86, x86_64]
 compiler:
     gcc:
