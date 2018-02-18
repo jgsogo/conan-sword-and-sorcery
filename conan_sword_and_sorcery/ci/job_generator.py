@@ -78,7 +78,7 @@ class JobGenerator(object):
 
                     # Enumerate (and filter) options
                     options_to_conjugate = set(self.recipe.options._data.keys())
-                    options_to_conjugate = options_to_conjugate.intersection(set(get_env("CONAN_OPTIONS", list(options_to_conjugate))))
+                    options_to_conjugate = options_to_conjugate.intersection(set(get_env("CONAN_OPTIONS", [])))
 
                     # Explode options
                     exploded_options = self._conanfile_wrapper.conjugate_options(options_to_conjugate)
@@ -99,7 +99,10 @@ class JobGenerator(object):
                 except ConanException as e:  # TODO: Something like ConanInvalidConfiguration would fit better
                     pass
         else:
-            exploded_options = self._conanfile_wrapper.conjugate_options(self.recipe.options._data.keys())
+            options_to_conjugate = set(self.recipe.options._data.keys())
+            options_to_conjugate = options_to_conjugate.intersection(set(get_env("CONAN_OPTIONS", [])))
+
+            exploded_options = self._conanfile_wrapper.conjugate_options(options_to_conjugate)
             if not exploded_options:
                 yield (NoCompiler(os=str(self._settings.os)), {})
             else:

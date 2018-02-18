@@ -21,51 +21,63 @@ class TestConanfile02(TestCaseEnvClean):
 
     def test_total_linux(self):
         self.executor = JobGenerator(self.conanfile, osys="Linux")
-        all_jobs = list(self.executor.enumerate_jobs())
-        self.assertEqual(len(all_jobs), 2)
-        self.assertTrue(isinstance(all_jobs[0][0], NoCompiler))
-        self.assertTrue(isinstance(all_jobs[1][0], NoCompiler))
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 1)
+
+        with context_env(CONAN_OPTIONS='shared'):
+            all_jobs = list(self.executor.enumerate_jobs())
+            self.assertEqual(len(all_jobs), 2)
+            self.assertTrue(isinstance(all_jobs[0][0], NoCompiler))
+            self.assertTrue(isinstance(all_jobs[1][0], NoCompiler))
 
         with context_env(CONAN_BUILD_TYPES='Debug'):
-            self.assertEqual(len(list(self.executor.enumerate_jobs())), 2)
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 1)
 
         with context_env(CONAN_BUILD_TYPES='Debug', CONAN_GCC_VERSIONS='4.7'):
-            self.assertEqual(len(list(self.executor.enumerate_jobs())), 2)
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 1)
 
     def test_total_windows(self):
         self.executor = JobGenerator(self.conanfile, osys="Windows")
-        all_jobs = list(self.executor.enumerate_jobs())
-        self.assertEqual(len(all_jobs), 2)
-        self.assertTrue(isinstance(all_jobs[0][0], NoCompiler))
-        self.assertTrue(isinstance(all_jobs[1][0], NoCompiler))
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 1)
+
+        with context_env(CONAN_OPTIONS='shared'):
+            all_jobs = list(self.executor.enumerate_jobs())
+            self.assertEqual(len(all_jobs), 2)
+            self.assertTrue(isinstance(all_jobs[0][0], NoCompiler))
+            self.assertTrue(isinstance(all_jobs[1][0], NoCompiler))
 
         with context_env(CONAN_BUILD_TYPES='Debug'):
-            self.assertEqual(len(list(self.executor.enumerate_jobs())), 2)
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 1)
 
-        with context_env(CONAN_BUILD_TYPES='Debug', CONAN_GCC_VERSIONS='4.7'):
-            self.assertEqual(len(list(self.executor.enumerate_jobs())), 2)
+        with context_env(CONAN_BUILD_TYPES='Debug', CONAN_VISUAL_VERSIONS='4.7'):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 1)
 
     def test_filter_jobs(self):
         self.executor = JobGenerator(self.conanfile, osys="Windows")
-        self.assertEqual(len(list(self.executor.enumerate_jobs())), 2)
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 1)
 
-        def discard_arch_x86(compiler, options):
-            self.assertTrue(isinstance(compiler, NoCompiler))
-            return compiler.arch == 'x86'
+        with context_env(CONAN_OPTIONS='shared'):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 2)
 
-        x86_discarded = list(self.executor.filter_jobs(filter=discard_arch_x86))
-        self.assertEqual(len(x86_discarded), 0)
+            def discard_arch_x86(compiler, options):
+                self.assertTrue(isinstance(compiler, NoCompiler))
+                return compiler.arch == 'x86'
+
+            x86_discarded = list(self.executor.filter_jobs(filter=discard_arch_x86))
+            self.assertEqual(len(x86_discarded), 0)
 
     def test_pagination(self):
         self.executor = JobGenerator(self.conanfile, osys="Windows")
-        all_jobs = list(self.executor.enumerate_jobs())
-        self.assertEqual(len(all_jobs), 2)
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 1)
 
-        page_list = self.executor.paginate(page=0, page_size=10)
-        self.assertEqual(len(page_list), 2)
+        with context_env(CONAN_OPTIONS='shared'):
+            all_jobs = list(self.executor.enumerate_jobs())
+            self.assertEqual(len(all_jobs), 2)
 
-        page_list = self.executor.paginate(page=1, page_size=10)
-        self.assertEqual(len(page_list), 0)
+            page_list = self.executor.paginate(page=0, page_size=10)
+            self.assertEqual(len(page_list), 2)
+
+            page_list = self.executor.paginate(page=1, page_size=10)
+            self.assertEqual(len(page_list), 0)
 
 
 
