@@ -8,6 +8,7 @@ log = logging.getLogger(__name__)
 
 class DockerHelper(object):
     mnt = {}
+    _running = None
 
     def __init__(self, image, name=None):
         self.image = image
@@ -41,6 +42,7 @@ class DockerHelper(object):
         if self._running:
             self._stop()
 
+        log.info("Run docker: {}".format(self._running))
         r = os.system(self._running)
         if r != 0:
             raise RuntimeError("Error running container")

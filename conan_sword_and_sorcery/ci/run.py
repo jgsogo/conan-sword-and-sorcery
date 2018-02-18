@@ -61,6 +61,10 @@ def run(filter_func=None):
     print_jobs(all_jobs)
     results = []
 
+    # Get username and channel
+    USERNAME = os.getenv("CONAN_USERNAME", 'conan')
+    CHANNEL = os.getenv("CONAN_CHANNEL", 'testing')
+
     # Aggregate jobs by compiler and iterate
     grouped_jobs = groupby(all_jobs, itemgetter(0))
     i = 0
@@ -75,7 +79,7 @@ def run(filter_func=None):
                 i += 1
                 options_str = ["{}={}".format(key, value) for key, value in opt.items()]
                 sys.stdout.write("\n==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
-                ret = runner.run(opt)
+                ret = runner.run(opt, username=USERNAME, channel=CHANNEL)
                 results.append(ret)
 
     # Summary of jobs status

@@ -26,12 +26,9 @@ class BaseRunner(object):
     def set_profile(self, profile):
         self.profile = profile
 
-    def run(self, options):
-        log.debug("Profile file: {}\n".format(self.profile))
-
-        # TODO: Code to get user/channel
-
-        command = ['conan', 'create', self.conanfile, 'jgsogo/testing',
+    def run(self, options, username, channel):
+        conan_ref = "{}/{}".format(username, channel)
+        command = ['conan', 'create', self.conanfile, conan_ref,
                    '--profile', self.profile, '--build=missing']
         for k, v in options.items():
             command += ['-o', '{}:{}={}'.format(self.recipe.name, k, v)]
