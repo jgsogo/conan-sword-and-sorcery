@@ -11,6 +11,7 @@ from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.utils import slice
 from conan_sword_and_sorcery.profile import profile_for
+from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 
 log = logging.getLogger(__name__)
 
@@ -79,6 +80,14 @@ def run(filter_func=None):
     # Summary of jobs status
     sys.stdout.write("\nSumming up... {}\n".format(msg))
     print_jobs(all_jobs, job_status=results)
+
+    succeeded = results.count(SUCCESS)
+    if succeeded == len(results):
+        log.info("All jobs succeeded!")
+        return 0
+    else:
+        log.info("Only {} out of {} jobs succeeded :/".format(succeeded, len(results)))
+        return -1
 
 
 if __name__ == '__main__':

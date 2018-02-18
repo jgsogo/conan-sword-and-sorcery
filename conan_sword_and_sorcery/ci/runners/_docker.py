@@ -3,6 +3,7 @@ import os
 import logging
 
 from conan_sword_and_sorcery import __version__
+from .base_runner import SUCCESS, FAIL, DRY_RUN
 
 log = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ class DockerMixin(object):
 
     def set_compiler(self, compiler):
         if self.use_docker:
+            # TODO: Stop if existing and run a new one
             self.docker_image = os.environ.get("CONAN_DOCKER_IMAGE", None)  # TODO: Implement auto-name based on compiler
             log.info("TravisRunner will use docker image '{}'".format(self.docker_image))
             self.pull_image()
@@ -90,5 +92,5 @@ class DockerMixin(object):
         log.info("run_in_docker: {}".format(command))
         if not self.dry_run:
             ret = os.system("docker exec -it {name} /bin/sh -c \"sudo {command}\"".format(name=self.docker_name, command=command))
-            return "OK" if ret == 0 else "FAIL"
-        return "DRY_RUN"
+            return SUCCESS if ret == 0 else FAIL
+        return DRY_RUN

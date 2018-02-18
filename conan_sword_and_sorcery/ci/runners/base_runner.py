@@ -6,6 +6,10 @@ import os
 
 log = logging.getLogger(__name__)
 
+SUCCESS = "OK"
+FAIL = "FAIL"
+DRY_RUN = "DRY_RUN"
+
 
 class BaseRunner(object):
     profile = None
@@ -37,5 +41,5 @@ class BaseRunner(object):
         log.info("command to run: {}".format(command))
         if not self.dry_run:
             ret = os.system(command)  # TODO: May use subprocess
-            return "OK" if ret == 0 else "FAIL"
-        return "DRY_RUN"
+            return SUCCESS if ret == 0 else FAIL
+        return DRY_RUN
