@@ -8,7 +8,6 @@ from itertools import groupby
 from operator import itemgetter
 
 from conan_sword_and_sorcery.utils import slice
-
 from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
@@ -66,14 +65,15 @@ def run(filter_func=None):
     USERNAME = os.getenv("CONAN_USERNAME", 'conan')
     CHANNEL = os.getenv("CONAN_CHANNEL", 'testing')
 
-    # Get remote
-    REMOTE = os.getenv("CONAN_UPLOAD", None)
-
     # Aggregate jobs by compiler and iterate
     grouped_jobs = groupby(all_jobs, itemgetter(0))
     i = 0
+    total = len(all_jobs)
 
     runner = RunnerRegistry.get_runner(conanfile=conanfile, recipe=job_generator.recipe, dry_run=args.dry_run)
+
+    # Get remote
+    REMOTE = os.getenv("CONAN_UPLOAD", None)
     if REMOTE:
         runner.add_remote(url=REMOTE)
     for compiler, options in grouped_jobs:
@@ -84,7 +84,7 @@ def run(filter_func=None):
             for _, opt in options:
                 i += 1
                 options_str = ["{}={}".format(key, value) for key, value in opt.items()]
-                sys.stdout.write("\n==> [{:>2}/{}] {}: {}\n".format(i, len(all_jobs), str(compiler), ', '.join(options_str)))
+                sys.stdout.write("\n==> [{:>2}/{}] {}: {}\n".format(i, total, str(compiler), ', '.join(options_str)))
                 ret = runner.run(opt, username=USERNAME, channel=CHANNEL)
                 results.append(ret)
 
