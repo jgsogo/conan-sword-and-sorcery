@@ -45,19 +45,15 @@ class DockerMixin(object):
                 self.docker_helper = DockerHelper(image=docker_image)
                 self.docker_helper.pull()
 
-                # Change conan storage/path
-                # TODO: We need to change this only if we are going to upload packages!
-                self.conan_conf = ConanConf()
-                new_storage = os.path.join(os.path.expanduser("~"), 'new_conan_storage')
-                self.conan_conf.replace("storage", "path", new_storage)
-                if not os.path.exists(new_storage):
-                    os.makedirs(new_storage)
+                # Get conan storage/path
+                host_conf = ConanConf()
+                host_storage = host_conf.get('storage', 'path')
 
                 # Map some directories
                 self.docker_helper.add_mount_unit(os.getcwd(), self.docker_project)
                 self.docker_helper.add_mount_unit(os.path.expanduser("~"), self.docker_home)
-                remote_storage = os.path.join(self.docker_home, '.conan', 'data')  # TODO: It may be other
-                self.docker_helper.add_mount_unit(new_storage, remote_storage)
+                remote_storage = os.path.join(self.docker_home, '.conan', 'data')  # TODO: It may be other. We can change it afterwards to point to the mounted path
+                self.docker_helper.add_mount_unit(host_storage, remote_storage)
 
                 # Run the container
                 self.docker_helper.run()

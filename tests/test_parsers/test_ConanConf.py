@@ -5,44 +5,24 @@ import unittest
 import tempfile
 
 from conan_sword_and_sorcery.parsers.conan_conf import ConanConf
+from conan_sword_and_sorcery.utils import backup_file
 
 
 class TestParserConanConf(unittest.TestCase):
 
     def run(self, *args, **kwargs):
-        try:
-            tmp = tempfile.NamedTemporaryFile(mode='w', delete=False)
-            with open(os.path.join(os.path.expanduser("~"), '.conan', 'conan.conf')) as f:
-                tmp.write(f.read())
-            tmp.close()
-            self.conan_conf_filename = tmp.name
+        # TODO: A lot better if we start from a synthetic conan.conf file
+        self.conan_conf = os.path.join(os.path.expanduser("~"), '.conan', 'conan.conf')
+        with backup_file(self.conan_conf):
             super(TestParserConanConf, self).run(*args, **kwargs)
-        finally:
-            os.unlink(tmp.name)
 
     def test_basic(self):
-        config = ConanConf(self.conan_conf_filename)
+        config = ConanConf(self.conan_conf)
         self.assertIsInstance(config, ConanConf)
 
-    def test_change_storage(self):
-        config = ConanConf(self.conan_conf_filename)
-        pre = config.get("storage", "path")
-        post = "other_path"
-        config.replace("storage", "path", post)
-
-        # Storage is changed
-        self.assertEqual(config.get("storage", "path"), post)
-        config2 = ConanConf(self.conan_conf_filename)
-        self.assertEqual(config2.get("storage", "path"), post)
-
-        # It is preserved for the second one
-        del config2
-        self.assertEqual(config.get("storage", "path"), post)
-
-        # But it is restored for the first one
-        del config
-        config3 = ConanConf(self.conan_conf_filename)
-        self.assertEqual(config3.get("storage", "path"), pre)
+    def test_storage_path(self):
+        config = ConanConf(self.conan_conf)
+        self.assertEqual(config.get('storage', 'path'), '~/.conan/data')
 
 
 if __name__ == '__main__':
