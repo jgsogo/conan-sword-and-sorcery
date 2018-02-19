@@ -13,7 +13,7 @@ from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 from conan_sword_and_sorcery.profile import profile_for
-from conan_sword_and_sorcery.uploader import Uploader
+from conan_sword_and_sorcery.uploader import upload
 
 log = logging.getLogger('conan_sword_and_sorcery')
 
@@ -101,13 +101,7 @@ def run(filter_func=None):
         sys.stdout.write("All jobs succeeded!\n\n")
 
     # Upload
-    if not Uploader.requested():
-        sys.stdout.write("... no upload requested\n")
-        return 0
-
-    sys.stdout.write("Uploader work to remote {}\n".format(REMOTE))
-    uploader = Uploader(job_generator.recipe, USERNAME, CHANNEL, args.dry_run)
-    uploader.upload(remote=REMOTE)
+    upload(job_generator.recipe, USERNAME, CHANNEL, args.dry_run)
 
     sys.stdout.write("=====\n")
 

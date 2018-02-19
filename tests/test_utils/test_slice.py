@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import unittest
 
 from conan_sword_and_sorcery.utils import slice
@@ -46,7 +45,3 @@ class TestSlice(unittest.TestCase):
 
         init, end = slice(total, 5, 5)
         self.assertListEqual(ll[init:end], [11, 12])
-
-
-if __name__ == '__main__':
-    unittest.main()
