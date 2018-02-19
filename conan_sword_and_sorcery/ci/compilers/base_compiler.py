@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import os
 
 from conan_sword_and_sorcery.utils import isstr
 
@@ -14,7 +13,7 @@ class BaseCompiler(object):
 
     def __init__(self, **kwargs):
         self._data = kwargs
-        self.cmd = os.system
+        self.cmd = None  # Will be set by the runner
 
         # Validate input arguments
         for key, val in kwargs.items():

@@ -6,8 +6,12 @@ import os
 import sys
 from itertools import groupby
 from operator import itemgetter
+try:
+    from contextlib import ExitStack
+except ImportError:
+    from contextlib2 import ExitStack
 
-from conan_sword_and_sorcery.utils import slice
+from conan_sword_and_sorcery.utils import slice, conan
 from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
@@ -72,21 +76,23 @@ def run(filter_func=None):
 
     runner = RunnerRegistry.get_runner(conanfile=conanfile, recipe=job_generator.recipe, dry_run=args.dry_run)
 
-    # Get remote
-    REMOTE = os.getenv("CONAN_UPLOAD", None)
-    if REMOTE:
-        runner.add_remote(url=REMOTE)
-    for compiler, options in grouped_jobs:
-        # Get a runner for each compiler (will modify profile)
-        runner.set_compiler(compiler)
-        with profile_for(compiler) as profile_file:
-            runner.set_profile(profile_file)
-            for _, opt in options:
-                i += 1
-                options_str = ["{}={}".format(key, value) for key, value in opt.items()]
-                sys.stdout.write("\n==> [{:>2}/{}] {}: {}\n".format(i, total, str(compiler), ', '.join(options_str)))
-                ret = runner.run(opt, username=USERNAME, channel=CHANNEL)
-                results.append(ret)
+    with ExitStack() as stack:
+        # May add remote
+        REMOTE = os.getenv("CONAN_UPLOAD", None)
+        if REMOTE:
+            _ = stack.enter_context(conan.remote(url=REMOTE))
+
+        for compiler, options in grouped_jobs:
+            # Get a runner for each compiler (will modify profile)
+            runner.set_compiler(compiler)
+            with profile_for(compiler) as profile_file:
+                runner.set_profile(profile_file)
+                for _, opt in options:
+                    i += 1
+                    options_str = ["{}={}".format(key, value) for key, value in opt.items()]
+                    sys.stdout.write("\n==> [{:>2}/{}] {}: {}\n".format(i, total, str(compiler), ', '.join(options_str)))
+                    ret = runner.run(opt, username=USERNAME, channel=CHANNEL)
+                    results.append(ret)
 
     # Summary of jobs status
     sys.stdout.write("\nSumming up... {}\n".format(msg))

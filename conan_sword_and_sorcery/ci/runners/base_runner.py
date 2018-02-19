@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import sys
-import os
 import uuid
+
+from conan_sword_and_sorcery.utils.cmd import cmd
 
 log = logging.getLogger(__name__)
 
@@ -27,11 +27,6 @@ class BaseRunner(object):
     def set_profile(self, profile):
         self.profile = profile
 
-    def add_remote(self, url, name=None):
-        name = name or uuid.uuid4()
-        command = "conan remote add {name} {url} --insert 0".format(name=name, url=url)
-        self.cmd(command)
-
     def run(self, options, username, channel):
         conan_ref = "{}/{}".format(username, channel)
         command = ['conan', 'create', self.conanfile, conan_ref,
@@ -43,6 +38,6 @@ class BaseRunner(object):
     def cmd(self, command):
         log.info("command to run: {}".format(command))
         if not self.dry_run:
-            ret = os.system(command)  # TODO: May use subprocess
+            ret = cmd(command, exception=None)
             return SUCCESS if ret == 0 else FAIL
         return DRY_RUN

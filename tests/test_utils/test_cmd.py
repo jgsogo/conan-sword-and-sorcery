@@ -38,3 +38,16 @@ class TestCMD(unittest.TestCase):
             cmd(command="mycommand", exception=IndexError)
             os_system.assert_called_once_with('mycommand')
 
+    @mock.patch('os.system', return_value=-1)
+    def test_no_exception(self, os_system):
+        r = cmd(command="mycommand", exception=None)
+        os_system.assert_called_once_with('mycommand')
+        self.assertEqual(r, -1)
+
+    @mock.patch('os.system', return_value=-1)
+    def test_custom_message(self, os_system):
+        with self.assertRaisesRegexp(RuntimeError, r"Custom mesage '\*\*secret\*\*'"):
+            cmd(command="mycommand", secret=True, error_msg="Custom mesage '{command}'")
+            os_system.assert_called_once_with('mycommand')
+
+

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
 import logging
+
+from conan_sword_and_sorcery.utils.cmd import cmd
 
 log = logging.getLogger(__name__)
 
@@ -18,9 +19,8 @@ class DockerHelper(object):
         self._stop()
 
     def pull(self):
-        r = os.system("docker pull {}".format(self.image))
-        if r != 0:
-            raise RuntimeError("Error pulling docker image '{}'".format(self.image))
+        command = "docker pull {}".format(self.image)
+        cmd(command, error_msg="Error pulling docker image '{}': {{command}}".format(self.image))
 
     def add_mount_unit(self, host, target):
         if host in self.mnt:
@@ -41,25 +41,16 @@ class DockerHelper(object):
     def _run(self):
         if self._running:
             self._stop()
-
-        log.info("Run docker: {}".format(self._running))
-        r = os.system(self._running)
-        if r != 0:
-            raise RuntimeError("Error running container")
+        cmd(command=self._running, error_msg="Error running container: {command}")
 
     def _stop(self):
-        r = os.system("docker stop {name}".format(name=self.name))
+        cmd("docker stop {name}".format(name=self.name), exception=None)
 
     def copy(self, origin, tgt):
-        r = os.system("docker cp {origin} {name}:{tgt}".format(
-            origin=origin,
-            name=self.name,
-            tgt=tgt))
-        if r != 0:
-            raise RuntimeError("Error copying file to container")
+        command = "docker cp {origin} {name}:{tgt}".format(origin=origin, name=self.name, tgt=tgt)
+        cmd(command, error_msg="Error copying file to container: {command}")
 
     def run_in_docker(self, command):
-        log.info("run_in_docker: {}".format(command))
-        return os.system("docker exec -it {name} /bin/sh -c \"sudo {command}\"".format(
+        return cmd("docker exec -it {name} /bin/sh -c \"sudo {command}\"".format(
             name=self.name, command=command
         ))
