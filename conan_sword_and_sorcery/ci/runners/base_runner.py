@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import uuid
 
 from conan_sword_and_sorcery.utils.cmd import cmd
+from conan_sword_and_sorcery.uploader import upload
 
 log = logging.getLogger(__name__)
 
@@ -41,3 +41,6 @@ class BaseRunner(object):
             ret = cmd(command, exception=None)
             return SUCCESS if ret == 0 else FAIL
         return DRY_RUN
+
+    def upload(self, username, channel):
+        upload(recipe=self.recipe, username=username, channel=channel, dry_run=self.dry_run)

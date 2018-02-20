@@ -20,6 +20,7 @@ class DockerMixin(object):
     docker_home = "/home/conan"
     docker_project = os.path.join(docker_home, 'project')
     docker_profiles = os.path.join(docker_home, 'profiles')
+    docker_storage_path = os.path.join(docker_home, '.conan', 'data')  # TODO: It may be other. We can change it afterwards to point to the mounted path
 
     def __init__(self, conanfile, *args, **kwargs):
         self.use_docker = ("CONAN_DOCKER_IMAGE" in os.environ) or (os.environ.get("CONAN_USE_DOCKER", False))
@@ -44,17 +45,28 @@ class DockerMixin(object):
                 # Map some directories
                 self.docker_helper.add_mount_unit(os.getcwd(), self.docker_project)
                 self.docker_helper.add_mount_unit(os.path.expanduser("~"), self.docker_home)  # Required
-                remote_storage = os.path.join(self.docker_home, '.conan', 'data')  # TODO: It may be other. We can change it afterwards to point to the mounted path
-                self.docker_helper.add_mount_unit(host_storage, remote_storage)
+                self.docker_helper.add_mount_unit(host_storage, self.docker_storage_path)
 
                 # Run the container
                 self.docker_helper.run()
 
+                # TODO: Remove this
+                try:
+                    from conan_sword_and_sorcery.utils.cmd import cmd
+                    print("=== HOST ===")
+                    cmd("ls -la {}".format(host_storage))
+                    cmd("id -u")
+                    print("=== DOCKER ===")
+                    self.docker_helper.run_in_docker("ls -la {}".format(self.docker_storage_path))
+                    self.docker_helper.run_in_docker("id -u")
+                except Exception:
+                    pass
+
                 # Install what is needed
-                self.docker_helper.run_in_docker("sudo pip install -U conan conan_sword_and_sorcery=={version} && conan user".format(version=__version__))
+                self.docker_helper.run_in_docker("pip install -U conan conan_sword_and_sorcery=={version} && conan user".format(version=__version__))
 
                 # Create profiles directory
-                self.docker_helper.run_in_docker("sudo mkdir {profile_dir}".format(profile_dir=self.docker_profiles))
+                self.docker_helper.run_in_docker("mkdir {profile_dir}".format(profile_dir=self.docker_profiles))
 
         super(DockerMixin, self).set_compiler(compiler)
 
@@ -73,3 +85,8 @@ class DockerMixin(object):
                 ret = self.docker_helper.run_in_docker(command)
                 return SUCCESS if ret == 0 else FAIL
             return DRY_RUN
+
+    def upload(self, username, channel):
+        if self.use_docker:
+            self.docker_helper.run_in_docker("chmod -R 777 {}".format(self.docker_storage_path))
+        super(DockerMixin, self).upload(username, channel)

@@ -50,7 +50,8 @@ class DockerHelper(object):
         command = "docker cp {origin} {name}:{tgt}".format(origin=origin, name=self.name, tgt=tgt)
         cmd(command, error_msg="Error copying file to container: {command}")
 
-    def run_in_docker(self, command):
-        return cmd("docker exec -it {name} /bin/sh -c \"sudo {command}\"".format(
-            name=self.name, command=command
+    def run_in_docker(self, command, sudo=True):
+        sudoer = "sudo " if sudo else ''
+        return cmd("docker exec -it {name} /bin/sh -c \"{sudoer}{command}\"".format(
+            name=self.name, command=command, sudoer=sudoer
         ))

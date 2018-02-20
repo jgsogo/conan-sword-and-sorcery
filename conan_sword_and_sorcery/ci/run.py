@@ -16,7 +16,6 @@ from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 from conan_sword_and_sorcery.profile import profile_for
-from conan_sword_and_sorcery.uploader import upload
 
 log = logging.getLogger('conan_sword_and_sorcery')
 
@@ -107,7 +106,7 @@ def run(filter_func=None):
         sys.stdout.write("All jobs succeeded!\n\n")
 
     # Upload
-    upload(job_generator.recipe, USERNAME, CHANNEL, args.dry_run)
+    runner.upload(USERNAME, CHANNEL)
 
     sys.stdout.write("=====\n")
 

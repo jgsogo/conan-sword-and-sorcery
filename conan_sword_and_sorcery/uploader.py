@@ -27,7 +27,7 @@ def upload(recipe, username, channel, dry_run=False):
 
         # Upload command
         package_ref = "{}/{}@{}/{}".format(recipe.name, recipe.version, username, channel)
-        command = "sudo conan upload -r {} --all --force --confirm {}".format(remote_name, package_ref)  # TODO: Need 'sudo' because the packages may have been created using another user (inside docker). Fix this, how?
+        command = "conan upload -r {} --all --force --confirm {}".format(remote_name, package_ref)  # TODO: Need 'sudo' because the packages may have been created using another user (inside docker). Fix this, how?
         if not dry_run:
             cmd(command)
     return True
