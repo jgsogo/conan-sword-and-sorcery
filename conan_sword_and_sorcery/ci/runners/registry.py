@@ -29,4 +29,5 @@ class RunnerRegistry(object):
                 return runner
 
         if not runner:
+            # TODO: Fallback to a local runner?
             raise ValueError("Runner not found: no environment variable is registered from available ones ('{}')".format("', '".join(cls._registry.keys())))
