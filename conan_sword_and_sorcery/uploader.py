@@ -9,6 +9,7 @@ log = logging.getLogger(__name__)
 
 
 def upload(recipe, username, channel, dry_run=False):
+    # TODO: Check requirements in a free function so it can be called before it all starts.
     # Check requirements:
     LOGIN_USERNAME = os.getenv("CONAN_LOGIN_USERNAME", os.getenv("CONAN_USERNAME", None))
     REMOTE = os.getenv("CONAN_UPLOAD", False)

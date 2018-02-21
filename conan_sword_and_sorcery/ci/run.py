@@ -11,6 +11,7 @@ try:
 except ImportError:
     from contextlib2 import ExitStack
 
+from conans.util.env_reader import get_env
 from conan_sword_and_sorcery.utils import slice, conan
 from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
@@ -76,11 +77,16 @@ def run(filter_func=None):
     runner = RunnerRegistry.get_runner(conanfile=conanfile, recipe=job_generator.recipe, dry_run=args.dry_run)
 
     with ExitStack() as stack:
-        # May add remote
+        # Add remotes in order of precedence
+        ADDITIONAL_REMOTES = get_env("CONAN_REMOTES", [])
+        for remote in reversed(ADDITIONAL_REMOTES):
+            _ = stack.enter_context(conan.remote(url=remote))
+
         REMOTE = os.getenv("CONAN_UPLOAD", None)
-        if REMOTE:
+        if REMOTE and REMOTE not in ADDITIONAL_REMOTES:
             _ = stack.enter_context(conan.remote(url=REMOTE))
 
+        # Run jobs
         for compiler, options in grouped_jobs:
             # Get a runner for each compiler (will modify profile)
             runner.set_compiler(compiler)
