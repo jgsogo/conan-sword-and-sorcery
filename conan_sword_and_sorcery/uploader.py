@@ -10,19 +10,20 @@ log = logging.getLogger(__name__)
 
 def upload(recipe, username, channel, dry_run=False):
     # Check requirements:
+    LOGIN_USERNAME = os.getenv("CONAN_LOGIN_USERNAME", os.getenv("CONAN_USERNAME", None))
     REMOTE = os.getenv("CONAN_UPLOAD", False)
     PASSWORD = os.getenv("CONAN_PASSWORD", None)
     if not REMOTE:
         log.error("No remote provided in 'CONAN_UPLOAD' env variable")
         return False
-    if not PASSWORD:
-        log.error("No password provided for remote '{}'".format(REMOTE))
+    if not PASSWORD or not LOGIN_USERNAME:
+        log.error("No password or username provided for remote '{}'. Use env variable 'CONAN_PASSWORD' and 'CONAN_LOGIN_USERNAME' to provide them.".format(REMOTE))
         return False
 
     # Add remote and upload
     log.info("Add conan remote: {url}".format(url=REMOTE))
     with conan.remote(url=REMOTE) as remote_name:
-        log.info("Authenticate user '{username}' in remote {url}".format(username=username, url=REMOTE))
+        log.info("Authenticate user '{username}' in remote {url}".format(username=LOGIN_USERNAME, url=REMOTE))
         conan.remote_auth(remote_name, username, PASSWORD)
 
         # Upload command
