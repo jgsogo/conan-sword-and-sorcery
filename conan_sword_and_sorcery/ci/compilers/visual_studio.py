@@ -26,6 +26,13 @@ class CompilerVisualStudio(BaseCompiler):
     def __str__(self):
         return "{} {} ({}) {} {}".format(self.id, self.version, self.arch, self.build_type, self.runtime)
 
+    @classmethod
+    def validate(cls, build_type, runtime, **kwargs):
+        if super(CompilerVisualStudio, cls).validate(build_type=build_type, runtime=runtime, **kwargs):
+            return (build_type == "Debug" and runtime.endswith('d')) or \
+                   (build_type == "Release" and not runtime.endswith('d'))
+        return True
+
     def update_settings(self, settings):
         super(CompilerVisualStudio, self).update_settings(settings)
         settings.compiler.runtime = self.runtime

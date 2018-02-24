@@ -36,15 +36,18 @@ class TestConanfile01(TestCaseEnvClean):
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
 
         with context_env(CONAN_VISUAL_VERSIONS='12'):
-            self.assertEqual(len(list(self.executor.enumerate_jobs())), 16)
-
-        with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug'):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 8)
 
+        with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug'):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 4)
+
         with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug', CONAN_OPTIONS='build_gmock,shared'):
-            self.assertEqual(len(list(self.executor.enumerate_jobs())), 32)
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 16)
 
         with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug', CONAN_VISUAL_RUNTIMES="MT"):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
+
+        with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug', CONAN_VISUAL_RUNTIMES="MTd"):
             self.assertEqual(len(list(self.executor.enumerate_jobs())), 2)
 
         with context_env(CONAN_BUILD_TYPES='Debug', CONAN_GCC_VERSIONS='4.7'):
@@ -55,24 +58,24 @@ class TestConanfile01(TestCaseEnvClean):
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
 
         with context_env(CONAN_VISUAL_VERSIONS='12'):
-            self.assertEqual(len(list(self.executor.enumerate_jobs())), 16)
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 8)
 
             def discard_arch_x86(compiler, options):
                 return compiler.arch == 'x86'
 
             x86_discarded = list(self.executor.filter_jobs(filter=discard_arch_x86))
-            self.assertEqual(len(x86_discarded), 8)
+            self.assertEqual(len(x86_discarded), 4)
 
     def test_pagination(self):
         self.executor = JobGenerator(self.conanfile01, osys="Windows")
         with context_env(CONAN_VISUAL_VERSIONS='12'):
             all_jobs = list(self.executor.enumerate_jobs())
-            self.assertEqual(len(all_jobs), 16)
+            self.assertEqual(len(all_jobs), 8)
 
-            page_list = self.executor.paginate(page=1, page_size=10)
-            self.assertEqual(len(page_list), 6)
+            page_list = self.executor.paginate(page=1, page_size=5)
+            self.assertEqual(len(page_list), 3)
 
-            page_list = self.executor.paginate(page=6, page_size=10)
+            page_list = self.executor.paginate(page=6, page_size=5)
             self.assertEqual(len(page_list), 0)
 
 
