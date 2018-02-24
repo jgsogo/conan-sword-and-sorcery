@@ -18,6 +18,17 @@ class TestConanfile01(TestCaseEnvClean):
         single_files = os.path.join(me, '..', 'files', 'single')
         self.conanfile01 = os.path.join(single_files, 'conanfile01.py')
 
+    def test_total_macos(self):
+        self.executor = JobGenerator(self.conanfile01, osys="Darwin")
+        self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
+
+        with context_env(CONAN_APPLE_CLANG_VERSIONS="7.3"):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 8)
+
+        with context_env(CONAN_APPLE_CLANG_VERSIONS="7.3", CONAN_BUILD_TYPES="Release",
+                         CONAN_ARCHS="x86_64"):
+            self.assertEqual(len(list(self.executor.enumerate_jobs())), 2)
+
     def test_total_linux(self):
         self.executor = JobGenerator(self.conanfile01, osys="Linux")
         self.assertEqual(len(list(self.executor.enumerate_jobs())), 0)
