@@ -31,7 +31,8 @@ class CompilerVisualStudio(BaseCompiler):
         if super(CompilerVisualStudio, cls).validate(build_type=build_type, runtime=runtime, **kwargs):
             return (build_type == "Debug" and runtime.endswith('d')) or \
                    (build_type == "Release" and not runtime.endswith('d'))
-        return True
+        else:
+            return False
 
     def update_settings(self, settings):
         super(CompilerVisualStudio, self).update_settings(settings)
