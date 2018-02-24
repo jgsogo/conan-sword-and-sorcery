@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
 import sys
 import itertools
 import logging
-import platform
-from collections import defaultdict
-from operator import itemgetter
 from conans.errors import ConanException
 from conans.util.env_reader import get_env
 
@@ -18,7 +14,7 @@ log = logging.getLogger(__name__)
 
 
 class JobGenerator(object):
-    def __init__(self, conanfile, osys=platform.system()):
+    def __init__(self, conanfile, osys):
         log.debug("Executor::__init__(conanfile='{}', osys='{}')".format(conanfile, osys))
         self._settings = Settings.default()
         self._conanfile_wrapper = ConanfileWrapper.parse(conanfile)

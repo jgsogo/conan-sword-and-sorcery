@@ -15,7 +15,7 @@ class TestCompilerRegistry(TestCaseEnvClean):
 
     def setUp(self):
         self.registry = CompilerRegistry()
-        self.os = ["Windows", "Linux", "Darwin",]
+        self.os = ["Windows", "Linux", "Macos",]
 
     def test_base(self):
         self.assertEqual(len(list(self.registry.get_compilers(os=self.os))), 124)

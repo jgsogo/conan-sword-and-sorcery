@@ -4,6 +4,7 @@ import argparse
 import logging
 import os
 import sys
+import platform
 from itertools import groupby
 from operator import itemgetter
 try:
@@ -46,7 +47,10 @@ def run(filter_func=None):
         exit(-1)
 
     # Do the work
-    job_generator = JobGenerator(conanfile=conanfile)
+    osys = platform.system()
+    if osys == "Darwin":
+        osys = "Macos"
+    job_generator = JobGenerator(conanfile=conanfile, osys=osys)
     all_jobs = list(job_generator.filter_jobs(filter=filter_func))
     sys.stdout.write("All combinations sum up to {} jobs\n".format(len(all_jobs)))
 

@@ -15,7 +15,7 @@ class TestRunnerRegistry(TestCaseEnvClean):
 
     def setUp(self):
         self.registry = RunnerRegistry()
-        self.os = ["Windows", "Linux", "Darwin",]
+        self.os = ["Windows", "Linux", "Macos",]
 
     def test_none(self):
         with self.assertRaises(ValueError):
