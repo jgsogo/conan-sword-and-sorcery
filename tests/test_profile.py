@@ -8,7 +8,7 @@ except ImportError:
 
 
 from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
-from conan_sword_and_sorcery.profile import profile_for, parse_profile
+from conan_sword_and_sorcery.parsers.profile import profile_for, parse_profile
 from conan_sword_and_sorcery.ci.compilers.clang import CompilerClangLinux
 
 

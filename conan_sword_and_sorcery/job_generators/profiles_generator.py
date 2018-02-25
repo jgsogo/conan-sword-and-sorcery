@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import os
 import logging
+import os
 
-from conan_sword_and_sorcery.job_generators.base import JobGeneratorBase
-from conan_sword_and_sorcery.profile import parse_profile
 from conan_sword_and_sorcery.ci.compilers import CompilerRegistry
-
-from pprint import pprint
+from conan_sword_and_sorcery.job_generators.base import JobGeneratorBase
+from conan_sword_and_sorcery.parsers.profile import parse_profile
 
 log = logging.getLogger(__name__)
 

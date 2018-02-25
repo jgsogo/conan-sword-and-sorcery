@@ -7,7 +7,7 @@ except ImportError:
     import mock
 
 from conan_sword_and_sorcery.ci.compilers.visual_studio import CompilerVisualStudio
-from conan_sword_and_sorcery.profile import profile_for, parse_profile
+from conan_sword_and_sorcery.parsers.profile import profile_for, parse_profile
 
 
 def mocked_vcvars(mock_sets=None, arch=None, compiler_version=None, check=True):

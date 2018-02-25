@@ -3,10 +3,11 @@
 import argparse
 import logging
 import os
-import sys
 import platform
+import sys
 from itertools import groupby
 from operator import itemgetter
+
 try:
     from contextlib import ExitStack
 except ImportError:
@@ -17,7 +18,7 @@ from conan_sword_and_sorcery.utils import slice, conan
 from conan_sword_and_sorcery.job_generators.printer import print_jobs
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
-from conan_sword_and_sorcery.profile import profile_for
+from conan_sword_and_sorcery.parsers.profile import profile_for
 from conan_sword_and_sorcery.parsers.settings import get_settings
 from conan_sword_and_sorcery.job_generators import JobGeneratorBase
 from conan_sword_and_sorcery.utils.environ import context_env
