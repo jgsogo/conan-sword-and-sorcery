@@ -5,8 +5,8 @@ import logging
 import inspect
 import itertools
 
-
 from conans.model.conan_file import ConanFile
+from conans.model.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -17,8 +17,9 @@ class ConanfileWrapper(object):
     """
 
     def __init__(self, recipe_class):
-        assert(issubclass(recipe_class, ConanFile))
+        assert issubclass(recipe_class, ConanFile)
         self.recipe_class = recipe_class
+        self.recipe = None
 
     @staticmethod
     def parse(filename):
@@ -26,7 +27,10 @@ class ConanfileWrapper(object):
         # Follow https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
         if sys.version_info[0] < 3:
             import imp
-            foo = imp.load_source(filename, filename)  # First parameter uses filename so each .py is loaded in a module with a different name
+            try:
+                foo = imp.load_source(filename, filename)  # First parameter uses filename so each .py is loaded in a module with a different name
+            except IOError:
+                raise IOError("Cannot import filename '{}'".format(filename))
         else:
             try:
                 # Python 3.5+
@@ -46,14 +50,31 @@ class ConanfileWrapper(object):
 
         raise ValueError("Cannot load conan_sword_and_sorcery recipe from filename '{}'".format(filename))
 
+    def instantiate(self, settings):  # type: (Settings) -> None
+        self.recipe = self.recipe_class(output=None, runner=None, settings=settings)
+
+    def settings_keys(self):
+        if not self.recipe:
+            raise RuntimeError("Instantiate recipe first")
+        return self.recipe.settings._data.keys()
+
+    def options_keys(self):
+        if not self.recipe:
+            raise RuntimeError("Instantiate recipe first")
+        return self.recipe.options._data.keys()
+
+    def options_values(self, option_key):
+        return self.recipe_class.options[option_key]
+
     def __getattr__(self, item):
-        return getattr(self.recipe_class, item)
+        if not self.recipe:
+            raise RuntimeError("Instantiate recipe first")
+        return getattr(self.recipe, item)
 
     def conjugate_options(self, options):
         to_conjugate = []
         for opt in options:
-            idx = list(self.options.keys()).index(opt)
-            to_conjugate.append(list(self.options.values())[idx])
+            to_conjugate.append(self.options_values(opt))
         if len(to_conjugate):
             return itertools.product(*to_conjugate)
         return None

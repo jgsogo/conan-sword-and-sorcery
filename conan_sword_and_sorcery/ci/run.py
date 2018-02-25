@@ -14,7 +14,8 @@ except ImportError:
 
 from conans.util.env_reader import get_env
 from conan_sword_and_sorcery.utils import slice, conan
-from conan_sword_and_sorcery.ci.job_generator import JobGenerator, print_jobs
+from conan_sword_and_sorcery.job_generators.printer import print_jobs
+from conan_sword_and_sorcery.job_generators.base import JobGenerator
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 from conan_sword_and_sorcery.profile import profile_for
