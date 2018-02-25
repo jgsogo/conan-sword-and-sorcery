@@ -22,10 +22,10 @@ class DockerMixin(object):
     docker_storage_path = os.path.join(docker_home, '.conan', 'data')  # TODO: It may be other. We can change it afterwards to point to the mounted path
 
     def __init__(self, conanfile, *args, **kwargs):
+        super(DockerMixin, self).__init__(conanfile=conanfile, *args, **kwargs)
         self.use_docker = ("CONAN_DOCKER_IMAGE" in os.environ) or (os.environ.get("CONAN_USE_DOCKER", False))
         if self.use_docker:
-            conanfile = transplant_path(conanfile, os.getcwd(), self.docker_project)
-        super(DockerMixin, self).__init__(conanfile=conanfile, *args, **kwargs)
+            self.conanfile = transplant_path(conanfile, os.getcwd(), self.docker_project)
 
     def set_compiler(self, compiler):
         if self.use_docker:
