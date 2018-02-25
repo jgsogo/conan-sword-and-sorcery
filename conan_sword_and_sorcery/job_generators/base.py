@@ -58,12 +58,8 @@ class JobGeneratorBase(object):
 
     def _get_compilers(self, recipe_settings_keys):
         log.debug("Executor::get_compilers(recipe_settings_keys='{}')".format(', '.join(recipe_settings_keys)))
-        if 'compiler' in recipe_settings_keys:
-            filters = self._get_filters_for_compilers(recipe_settings_keys=recipe_settings_keys)
-            return list(CompilerRegistry.get_compilers(**filters))
-        else:
-            log.debug(" - no 'compiler' in recipe settings")
-            return None
+        filters = self._get_filters_for_compilers(recipe_settings_keys=recipe_settings_keys)
+        return list(CompilerRegistry.get_compilers(**filters))
 
     def _get_exploded_options(self):
         # Enumerate (and filter) options
@@ -79,12 +75,11 @@ class JobGeneratorBase(object):
 
     def enumerate_jobs(self):
         log.debug("Executor::enumerate_jobs()")
+        recipe_settings_keys = self._conanfile_wrapper.settings_keys()
 
-        # Get compilers
-        compilers = self._get_compilers(recipe_settings_keys=self._conanfile_wrapper.settings._data.keys())
-        if compilers is not None:
-            log.debug(" - got {} compilers: {}".format(len(compilers), compilers))
-
+        if 'compiler' in recipe_settings_keys:
+            # Get compilers
+            compilers = self._get_compilers(recipe_settings_keys=recipe_settings_keys)
             for compiler in compilers:
                 compiler.update_settings(self._settings)
                 try:
@@ -119,13 +114,15 @@ class JobGeneratorBase(object):
                     yield it
         return
 
-    def filter_jobs(self, filter):
-        for compiler, options in self.enumerate_jobs():
+    @classmethod
+    def filter_jobs(cls, all_jobs, filter):
+        for compiler, options in all_jobs:
             if not filter or filter(compiler, options):
                 yield compiler, options
 
-    def paginate(self, page, page_size, filter=None):
-        jobs = list(self.filter_jobs(filter=filter))
+    @classmethod
+    def paginate(cls, all_jobs, page, page_size, filter=None):
+        jobs = list(cls.filter_jobs(all_jobs, filter=filter))
         init = page*page_size
         end = min((page+1)*page_size, len(jobs))
         return jobs[init:end]

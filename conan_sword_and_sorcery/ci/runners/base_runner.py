@@ -6,6 +6,8 @@ import re
 
 from conan_sword_and_sorcery.utils.cmd import cmd
 from conan_sword_and_sorcery.uploader import upload
+from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
+from conan_sword_and_sorcery.parsers.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -17,11 +19,16 @@ DRY_RUN = "DRY_RUN"
 class BaseRunner(object):
     profile = None
     compiler = None
+    job_generator_class = None
 
-    def __init__(self, conanfile, recipe, dry_run=False):
+    def __init__(self, conanfile, settings, osys, dry_run=False):  # type: (str, Settings, str, bool) -> None
         self.conanfile = conanfile
-        self.recipe = recipe
+        self.recipe = ConanFileWrapper.parse(conanfile)
+        self.job_generator = self.job_generator_class(conanfile_wrapper=self.recipe, settings=settings, osys=osys)
         self.dry_run = dry_run
+
+    def enumerate_jobs(self):
+        return self.job_generator.enumerate_jobs()
 
     def set_compiler(self, compiler):
         self.compiler = compiler

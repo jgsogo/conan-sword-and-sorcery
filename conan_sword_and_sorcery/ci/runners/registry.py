@@ -3,11 +3,14 @@
 import logging
 import os
 
+from conan_sword_and_sorcery.ci.runners.base_runner import BaseRunner
+
 log = logging.getLogger(__name__)
 
 
 class RunnerRegistry(object):
     _registry = {}
+    _fallback = None
 
     @classmethod
     def register(cls, env_variable):
@@ -20,7 +23,14 @@ class RunnerRegistry(object):
         return real_decorator
 
     @classmethod
-    def get_runner(cls, conanfile, *args, **kwargs):
+    def fallback(cls, runner_class):
+        if cls._fallback:
+            raise RuntimeError("Trying to register '{}' as fallback, but it is already set ('{}')".format(runner_class, cls._fallback))
+        cls._fallback = runner_class
+        return runner_class
+
+    @classmethod
+    def get_runner(cls, conanfile, *args, **kwargs):  # type: (str, Any, Any) -> BaseRunner
         log.debug("RunnerRegistry::get_runner()")
         runner = None
         for key, runner_class in cls._registry.items():
@@ -28,6 +38,5 @@ class RunnerRegistry(object):
                 runner = runner_class(conanfile=conanfile, *args, **kwargs)
                 return runner
 
-        if not runner:
-            # TODO: Fallback to a local runner?
-            raise ValueError("Runner not found: no environment variable is registered from available ones ('{}')".format("', '".join(cls._registry.keys())))
+        log.info("Will use fallback runner: '{}'".format(cls._fallback))
+        return cls._fallback(conanfile=conanfile, *args, **kwargs)

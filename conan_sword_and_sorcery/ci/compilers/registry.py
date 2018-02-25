@@ -71,7 +71,7 @@ class CompilerRegistry(object):
     @classmethod
     def get_compilers(cls, os=[], version=None, **filters):
         log.debug("CompilerRegistry::get_compilers()")
-        filter_keys = list(filters.keys())
+
         for compiler_holder in cls._registry:
             if compiler_holder.compiler_class.osys not in os:
                 continue

@@ -70,12 +70,13 @@ class TestConanfile01(TestCaseEnvClean):
         self.assertEqual(len(list(generator.enumerate_jobs())), 32)
 
         with context_env(CONAN_VISUAL_VERSIONS='12'):
-            self.assertEqual(len(list(generator.enumerate_jobs())), 8)
+            all_jobs = list(generator.enumerate_jobs())
+            self.assertEqual(len(all_jobs), 8)
 
             def discard_arch_x86(compiler, options):
                 return compiler.arch == 'x86'
 
-            x86_discarded = list(generator.filter_jobs(filter=discard_arch_x86))
+            x86_discarded = list(JobGeneratorEnviron.filter_jobs(all_jobs, filter=discard_arch_x86))
             self.assertEqual(len(x86_discarded), 4)
 
     def test_pagination(self):
@@ -84,10 +85,10 @@ class TestConanfile01(TestCaseEnvClean):
             all_jobs = list(generator.enumerate_jobs())
             self.assertEqual(len(all_jobs), 8)
 
-            page_list = generator.paginate(page=1, page_size=5)
+            page_list = JobGeneratorEnviron.paginate(all_jobs, page=1, page_size=5)
             self.assertEqual(len(page_list), 3)
 
-            page_list = generator.paginate(page=6, page_size=5)
+            page_list = JobGeneratorEnviron.paginate(all_jobs, page=6, page_size=5)
             self.assertEqual(len(page_list), 0)
 
 

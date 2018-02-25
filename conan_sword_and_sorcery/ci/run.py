@@ -15,10 +15,11 @@ except ImportError:
 from conans.util.env_reader import get_env
 from conan_sword_and_sorcery.utils import slice, conan
 from conan_sword_and_sorcery.job_generators.printer import print_jobs
-from conan_sword_and_sorcery.job_generators.base import JobGenerator
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 from conan_sword_and_sorcery.profile import profile_for
+from conan_sword_and_sorcery.parsers.settings import get_settings
+from conan_sword_and_sorcery.job_generators import JobGeneratorBase
 
 log = logging.getLogger('conan_sword_and_sorcery')
 
@@ -51,8 +52,10 @@ def run(filter_func=None):
     osys = platform.system()
     if osys == "Darwin":
         osys = "Macos"
-    job_generator = JobGenerator(conanfile=conanfile, osys=osys)
-    all_jobs = list(job_generator.filter_jobs(filter=filter_func))
+
+    runner = RunnerRegistry.get_runner(conanfile=conanfile, settings=get_settings(), osys=osys, dry_run=args.dry_run)
+    all_jobs = runner.enumerate_jobs()
+    all_jobs = list(JobGeneratorBase.filter_jobs(all_jobs, filter=filter_func))
     sys.stdout.write("All combinations sum up to {} jobs\n".format(len(all_jobs)))
 
     # - may paginate
@@ -78,8 +81,6 @@ def run(filter_func=None):
     grouped_jobs = groupby(all_jobs, itemgetter(0))
     i = 0
     total = len(all_jobs)
-
-    runner = RunnerRegistry.get_runner(conanfile=conanfile, recipe=job_generator.recipe, dry_run=args.dry_run)
 
     with ExitStack() as stack:
         # Add remotes in order of precedence

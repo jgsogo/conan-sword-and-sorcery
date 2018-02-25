@@ -58,14 +58,15 @@ class TestConanfile02(TestCaseEnvClean):
         self.assertEqual(len(list(generator.enumerate_jobs())), 1)
 
         with context_env(CONAN_OPTIONS='shared'):
-            self.assertEqual(len(list(generator.enumerate_jobs())), 2)
+            all_jobs = list(generator.enumerate_jobs())
+            self.assertEqual(len(all_jobs), 2)
 
             def discard_arch_x86(compiler, options):
                 self.assertTrue(isinstance(compiler, NoCompiler))
                 return compiler.arch == 'x86'
 
-            x86_discarded = list(generator.filter_jobs(filter=discard_arch_x86))
-            self.assertEqual(len(x86_discarded), 0)
+            x86_discarded = JobGeneratorEnviron.filter_jobs(all_jobs, filter=discard_arch_x86)
+            self.assertEqual(len(list(x86_discarded)), 0)
 
     def test_pagination(self):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.wrapper, settings=self.settings, osys="Windows")
@@ -75,10 +76,10 @@ class TestConanfile02(TestCaseEnvClean):
             all_jobs = list(generator.enumerate_jobs())
             self.assertEqual(len(all_jobs), 2)
 
-            page_list = generator.paginate(page=0, page_size=10)
+            page_list = JobGeneratorEnviron.paginate(all_jobs, page=0, page_size=10)
             self.assertEqual(len(page_list), 2)
 
-            page_list = generator.paginate(page=1, page_size=10)
+            page_list = JobGeneratorEnviron.paginate(all_jobs, page=1, page_size=10)
             self.assertEqual(len(page_list), 0)
 
 
