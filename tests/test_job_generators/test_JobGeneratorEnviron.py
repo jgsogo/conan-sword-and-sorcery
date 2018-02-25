@@ -8,7 +8,7 @@ except ImportError:
 
 from conan_sword_and_sorcery.job_generators.environ_generator import JobGeneratorEnviron
 from conan_sword_and_sorcery.parsers.settings import get_settings
-from conan_sword_and_sorcery.parsers.conanfile import ConanfileWrapper
+from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
 
 from tests.utils import context_env, TestCaseEnvClean
 
@@ -25,7 +25,7 @@ class TestExecutorAllSettings(TestCaseEnvClean):
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
         self.conanfile = os.path.join(single_files, 'settings_all.py')
-        self.conanfile_wrapper = ConanfileWrapper.parse(self.conanfile)
+        self.conanfile_wrapper = ConanFileWrapper.parse(self.conanfile)
         self.settings = get_settings()
         self.options = ''
 
@@ -78,7 +78,7 @@ class TestExecutorAllSettingsAndOptions(TestExecutorAllSettings):
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
         self.conanfile = os.path.join(single_files, 'settings_all_and_options.py')
-        self.conanfile_wrapper = ConanfileWrapper.parse(self.conanfile)
+        self.conanfile_wrapper = ConanFileWrapper.parse(self.conanfile)
         self.settings = get_settings()
         self.options = 'shared'
 
@@ -91,7 +91,7 @@ class TestExecutorSettingsNoCompiler(TestCaseEnvClean):
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
         self.conanfile = os.path.join(single_files, 'settings_no_compiler.py')
-        self.conanfile_wrapper = ConanfileWrapper.parse(self.conanfile)
+        self.conanfile_wrapper = ConanFileWrapper.parse(self.conanfile)
         self.settings = get_settings()
         self.n_options = 1
         self.options_multiplier = pow(2, self.n_options)

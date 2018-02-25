@@ -8,7 +8,7 @@ except ImportError:
 
 from conan_sword_and_sorcery.job_generators.environ_generator import JobGeneratorEnviron
 from conan_sword_and_sorcery.parsers.settings import get_settings
-from conan_sword_and_sorcery.parsers.conanfile import ConanfileWrapper
+from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
 from tests.utils import context_env, TestCaseEnvClean
 
 
@@ -17,7 +17,7 @@ class TestConanfile01(TestCaseEnvClean):
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
         conanfile01 = os.path.join(single_files, 'conanfile01.py')
-        self.wrapper = ConanfileWrapper.parse(conanfile01)
+        self.wrapper = ConanFileWrapper.parse(conanfile01)
         self.settings = get_settings()
 
     def test_total_macos(self):

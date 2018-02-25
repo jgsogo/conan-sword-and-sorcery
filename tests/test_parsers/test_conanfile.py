@@ -3,7 +3,7 @@
 import os
 import unittest
 
-from conan_sword_and_sorcery.parsers.conanfile import ConanfileWrapper
+from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
 from conan_sword_and_sorcery.parsers.settings import get_settings
 
 
@@ -13,7 +13,7 @@ class TestParserConanfile01(unittest.TestCase):
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
         conanfile01 = os.path.join(single_files, 'conanfile01.py')
-        self.wrapper = ConanfileWrapper.parse(conanfile01)
+        self.wrapper = ConanFileWrapper.parse(conanfile01)
         self.wrapper.instantiate(settings=get_settings())
 
     def test_basic(self):

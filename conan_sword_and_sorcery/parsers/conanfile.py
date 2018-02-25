@@ -11,10 +11,8 @@ from conans.model.settings import Settings
 log = logging.getLogger(__name__)
 
 
-class ConanfileWrapper(object):
-    """
-    Parser for conanfile.py recipes
-    """
+class ConanFileWrapper(object):
+    """ Parser for conanfile.py recipes """
 
     def __init__(self, recipe_class):
         assert issubclass(recipe_class, ConanFile)
@@ -46,7 +44,7 @@ class ConanfileWrapper(object):
 
         for name, obj in inspect.getmembers(foo, inspect.isclass):
             if issubclass(obj, ConanFile) and name != ConanFile.__name__:
-                return ConanfileWrapper(obj)
+                return ConanFileWrapper(obj)
 
         raise ValueError("Cannot load conan_sword_and_sorcery recipe from filename '{}'".format(filename))
 

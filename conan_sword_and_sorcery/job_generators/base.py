@@ -6,13 +6,13 @@ from conans.errors import ConanException
 from conans.model.settings import Settings
 
 from conan_sword_and_sorcery.ci.compilers import CompilerRegistry, NoCompiler
-from conan_sword_and_sorcery.parsers.conanfile import ConanfileWrapper
+from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
 
 log = logging.getLogger(__name__)
 
 
 class JobGeneratorBase(object):
-    def __init__(self, conanfile_wrapper, settings, osys):  # type: (ConanfileWrapper, Settings, str) -> None
+    def __init__(self, conanfile_wrapper, settings, osys):  # type: (ConanFileWrapper, Settings, str) -> None
         log.debug("JobGenerator::__init__(conanfile_wrapper='{}', settings='{}', osys='{}')".format(conanfile_wrapper, settings, osys))
         self._settings = settings
         self._conanfile_wrapper = conanfile_wrapper
