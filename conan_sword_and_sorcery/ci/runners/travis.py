@@ -3,9 +3,9 @@
 import logging
 import os
 
+from conan_sword_and_sorcery.ci.runners.mixins._docker import DockerMixin
 from .base_runner import BaseRunner
 from .registry import RunnerRegistry
-from ._docker import DockerMixin
 
 log = logging.getLogger(__name__)
 

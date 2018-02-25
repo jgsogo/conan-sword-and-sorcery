@@ -6,7 +6,7 @@ import logging
 from conan_sword_and_sorcery import __version__
 from conan_sword_and_sorcery.utils.docker import DockerHelper
 from conan_sword_and_sorcery.parsers.conan_conf import ConanConf
-from .base_runner import SUCCESS, FAIL, DRY_RUN
+from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS, FAIL, DRY_RUN
 
 log = logging.getLogger(__name__)
 
