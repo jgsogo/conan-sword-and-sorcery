@@ -45,11 +45,9 @@ class TestCompilerClassHolder(unittest.TestCase):
 
     def test_explode_filter_invalid(self):
         my_param1_values = ["d", ]
-        with self.assertRaises(ValueError):
-            list(self.holder.explode(param1=my_param1_values))
-
-        with self.assertRaises(ValueError):
-            list(self.holder.explode(param23=[1, 2]))
+        # Do not raise with not recognized values or params.
+        self.assertEqual(len(list(self.holder.explode(param1=my_param1_values))), 0)
+        self.assertEqual(len(list(self.holder.explode(param23=[1, 2]))), len(self.param1_values)*len(self.param2_values))
 
 
 if __name__ == '__main__':

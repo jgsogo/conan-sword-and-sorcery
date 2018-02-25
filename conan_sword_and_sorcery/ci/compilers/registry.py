@@ -14,7 +14,8 @@ log = logging.getLogger(__name__)
 def _raise_on_difference(lhs, rhs, msg="Some items are in 'lhs' but not in 'rhs': '{z}'"):
     z = list(set(lhs) - set(rhs))
     if z:
-        raise ValueError(msg.format(z=z))
+        log.warning(msg.format(z=z))  # TODO: May remove this check and rename this function
+    return set(lhs).intersection(set(rhs))
 
 
 class CompilerClassHolder(object):
@@ -35,11 +36,11 @@ class CompilerClassHolder(object):
     def explode(self, **configurations):
         log.debug("CompilerClassHolder::explode(configurations='{}')".format(configurations))
         explode_vector = []
-        _raise_on_difference(configurations.keys(), self.configurations.keys(), msg="Some configurations required are not registered: '{z}'")
+        # keys_intersect = _raise_on_difference(configurations.keys(), self.configurations.keys(), msg="Some configurations required are not registered: '{z}'")
         for key, values in self.configurations.items():
             explode_filter = configurations.get(key, values)
-            _raise_on_difference(explode_filter, values, msg="Some configurations required for '{}' are not found: '{{z}}'".format(key))
-            explode_vector.append(explode_filter)
+            values_intersect = _raise_on_difference(explode_filter, values, msg="Some configurations required for '{}' are not found: '{{z}}'".format(key))
+            explode_vector.append(values_intersect)
 
         for pack in itertools.product(*explode_vector):
             args_dict = {key: value for key, value in zip(self.configurations.keys(), pack)}

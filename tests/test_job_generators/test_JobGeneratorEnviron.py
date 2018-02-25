@@ -49,7 +49,7 @@ class TestExecutorAllSettings(TestCaseEnvClean):
 
         with context_env(CONAN_GCC_VERSIONS="0,7", CONAN_OPTIONS=self.options):  # Invalid version (fail-safe)
             jobs = list(generator.enumerate_jobs())
-            self.assertEqual(len(jobs), 0 * self.options_multiplier)
+            self.assertEqual(len(jobs), 8 * self.options_multiplier)
 
     def test_linux_gcc_and_clang(self):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.conanfile_wrapper, settings=self.settings, osys="Linux")
