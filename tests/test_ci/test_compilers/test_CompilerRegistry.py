@@ -8,7 +8,8 @@ except ImportError:
 
 
 from conan_sword_and_sorcery.ci.compilers import CompilerRegistry
-from tests.utils import context_env, TestCaseEnvClean
+from tests.utils import TestCaseEnvClean
+from conan_sword_and_sorcery.utils.environ import context_env
 
 
 class TestCompilerRegistry(TestCaseEnvClean):

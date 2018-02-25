@@ -4,6 +4,7 @@ import logging
 
 from conans.errors import ConanException
 from conans.model.settings import Settings
+from conans.util.env_reader import get_env
 
 from conan_sword_and_sorcery.ci.compilers import CompilerRegistry, NoCompiler
 from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
@@ -22,19 +23,13 @@ class JobGeneratorBase(object):
         self._conanfile_wrapper.instantiate(settings=self._settings)
 
     def _get_archs(self):  # type: () -> List[str]
-        try:
-            return getattr(self._settings, 'arch').values_range
-        except KeyError:
-            return getattr(self._settings, 'arch').values_range[0]  # TODO: Choose the best one (any will work?)
+        return getattr(self._settings, 'arch').values_range
 
     def _get_build_types(self):  # type: () -> List[str]
-        try:
-            return getattr(self._settings, 'build_type').values_range
-        except KeyError:
-            return getattr(self._settings, 'build_type').values_range[0]  # TODO: May return None?
+        return getattr(self._settings, 'build_type').values_range
 
     def _get_options_to_conjugate(self):  # type: () -> List[str]
-        return []  # TODO: None by default (or should I default to all of them?
+        return get_env("CONAN_OPTIONS", [])  # TODO: None by default (or should I default to all of them?
 
     def _get_filters_for_compilers(self, recipe_settings_keys):  # type: (List[str]) -> Dict[str, List[str]]
         log.debug("Executor::get_filters_for_compilers()")

@@ -20,6 +20,7 @@ from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 from conan_sword_and_sorcery.profile import profile_for
 from conan_sword_and_sorcery.parsers.settings import get_settings
 from conan_sword_and_sorcery.job_generators import JobGeneratorBase
+from conan_sword_and_sorcery.utils.environ import context_env
 
 log = logging.getLogger('conan_sword_and_sorcery')
 
@@ -35,6 +36,8 @@ def run(filter_func=None):
     parser.add_argument("--dry-run", dest="dry_run",
                         action='store_true', default=False,
                         help="do not create package (won't compile recipes)")
+    parser.add_argument("--options", dest="conan_options",
+                        help="comma separated list of options from de conanfile.py to conjugate")
     args = parser.parse_args()
 
     # Configure logging
@@ -53,10 +56,17 @@ def run(filter_func=None):
     if osys == "Darwin":
         osys = "Macos"
 
-    runner = RunnerRegistry.get_runner(conanfile=conanfile, settings=get_settings(), osys=osys, dry_run=args.dry_run)
-    all_jobs = runner.enumerate_jobs()
-    all_jobs = list(JobGeneratorBase.filter_jobs(all_jobs, filter=filter_func))
-    sys.stdout.write("All combinations sum up to {} jobs\n".format(len(all_jobs)))
+    # May override environament (options) from command line
+    env_vars = {}
+    if args.conan_options:
+        log.info("Override 'CONAN_OPTIONS' env variable with '{}'".format(args.conan_options))
+        env_vars["CONAN_OPTIONS"] = args.conan_options
+
+    with context_env(**env_vars):
+        runner = RunnerRegistry.get_runner(conanfile=conanfile, settings=get_settings(), osys=osys, dry_run=args.dry_run)
+        all_jobs = runner.enumerate_jobs()
+        all_jobs = list(JobGeneratorBase.filter_jobs(all_jobs, filter=filter_func))
+        sys.stdout.write("All combinations sum up to {} jobs\n".format(len(all_jobs)))
 
     # - may paginate
     total_pages = os.environ.get("CONAN_TOTAL_PAGES", None)

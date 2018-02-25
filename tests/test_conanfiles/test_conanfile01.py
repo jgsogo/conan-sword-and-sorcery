@@ -9,7 +9,8 @@ except ImportError:
 from conan_sword_and_sorcery.job_generators.environ_generator import JobGeneratorEnviron
 from conan_sword_and_sorcery.parsers.settings import get_settings
 from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
-from tests.utils import context_env, TestCaseEnvClean
+from tests.utils import TestCaseEnvClean
+from conan_sword_and_sorcery.utils.environ import context_env
 
 
 class TestConanfile01(TestCaseEnvClean):

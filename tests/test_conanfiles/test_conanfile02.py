@@ -10,7 +10,8 @@ from conan_sword_and_sorcery.job_generators.environ_generator import JobGenerato
 from conan_sword_and_sorcery.parsers.settings import get_settings
 from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
 from conan_sword_and_sorcery.ci.compilers import NoCompiler
-from tests.utils import context_env, TestCaseEnvClean
+from tests.utils import TestCaseEnvClean
+from conan_sword_and_sorcery.utils.environ import context_env
 
 
 class TestConanfile02(TestCaseEnvClean):

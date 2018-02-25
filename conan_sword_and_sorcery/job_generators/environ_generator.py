@@ -14,6 +14,3 @@ class JobGeneratorEnviron(JobGeneratorBase):
 
     def _get_build_types(self):  # type: () -> List[str]
         return get_env("CONAN_BUILD_TYPES", super(JobGeneratorEnviron, self)._get_build_types())
-
-    def _get_options_to_conjugate(self):  # type: () -> List[str]
-        return get_env("CONAN_OPTIONS", super(JobGeneratorEnviron, self)._get_options_to_conjugate())
