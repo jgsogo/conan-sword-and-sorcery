@@ -15,6 +15,8 @@ SUCCESS = "OK"
 FAIL = "FAIL"
 DRY_RUN = "DRY_RUN"
 
+STABLE_BRANCH_PATTERN = "^stable\/v?(\d+!)?(\d+)?(\.\d+)*([\.\-\_])?((a(lpha)?|b(eta)?|c|r(c|ev)?|pre(view)?)\d*)?(\.?(post|dev)\d*)?$"
+
 
 class BaseRunner(object):
     profile = None
@@ -58,12 +60,13 @@ class BaseRunner(object):
     def get_branch_name(self):
         raise NotImplementedError  # Travis, Appveyor,... will implement it
 
+    def is_stable_branch(self):
+        stable_branch_pattern = os.getenv("CONAN_STABLE_BRANCH_PATTERN", STABLE_BRANCH_PATTERN)
+        return re.match(stable_branch_pattern, self.get_branch_name())
+
     def is_upload_requested(self):
         upload_only_when_stable = os.getenv("CONAN_UPLOAD_ONLY_WHEN_STABLE", False)
-        if upload_only_when_stable:
-            stable_branch_pattern = os.getenv("CONAN_STABLE_BRANCH_PATTERN", "master")
-            return re.match(stable_branch_pattern, self.get_branch_name())
-        return True
+        return not upload_only_when_stable or self.is_stable_branch()
 
     def upload(self, username, channel):
         if self.is_upload_requested():

@@ -25,7 +25,7 @@ def upload(recipe, username, channel, dry_run=False):
     log.info("Add conan remote: {url}".format(url=REMOTE))
     with conan.remote(url=REMOTE) as remote_name:
         log.info("Authenticate user '{username}' in remote {url}".format(username=LOGIN_USERNAME, url=REMOTE))
-        conan.remote_auth(remote_name, username, PASSWORD)
+        conan.remote_auth(remote_name, LOGIN_USERNAME, PASSWORD)
 
         # Upload command
         package_ref = "{}/{}@{}/{}".format(recipe.name, recipe.version, username, channel)
