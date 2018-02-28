@@ -15,6 +15,7 @@ class JobGeneratorProfiles(JobGeneratorBase):
 
     def _get_compilers(self, recipe_settings_keys):
         log.debug("JobGeneratorProfiles::get_compilers(recipe_settings_keys='{}')".format(', '.join(recipe_settings_keys)))
+        # TODO: Get from CONAN_USER_HOME
         profiles_dirname = os.path.join(os.path.expanduser("~"), '.conan', 'profiles')
         # TODO: Check for duplicate files (equal content configuration)
         # TODO: How to handle options for child packages?
