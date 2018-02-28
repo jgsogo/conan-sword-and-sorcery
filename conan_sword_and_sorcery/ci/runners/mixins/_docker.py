@@ -49,18 +49,6 @@ class DockerMixin(object):
                 # Run the container
                 self.docker_helper.run()
 
-                # TODO: Remove this
-                try:
-                    from conan_sword_and_sorcery.utils.cmd import cmd
-                    print("=== HOST ===")
-                    cmd("ls -la {}".format(host_storage))
-                    cmd("id -u")
-                    print("=== DOCKER ===")
-                    self.docker_helper.run_in_docker("ls -la {}".format(self.docker_storage_path))
-                    self.docker_helper.run_in_docker("id -u")
-                except Exception:
-                    pass
-
                 # Install what is needed
                 self.docker_helper.run_in_docker("pip install -U conan conan_sword_and_sorcery=={version} && conan user".format(version=__version__))
 
