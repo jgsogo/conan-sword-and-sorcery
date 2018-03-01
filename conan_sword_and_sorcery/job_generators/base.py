@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class JobGeneratorBase(object):
     def __init__(self, conanfile_wrapper, settings, osys):  # type: (ConanFileWrapper, Settings, str) -> None
-        log.debug("JobGenerator::__init__(conanfile_wrapper='{}', settings='{}', osys='{}')".format(conanfile_wrapper, settings, osys))
+        log.debug("JobGenerator::__init__(conanfile_wrapper='{}', settings, osys='{}')".format(conanfile_wrapper, osys))
         self._settings = settings
         self._conanfile_wrapper = conanfile_wrapper
 
@@ -92,11 +92,10 @@ class JobGeneratorBase(object):
                                 self._conanfile_wrapper.configure()
                                 yield compiler, option_pack
                             except ConanException as e:  # TODO: Something like ConanInvalidConfiguration would fit better
-                                # TODO: Inform the client about the reason to skip this combination
-                                pass
+                                log.debug(" - configuration discarded by recipe: {}".format(e))
 
                 except ConanException as e:  # TODO: Something like ConanInvalidConfiguration would fit better
-                    # TODO: Inform the client about the reason to skip this combination
+                    log.debug(" - configuration discarded by recipe: {}".format(e))
                     pass
         else:
             options = self._get_exploded_options()

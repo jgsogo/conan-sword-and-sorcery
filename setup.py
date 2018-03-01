@@ -63,7 +63,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'run_ci=conan_sword_and_sorcery.ci.run:run',
+            'run_ci=conan_sword_and_sorcery.ci.run:main',
         ],
     },
 )

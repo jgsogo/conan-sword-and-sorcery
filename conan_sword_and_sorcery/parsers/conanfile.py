@@ -19,9 +19,13 @@ class ConanFileWrapper(object):
         self.recipe_class = recipe_class
         self.recipe = None
 
+    def __str__(self):
+        return "{}/{}".format(self.recipe_class.name, self.recipe_class.version)
+
     @staticmethod
     def parse(filename):
-        log.debug("ConanfileParser::parse(filename='{0}') using python version '{1}'".format(filename, sys.version_info))
+        log.debug("ConanfileParser::parse(filename='{0}')".format(filename))
+        log.debug(" - using python version '{}".format(sys.version_info))
         # Follow https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
         if sys.version_info[0] < 3:
             import imp
