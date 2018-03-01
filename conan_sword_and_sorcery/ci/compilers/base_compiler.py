@@ -32,6 +32,7 @@ class BaseCompiler(object):
         settings.compiler.version = self.version
 
     def populate_profile_settings(self, f):
+        f.write("os={}\n".format(self.osys))
         f.write("arch={}\n".format(self.arch))
         f.write("build_type={}\n".format(self.build_type))
         f.write("compiler={}\n".format(self.id))
