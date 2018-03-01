@@ -24,6 +24,10 @@ class CompilerClangBase(BaseCompiler):
         else:
             return {}
 
+    def populate_profile_settings(self, f):
+        super(CompilerClangBase, self).populate_profile_settings(f)
+        f.write("compiler.libcxx={}\n".format(self.libcxx))
+
 
 @CompilerRegistry.register(
     arch=["x86", "x86_64"],

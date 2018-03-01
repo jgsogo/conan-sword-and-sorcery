@@ -24,3 +24,7 @@ class CompilerGCC(BaseCompiler):
         if len(gcc_versions):
             return {'version': [(cls.id, v) for v in gcc_versions]}
         else: return {}
+
+    def populate_profile_settings(self, f):
+        super(CompilerGCC, self).populate_profile_settings(f)
+        f.write("compiler.libcxx={}\n".format(self.libcxx))
