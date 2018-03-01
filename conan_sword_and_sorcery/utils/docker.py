@@ -10,6 +10,7 @@ log = logging.getLogger(__name__)
 class DockerHelper(object):
     mnt = {}
     _running = None
+    _is_running = False
 
     def __init__(self, image, name=None):
         self.image = image
@@ -26,7 +27,7 @@ class DockerHelper(object):
         if host in self.mnt:
             log.warning("Host '{}' is already mounted to '{}'. Will override it.".format(host, self.mnt[host]))
         self.mnt[host] = target
-        if self._running:
+        if self._is_running:
             self._run()
 
     def run(self, allocate_tty=True):
@@ -39,12 +40,14 @@ class DockerHelper(object):
         self._run()
 
     def _run(self):
-        if self._running:
+        if self._is_running:
             self._stop()
         cmd(command=self._running, error_msg="Error running container: {command}")
+        self._is_running = True
 
     def _stop(self):
         cmd("docker stop {name}".format(name=self.name), exception=None)
+        self._is_running = False
 
     def copy(self, origin, tgt):
         command = "docker cp {origin} {name}:{tgt}".format(origin=origin, name=self.name, tgt=tgt)
