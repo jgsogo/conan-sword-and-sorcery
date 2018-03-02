@@ -42,7 +42,7 @@ class BaseRunner(object):
     def run(self, options, username, channel):
         conan_ref = "{}/{}".format(username, channel)
         command = ['conan', 'create', self.conanfile, conan_ref,
-                   '--profile', self.profile, '--build=missing']  # TODO: Use a policy for --build?
+                   '--profile', self.profile, '--build=outdated']  # TODO: Use a policy for --build?
         for k, v in options.items():
             command += ['-o', '{}:{}={}'.format(self.recipe.name, k, v)]
         return self.compiler.run(' '.join(command))
