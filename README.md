@@ -103,6 +103,7 @@ Available environment variables are:
  * `CONAN_REMOTES`: comma separated list of additional remotes to look for dependencies
  * `CONAN_OPTIONS`: comma separated list of options, `run_ci` will explode all its
    combinations and perform those builds.
+ * `CONAN_BUILD_PACKAGES`: comma separated list of dependencies to build from source.
  * For compilers (only meaningful combinations build be generated):
    - `CONAN_ARCHS`: architectures to build for, comma separated, e.g.: "x86,x86_64"
    - `CONAN_BUILD_TYPES`: comma separated, e.g.: "Release,Debug"

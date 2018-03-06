@@ -8,6 +8,7 @@ from conan_sword_and_sorcery.utils.cmd import cmd
 from conan_sword_and_sorcery.uploader import upload
 from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
 from conan_sword_and_sorcery.parsers.settings import Settings
+from conans.util.env_reader import get_env
 
 log = logging.getLogger(__name__)
 
@@ -43,6 +44,9 @@ class BaseRunner(object):
         conan_ref = "{}/{}".format(username, channel)
         command = ['conan', 'create', self.conanfile, conan_ref,
                    '--profile', self.profile, '--build=outdated']  # TODO: Use a policy for --build?
+        build_packages = get_env("CONAN_BUILD_PACKAGES", [])
+        for pck in build_packages:
+            command += ['--build={}'.format(pck)]
         for k, v in options.items():
             command += ['-o', '{}:{}={}'.format(self.recipe.name, k, v)]
         return self.compiler.run(' '.join(command))
