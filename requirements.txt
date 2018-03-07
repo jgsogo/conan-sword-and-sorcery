@@ -1,4 +1,4 @@
-conan==1.0.4
+conan>=1.1.0,<2.0.0
 tabulate==0.8.2
 configparser==3.5.0
 contextlib2
