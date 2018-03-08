@@ -150,16 +150,18 @@ def run(conanfile, filter_func=None, dry_run=False):
     sys.stdout.write("\nSumming up... {}\n".format(msg))
     print_jobs(all_jobs, job_status=results)
 
-    succeeded = results.count(SUCCESS)
-    if succeeded != len(results):
-        sys.stdout.write("Only {} out of {} jobs succeeded (status={}) :/ \n\n".format(succeeded, len(results), SUCCESS))
+    succeed = len(results) == results.count(SUCCESS)
+    if not succeed:
+        sys.stdout.write("Only {} out of {} jobs succeeded (status={}) :/ \n\n".format(results.count(SUCCESS), len(results), SUCCESS))
         if not dry_run:
             return -1
     else:
         sys.stdout.write("All jobs succeeded!\n\n")
 
     # Upload
-    runner.upload(USERNAME, CHANNEL)
+    succeed_upload = runner.upload(USERNAME, CHANNEL)
+
+    return 0 if all([succeed, succeed_upload]) else -1
 
 
 if __name__ == '__main__':
