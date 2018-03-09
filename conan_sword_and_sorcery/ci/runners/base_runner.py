@@ -43,7 +43,9 @@ class BaseRunner(object):
     def run(self, options, username, channel):
         conan_ref = "{}/{}".format(username, channel)
         command = ['conan', 'create', self.conanfile, conan_ref,
-                   '--profile', self.profile, '--build=outdated']  # TODO: Use a policy for --build?
+                   '--profile', self.profile,
+                   '--build={}'.format(self.recipe.name),  # Always build this recipe.
+                   '--build=outdated']  # TODO: Use a policy for --build?
         build_packages = get_env("CONAN_BUILD_PACKAGES", [])
         for pck in build_packages:
             command += ['--build={}'.format(pck)]
