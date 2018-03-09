@@ -16,10 +16,9 @@ def upload(recipe, username, channel, dry_run=False):
     PASSWORD = os.getenv("CONAN_PASSWORD", None)
     if not REMOTE:
         log.error("No remote provided in 'CONAN_UPLOAD' env variable")
-        return False
+        return
     if not PASSWORD or not LOGIN_USERNAME:
-        log.error("No password or username provided for remote '{}'. Use env variable 'CONAN_PASSWORD' and 'CONAN_LOGIN_USERNAME' to provide them.".format(REMOTE))
-        return False
+        raise ValueError("No password or username provided for remote '{}'. Use env variable 'CONAN_PASSWORD' and 'CONAN_LOGIN_USERNAME' to provide them.".format(REMOTE))
 
     # Add remote and upload
     log.info("Add conan remote: {url}".format(url=REMOTE))
@@ -32,4 +31,3 @@ def upload(recipe, username, channel, dry_run=False):
         command = "conan upload -r {} --all --force --confirm {}".format(remote_name, package_ref)  # TODO: Need 'sudo' because the packages may have been created using another user (inside docker). Fix this, how?
         if not dry_run:
             cmd(command)
-    return True

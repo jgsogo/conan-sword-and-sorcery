@@ -82,9 +82,10 @@ def main():
         env_vars["CONAN_CHANNEL"] = args.conan_channel
 
     with context_env(**env_vars):
-        run(conanfile=conanfile, dry_run=args.dry_run)
+        r = run(conanfile=conanfile, dry_run=args.dry_run)
 
     sys.stdout.write("=====\n")
+    return r
 
 
 def run(conanfile, filter_func=None, dry_run=False):
@@ -144,10 +145,11 @@ def run(conanfile, filter_func=None, dry_run=False):
                     options_str = ["{}={}".format(key, value) for key, value in opt.items()]
                     sys.stdout.write("\n==> [{:>2}/{}] {}: {}\n".format(i, total, str(compiler), ', '.join(options_str)))
                     ret = runner.run(opt, username=USERNAME, channel=CHANNEL)
+                    sys.stdout.write(ret + '\n\n')
                     results.append(ret)
 
     # Summary of jobs status
-    sys.stdout.write("\nSumming up... {}\n".format(msg))
+    sys.stdout.write("Summing up... {}\n".format(msg))
     print_jobs(all_jobs, job_status=results)
 
     succeed = len(results) == results.count(SUCCESS)
@@ -158,10 +160,9 @@ def run(conanfile, filter_func=None, dry_run=False):
     else:
         sys.stdout.write("All jobs succeeded!\n\n")
 
-    # Upload
-    succeed_upload = runner.upload(USERNAME, CHANNEL)
-
-    return 0 if all([succeed, succeed_upload]) else -1
+    # Upload (will raise if errors)
+    runner.upload(USERNAME, CHANNEL)
+    return 0 if succeed else -1
 
 
 if __name__ == '__main__':

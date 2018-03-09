@@ -32,7 +32,6 @@ class RunnerRegistry(object):
     @classmethod
     def get_runner(cls, conanfile, *args, **kwargs):  # type: (str, Any, Any) -> BaseRunner
         log.debug("RunnerRegistry::get_runner()")
-        runner = None
         for key, runner_class in cls._registry.items():
             if os.environ.get(key, False):
                 runner = runner_class(conanfile=conanfile, *args, **kwargs)
