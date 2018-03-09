@@ -56,6 +56,5 @@ class CompilerClangApple(CompilerClangBase):
 
     def populate_profile_env(self, f):
         super(CompilerClangApple, self).populate_profile_env(f)
-        from conan_sword_and_sorcery.utils import cmd
         f.write("CC=/usr/bin/clang\n".format(self.version))
         f.write("CXX=/usr/bin/clang++\n".format(self.version))
