@@ -36,7 +36,8 @@ class CompilerVisualStudio(BaseCompiler):
 
     def update_settings(self, settings):
         super(CompilerVisualStudio, self).update_settings(settings)
-        settings.compiler.runtime = self.runtime
+        if 'runtime' in settings.compiler._data.keys():
+            settings.compiler.runtime = self.runtime
 
     def populate_profile_settings(self, f):
         super(CompilerVisualStudio, self).populate_profile_settings(f)

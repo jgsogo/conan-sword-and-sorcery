@@ -10,7 +10,8 @@ class CompilerClangBase(BaseCompiler):
 
     def update_settings(self, settings):
         super(CompilerClangBase, self).update_settings(settings)
-        settings.compiler.libcxx = self.libcxx
+        if 'libcxx' in settings.compiler._data.keys():
+            settings.compiler.libcxx = self.libcxx
 
     def populate_profile_settings(self, f):
         super(CompilerClangBase, self).populate_profile_settings(f)
@@ -23,10 +24,6 @@ class CompilerClangBase(BaseCompiler):
             return {'version': [(cls.id, v) for v in clang_versions]}
         else:
             return {}
-
-    def populate_profile_settings(self, f):
-        super(CompilerClangBase, self).populate_profile_settings(f)
-        f.write("compiler.libcxx={}\n".format(self.libcxx))
 
 
 @CompilerRegistry.register(
