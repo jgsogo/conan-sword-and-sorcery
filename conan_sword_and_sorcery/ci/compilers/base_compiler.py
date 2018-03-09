@@ -38,6 +38,9 @@ class BaseCompiler(object):
         f.write("compiler={}\n".format(self.id))
         f.write("compiler.version={}\n".format(self.version))
 
+    def populate_profile_env(self, f):
+        pass
+
     @classmethod
     def validate(cls, **kwargs):
         # Raise error if given configuration is not supported

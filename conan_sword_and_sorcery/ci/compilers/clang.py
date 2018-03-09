@@ -37,6 +37,11 @@ class CompilerClangLinux(CompilerClangBase):
     osys = 'Linux'
     clang_versions_env_variable="CONAN_CLANG_VERSIONS"
 
+    def populate_profile_env(self, f):
+        super(CompilerClangLinux, self).populate_profile_env(f)
+        f.write("CC=/usr/bin/{}-{}\n".format(self.id, self.version))
+        f.write("CC=/usr/bin/{}++-{}\n".format(self.id, self.version))
+
 
 @CompilerRegistry.register(
     arch=["x86", "x86_64"],
@@ -48,3 +53,8 @@ class CompilerClangApple(CompilerClangBase):
     id = 'apple-clang'
     osys = 'Macos'
     clang_versions_env_variable = "CONAN_APPLE_CLANG_VERSIONS"
+
+    def populate_profile_env(self, f):
+        super(CompilerClangApple, self).populate_profile_env(f)
+        f.write("CC=/usr/bin/clang-{}\n".format(self.version))
+        f.write("CC=/usr/bin/clang++-{}\n".format(self.version))

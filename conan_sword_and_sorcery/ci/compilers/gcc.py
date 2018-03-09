@@ -33,3 +33,8 @@ class CompilerGCC(BaseCompiler):
     def populate_profile_settings(self, f):
         super(CompilerGCC, self).populate_profile_settings(f)
         f.write("compiler.libcxx={}\n".format(self.libcxx))
+
+    def populate_profile_env(self, f):
+        super(CompilerGCC, self).populate_profile_env(f)
+        f.write("CC=/usr/bin/{}-{}\n".format(self.id, self.version))
+        f.write("CC=/usr/bin/{}++-{}\n".format(self.id, self.version))

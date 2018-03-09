@@ -13,7 +13,9 @@ def profile_for(compiler):
     # tmp.write("include(default)\n\n")  # Profile 'default'
     tmp.write("[settings]\n")
     compiler.populate_profile_settings(tmp)
-    tmp.write("[options]\n[build_requires]\n[env]\n")  # TODO: Is it needed?
+    tmp.write("[options]\n[build_requires]\n")  # TODO: Is it needed?
+    tmp.write("[env]\n")
+    compiler.populate_profile_env(tmp)
     tmp.close()
     yield tmp.name
     os.unlink(tmp.name)
