@@ -22,8 +22,8 @@ class TestParserConanConf(unittest.TestCase):
 
     def test_storage_path(self):
         config = ConanConf(self.conan_conf)
-        path = config.get('storage', 'path')
-        self.assertTrue(os.path.isdir(path))
+        path = os.path.expanduser(config.get('storage', 'path'))
+        self.assertTrue(os.path.isdir(path), msg="{} is not a directory".format(path))
 
 
 if __name__ == '__main__':

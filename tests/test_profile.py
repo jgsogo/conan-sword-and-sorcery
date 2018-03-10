@@ -26,7 +26,7 @@ class ATestCompiler(BaseCompiler):
     def __getattr__(self, item):
         if item == 'compiler.version':    # This is a convenience function just to pass tests
             return self.version
-        raise NotImplementedError
+        return super(ATestCompiler, self).__getattr__(item)
 
 
 class TestProfile(unittest.TestCase):
@@ -34,7 +34,7 @@ class TestProfile(unittest.TestCase):
         compiler = ATestCompiler()
         with profile_for(compiler) as ff:
             matches = parse_profile(ff)
-            self.assertEqual(len(matches), 4)
+            self.assertEqual(len(matches), 5)
             for key, val in matches.items():
                 self.assertEqual(getattr(compiler, key), val)
 
@@ -48,8 +48,12 @@ class TestProfile(unittest.TestCase):
         with profile_for(compiler) as ff:
             matches = parse_profile(ff)
 
-        self.assertDictEqual(matches, {'arch': arch, 'build_type': build_type, 'compiler': compiler.id,
-                                       'compiler.version': version, 'compiler.libcxx': libcxx})
+        self.assertDictEqual(matches, {'os': compiler.osys,
+                                       'arch': arch,
+                                       'build_type': build_type,
+                                       'compiler': compiler.id,
+                                       'compiler.version': version,
+                                       'compiler.libcxx': libcxx})
 
 
 if __name__ == '__main__':

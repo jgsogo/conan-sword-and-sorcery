@@ -34,7 +34,8 @@ class TestCompilerVisualStudio(unittest.TestCase):
     def test_profile_file(self):
         with profile_for(self.compiler) as ff:
             matches = parse_profile(ff)
-            self.assertDictEqual(matches, {'arch': self.arch,
+            self.assertDictEqual(matches, {'os': self.compiler.osys,
+                                           'arch': self.arch,
                                            'build_type': self.build_type,
                                            'compiler': self.compiler.id,
                                            'compiler.version': self.version,
