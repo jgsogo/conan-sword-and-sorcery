@@ -61,11 +61,16 @@ deploy_pypi:
     CI_DEBUG_TRACE: "true"
   script:   # Configure the PyPI credentials, then push the package, and cleanup the creds.
     - pip -q install twine
+    - rm -rf dist
+    - echo "[distutils]" >> ~/.pypirc
+    - echo "index-servers =" >> ~/.pypirc
+    - echo "    pypi" >> ~/.pypirc
+    - echo "" >> ~/.pypirc
+    - echo "[pypi]" >> ~/.pypirc
+    # - echo "${PYPI_REPO}" >> ~/.pypirc
+    - echo "${PYPI_USER}" >> ~/.pypirc
+    - echo "${PYPI_PASSWORD}" >> ~/.pypirc
     - python3 setup.py check sdist bdist  # This will fail if your creds are bad.
-    - echo $PYPI_USER
-    - echo $TWINE_USERNAME
-    - echo $PYPI_USER
-    - printenv
     - twine upload dist/*  # Uses env variables TWINE_USERNAME and TWINE_PASSWORD
   only:
     - /^v(\d+!)?(\d+)(\.\d+)+([\.\-\_])?((a(lpha)?|b(eta)?|c|r(c|ev)?|pre(view)?)\d*)?(\.?(post|dev)\d*)?$/  # PEP-440 compliant version (with 'v' at the beginning)
