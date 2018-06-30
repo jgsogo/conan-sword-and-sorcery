@@ -21,6 +21,7 @@ python_2_7:
      - apt-get install -y python-pip
      - pip install -r tests/requirements.txt
      - conan user
+     - mkdir ~/.conan/data  # This directory is not generated on install
      - py.test --cov=conan_sword_and_sorcery tests/  # Run with coverage (but do not store)
    except:
      - /^notest/
@@ -33,6 +34,7 @@ python_3_5:
      - apt-get install -y python-pip
      - pip install -r tests/requirements.txt
      - conan user
+     - mkdir ~/.conan/data  # This directory is not generated on install
      - py.test --cov=conan_sword_and_sorcery --cov-report=html:reports/html tests/  # Run with coverage
    except:
      - /^notest/
