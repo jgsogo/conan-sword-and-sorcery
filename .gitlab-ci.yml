@@ -72,8 +72,6 @@ deploy_pypi:
     - echo "${PYPI_REPO}" >> ~/.pypirc
     - echo "${PYPI_USER}" >> ~/.pypirc
     - echo "${PYPI_PASSWORD}" >> ~/.pypirc
-    - cat ~/.pypirc
-    - cut -c 1-14 ~/.pypirc
     - python3 setup.py check sdist bdist  # This will fail if your creds are bad.
     - twine upload -r pypi dist/*  # Uses env variables TWINE_USERNAME and TWINE_PASSWORD
   only:
