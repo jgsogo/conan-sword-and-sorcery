@@ -59,8 +59,6 @@ coverage:
 deploy_pypi:
   stage: deploy
   image: python:3.5
-  variables:
-    CI_DEBUG_TRACE: "true"
   script:   # Configure the PyPI credentials, then push the package, and cleanup the creds.
     - pip -q install twine
     - rm -rf dist
