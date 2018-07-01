@@ -46,7 +46,7 @@ class CompilerClangLinux(CompilerClangBase):
 @CompilerRegistry.register(
     arch=["x86", "x86_64"],
     build_type=["Release", "Debug"],
-    version=["7.3", "8.1", "9.0"],
+    version=["7.3", "8.1", "9.0", "9.1",],
     libcxx=["libstdc++", "libc++", ]
 )
 class CompilerClangApple(CompilerClangBase):
