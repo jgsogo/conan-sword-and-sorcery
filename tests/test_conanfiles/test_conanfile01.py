@@ -23,7 +23,7 @@ class TestConanfile01(TestCaseEnvClean):
 
     def test_total_macos(self):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.wrapper, settings=self.settings, osys="Macos")
-        self.assertEqual(len(list(generator.enumerate_jobs())), 24)
+        self.assertEqual(len(list(generator.enumerate_jobs())), 32)
 
         with context_env(CONAN_APPLE_CLANG_VERSIONS="7.3"):
             self.assertEqual(len(list(generator.enumerate_jobs())), 8)

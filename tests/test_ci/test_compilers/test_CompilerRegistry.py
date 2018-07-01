@@ -19,13 +19,13 @@ class TestCompilerRegistry(TestCaseEnvClean):
         self.os = ["Windows", "Linux", "Macos",]
 
     def test_base(self):
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os))), 124)
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ]))), 62)
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os))), 132)
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ]))), 66)
         self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ], version=[("gcc", "7"), ]))), 4)
         self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ], version=[("gcc", "7"), ("Visual Studio", "12"), ]))), 8)
 
     def test_invalid_argument(self):
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, invalid_arg=["x86", ]))), 124)  # TODO: It may be invalid for some, but valid for others, so do not discard compilers if you pass them strange arguments
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, invalid_arg=["x86", ]))), 132)  # TODO: It may be invalid for some, but valid for others, so do not discard compilers if you pass them strange arguments
 
     def test_invalid_value(self):
         self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=["x86000", ]))), 0)

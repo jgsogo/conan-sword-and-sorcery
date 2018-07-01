@@ -66,7 +66,7 @@ class TestExecutorAllSettings(TestCaseEnvClean):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.conanfile_wrapper, settings=self.settings, osys="Macos")
 
         with context_env(CONAN_OPTIONS=self.options):
-            self.assertEqual(len(list(generator.enumerate_jobs())), 24*self.options_multiplier)
+            self.assertEqual(len(list(generator.enumerate_jobs())), 32*self.options_multiplier)
 
         with context_env(CONAN_APPLE_CLANG_VERSIONS="8.1", CONAN_OPTIONS=self.options):
             jobs = list(generator.enumerate_jobs())
