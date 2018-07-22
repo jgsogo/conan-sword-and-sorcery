@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 def temporary_env_file():
     # Log env variables into a file to use it afterwards: https://stackoverflow.com/questions/30494050/how-do-i-pass-environment-variables-to-docker-containers
     "--env-file ./env.list"
-    tmp = tempfile.NamedTemporaryFile(delete=False)
+    tmp = tempfile.NamedTemporaryFile(mode="w", delete=False)
     for key, value in os.environ.items():
         tmp.write("{}={}\n".format(key, value))
     tmp.close()
@@ -48,7 +48,7 @@ class DockerHelper(object):
             self._run()
 
     def run(self, allocate_tty=True):
-        self._running = "docker run {options} {mnt} --name {name} --detach {image}".format(
+        self._running = "docker run {{env_file}} {options} {mnt} --name {name} --detach {image}".format(
             options='-t' if allocate_tty else '',
             name=self.name,
             image=self.image,
@@ -59,7 +59,9 @@ class DockerHelper(object):
     def _run(self):
         if self._is_running:
             self._stop()
-        cmd(command=self._running, error_msg="Error running container: {command}")
+        with temporary_env_file() as env_file:
+            env_file_param = "--env-file={}".format(env_file)
+            cmd(command=self._running.format(env_file=env_file_param), error_msg="Error running container: {command}")
         self._is_running = True
 
     def _stop(self):
@@ -72,8 +74,6 @@ class DockerHelper(object):
 
     def run_in_docker(self, command, sudo=True):
         sudoer = "sudo " if sudo else ''
-        with temporary_env_file() as env_file:
-            return cmd("docker exec --env-file={} -it {name} /bin/sh -c \"{sudoer}{command}\"".format(
-                env_file,
-                name=self.name, command=command, sudoer=sudoer
-            ))
+        return cmd("docker exec -it {name} /bin/sh -c \"{sudoer}{command}\"".format(
+            name=self.name, command=command, sudoer=sudoer
+        ))
