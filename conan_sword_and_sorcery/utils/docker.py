@@ -1,10 +1,27 @@
 # -*- coding: utf-8 -*-
 
+import os
 import logging
+from contextlib import contextmanager
+import tempfile
 
 from conan_sword_and_sorcery.utils.cmd import cmd
 
 log = logging.getLogger(__name__)
+
+
+@contextmanager
+def temporary_env_file():
+    # Log env variables into a file to use it afterwards: https://stackoverflow.com/questions/30494050/how-do-i-pass-environment-variables-to-docker-containers
+    "--env-file ./env.list"
+    tmp = tempfile.NamedTemporaryFile(delete=False)
+    for key, value in os.environ.items():
+        tmp.write("{}={}\n".format(key, value))
+    tmp.close()
+    try:
+        yield tmp.name
+    finally:
+        os.remove(tmp.name)
 
 
 class DockerHelper(object):
@@ -55,6 +72,8 @@ class DockerHelper(object):
 
     def run_in_docker(self, command, sudo=True):
         sudoer = "sudo " if sudo else ''
-        return cmd("docker exec -it {name} /bin/sh -c \"{sudoer}{command}\"".format(
-            name=self.name, command=command, sudoer=sudoer
-        ))
+        with temporary_env_file() as env_file:
+            return cmd("docker exec --env-file={} -it {name} /bin/sh -c \"{sudoer}{command}\"".format(
+                env_file,
+                name=self.name, command=command, sudoer=sudoer
+            ))
