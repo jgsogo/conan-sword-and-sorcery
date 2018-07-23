@@ -50,7 +50,8 @@ class DockerMixin(object):
                 self.docker_helper.run()
 
                 # Install what is needed
-                self.docker_helper.run_in_docker("pip install -U conan conan_sword_and_sorcery=={version} && {{sudoer}} conan user".format(version=__version__))
+                self.docker_helper.run_in_docker("pip install -U conan conan_sword_and_sorcery=={version}".format(version=__version__))
+                self.docker_helper.run_in_docker("conan user")
 
                 # Create profiles directory
                 self.docker_helper.run_in_docker("mkdir {profile_dir}".format(profile_dir=self.docker_profiles))
