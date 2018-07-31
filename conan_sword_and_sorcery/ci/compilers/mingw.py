@@ -21,7 +21,7 @@ class CompilerMinGW(BaseCompiler):
         self.arch_build = arch  # TODO: Move this to base compiler class (or inherit profile from defaults).
 
     def __str__(self):
-        return "MinGW/{} {} ({}) {}".format(self.id, self.version, self.arch, self.build_type)
+        return "MinGW/{} {} ({}) {} {} {}".format(self.id, self.version, self.arch, self.build_type, self.exception, self.thread)
 
     def update_settings(self, settings):
         super(CompilerMinGW, self).update_settings(settings)
