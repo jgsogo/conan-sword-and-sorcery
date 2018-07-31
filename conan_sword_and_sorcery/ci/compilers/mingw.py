@@ -9,6 +9,8 @@ from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
     arch=["x86", "x86_64"],
     build_type=["Release", "Debug"],
     version=["4.9", "5", "6", "7"],
+    exception=["seh", ],
+    thread=["posix", "win32", ]
 )
 class CompilerMinGW(BaseCompiler):
     id = 'gcc'
@@ -26,11 +28,18 @@ class CompilerMinGW(BaseCompiler):
 
     @classmethod
     def environment_filters(cls):
-        # TODO: Here we need to parse: MINGW_CONFIGURATIONS with all the information.
-        gcc_versions = get_env("CONAN_MINGW_VERSIONS", [])
-        if len(gcc_versions):
-            return {'version': [(cls.id, v) for v in gcc_versions]}
-        else: return {}
+        # TODO: Here we need to parse MINGW_CONFIGURATIONS with all the information.
+        mingw_versions = get_env("CONAN_MINGW_VERSIONS", [])
+        mingw_exceptions = get_env("CONAN_MINGW_EXCEPTIONS", [])
+        mingw_threads = get_env("CONAN_MINGW_THREAD", [])
+        r = {}
+        if len(mingw_versions):
+            r['version'] = [(cls.id, v) for v in mingw_versions]
+        if len(mingw_exceptions):
+            r['exception'] = mingw_exceptions
+        if len(mingw_threads):
+            r['thread'] = mingw_threads
+        return r
 
     def populate_profile_settings(self, f):
         super(CompilerMinGW, self).populate_profile_settings(f)
