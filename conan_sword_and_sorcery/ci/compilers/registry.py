@@ -23,6 +23,7 @@ class CompilerClassHolder(object):
         assert(issubclass(compiler_class, BaseCompiler))
         self.compiler_class = compiler_class
         self.configurations = kwargs
+        self.compiler_class._required_init_arguments = kwargs.keys()
 
     def __str__(self):
         return self.compiler_class.__name__
