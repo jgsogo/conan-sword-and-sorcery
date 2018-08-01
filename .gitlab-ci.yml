@@ -64,6 +64,7 @@ protobuf_gcc:
    script:
      - apt-get update -qy
      - apt-get install -y python-pip
+     - apt-get install --yes cmake
      - pip install .
      - conan user
      - git clone https://github.com/bincrafters/conan-protobuf.git
