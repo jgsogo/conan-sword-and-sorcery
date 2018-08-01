@@ -62,9 +62,9 @@ protobuf_gcc:
    stage: live_tests
    image: python:3.6
    variables:
-     TRAVIS: true
-     TRAVIS_BRANCH: testing
-     CONAN_GCC_VERSIONS: 4.9
+     TRAVIS=true
+     TRAVIS_BRANCH=testing
+     CONAN_GCC_VERSIONS=4.9
    script:
      - apt-get update -qy
      - apt-get install -y python-pip
