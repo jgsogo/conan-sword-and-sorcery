@@ -108,21 +108,27 @@ Available environment variables are:
    combinations and perform those builds.
  * `CONAN_BUILD_PACKAGES`: comma separated list of dependencies to build from source.
  * For compilers (only meaningful combinations build be generated):
-   - `CONAN_ARCHS`: architectures to build for, comma separated, e.g.: "x86,x86_64"
-   - `CONAN_BUILD_TYPES`: comma separated, e.g.: "Release,Debug"
-   - gcc:
-     + `CONAN_GCC_VERSIONS`: comma separated, e.g.: "4.9,5,7"
-   - Visual Studio:
-     + `CONAN_VISUAL_VERSIONS`: comma separated, e.g.: "12,14"
-     + `CONAN_VISUAL_RUNTIMES`: comma separated, e.g.: "MT, MD"
-   - clang:
-     + `CONAN_CLANG_VERSIONS`: comman separated, e.g.: "4.0,5.0"
-   - apple-clang:
-     + `CONAN_APPLE_CLANG_VERSIONS`: comman separated, e.g.: "8.1,9.0"
+   - `CONAN_ARCHS`: architectures to build for, comma separated, e.g.: `"x86,x86_64"`
+   - `CONAN_BUILD_TYPES`: comma separated, e.g.: `"Release,Debug"`
+   - [gcc](conan_sword_and_sorcery/ci/compilers/gcc.py):
+     + `CONAN_GCC_VERSIONS`: comma separated, e.g.: `"4.9,5,7"`
+   - [Visual Studio](conan_sword_and_sorcery/ci/compilers/visual_studio.py):
+     + `CONAN_VISUAL_VERSIONS`: comma separated, e.g.: `"12,14"`
+     + `CONAN_VISUAL_RUNTIMES`: comma separated, e.g.: `"MT, MD"`
+   - [clang](conan_sword_and_sorcery/ci/compilers/clang.py):
+     + `CONAN_CLANG_VERSIONS`: comma separated, e.g.: `"4.0,5.0"`
+   - [apple-clang](conan_sword_and_sorcery/ci/compilers/clang.py):
+     + `CONAN_APPLE_CLANG_VERSIONS`: comma separated, e.g.: `"8.1,9.0"`
+   - [mingw](conan_sword_and_sorcery/ci/compilers/mingw.py): conan_sword_and_sorcery uses the same approach
+     to define which builds to generate for mingw as it does for the others compilers (conan-package-tools uses
+     a single env variable `MINGW_CONFIGURATIONS`)
+     + `CONAN_MINGW_VERSIONS`: comma separated, e.g.: `"4.9,5,7"`
+     + `CONAN_MINGW_EXCEPTIONS`: comma separated, e.g.: `"seh"`
+     + `CONAN_MINGW_THREADS`: comma separated, e.g.: `"posix,win32"`
  * Specific to Travis CI:
    - Travis CI supports dockerized builds, so it will look for `CONAN_DOCKER_IMAGE`
      env variable and run compilations inside it. If no docker image is specified, but
-     it is set `CONAN_USE_DOCKER=True` the the corresponding image to the compiler will
+     it is set `CONAN_USE_DOCKER=True` then the corresponding image to the compiler will
      be used from @lasote available ones (see [list here](https://github.com/conan-io/conan-docker-tools)).
 
 
@@ -134,7 +140,7 @@ some conditions are satisfied:
  * `CONAN_UPLOAD_ONLY_WHEN_STABLE`: will try to upload only if the channel is stable
  * `CONAN_STABLE_BRANCH_PATTERN` (regex): determine if the repository branch is stable,
    by default it is true for any given branch that follows a pattern like `stable/v1.2.3`,
-   `stable/1.2rc2.dev32`,... ([more](./tests/test_ci/test_runners/test_StableBranchPattern.py)).
+   `stable/1.2rc2.dev32`,... (see [more patterns in unittests](./tests/test_ci/test_runners/test_StableBranchPattern.py)).
  * `CONAN_LOGIN_USERNAME` (defaults to `CONAN_USERNAME`).
  * `CONAN_UPLOAD`: URL of the repository to upload packages to (it also will be used as
    a remote for dependencies).
