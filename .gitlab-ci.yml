@@ -60,11 +60,8 @@ coverage:
 
 protobuf_gcc:
    stage: live_tests
-   image: python:3.6
+   image: lasote/conangcc49
    script:
-     - apt-get update -qy
-     - apt-get install -y python-pip
-     - apt-get install --yes cmake
      - pip install .
      - conan user
      - git clone https://github.com/bincrafters/conan-protobuf.git
