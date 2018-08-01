@@ -9,10 +9,11 @@ import configparser
 @contextmanager
 def profile_for(compiler):
     # Create profile file
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform=str
     config["settings"] = {}
     config["env"] = {}
+    config["build_requires"] = {}
     compiler.populate_profile(config)
 
     # Dump it to a system file
@@ -26,7 +27,7 @@ def profile_for(compiler):
 
 
 def parse_profile(profile_file):
-    parser = configparser.ConfigParser()
+    parser = configparser.ConfigParser(allow_no_value=True)
     parser.optionxform = str
     parser.read(profile_file)
     return parser

@@ -46,6 +46,7 @@ class TestCompilerVisualStudio(CompilerMixinTestCase, unittest.TestCase):
                               'compiler.runtime': 'MT'
                               }
         config['env'] = {}
+        config['build_requires'] = {}
         return config
 
     @mock.patch('os.system')

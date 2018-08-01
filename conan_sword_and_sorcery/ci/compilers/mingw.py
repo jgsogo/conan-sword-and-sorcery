@@ -41,20 +41,17 @@ class CompilerMinGW(BaseCompiler):
             r['thread'] = mingw_threads
         return r
 
-    def populate_profile_settings(self, f):
-        super(CompilerMinGW, self).populate_profile_settings(f)
-        f.write("compiler.exception=seh\n")
-        f.write("compiler.libcxx=libstdc++11\n")
-        f.write("compiler.threads=posix\n")
-        f.write("os_build={}\n".format(self.osys))
-        f.write("arch_build={}\n".format(self.arch_build))
+    def populate_profile(self, configfile):
+        super(CompilerMinGW, self).populate_profile(configfile)
+        configfile['settings']['compiler.exception'] = self.exception
+        configfile['settings']['compiler.version'] = self.version
+        configfile['settings']['compiler.threads'] = self.thread
 
-        f.write("\n")
-        f.write("[build_requires]\n")
-        f.write("mingw_installer/1.0@conan/stable\n")
-        f.write("msys2_installer/latest@bincrafters/stable\n")
+        configfile['settings']['os_build'] = self.osys
+        configfile['settings']['arch_build'] = self.arch_build
 
-    def populate_profile_env(self, f):
-        super(CompilerMinGW, self).populate_profile_env(f)
-        # f.write("CC=/usr/bin/gcc-{}\n".format(self.version))
-        # f.write("CXX=/usr/bin/g++-{}\n".format(self.version))
+        # f.write("compiler.libcxx=libstdc++11\n")
+
+        configfile['build_requires']['mingw_installer/1.0@conan/stable'] = None
+        configfile['build_requires']['msys2_installer/latest@bincrafters/stable'] = None
+

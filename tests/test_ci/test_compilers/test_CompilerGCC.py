@@ -34,6 +34,7 @@ class TestCompilerGCC(CompilerMixinTestCase, unittest.TestCase):
                               }
         config['env'] = {'CC': '/usr/bin/gcc-4.9',
                          'CXX': '/usr/bin/g++-4.9', }
+        config['build_requires'] = {}
         return config
 
 
