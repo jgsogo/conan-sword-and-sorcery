@@ -1,6 +1,7 @@
 variables:
     PYPI_USER: SECURE
     PYPI_PASSWORD: SECURE
+    PYTHONUNBUFFERED: 1
 
 cache:
   paths:
