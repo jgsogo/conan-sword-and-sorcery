@@ -39,9 +39,9 @@ class CompilerVisualStudio(BaseCompiler):
         if 'runtime' in settings.compiler._data.keys():
             settings.compiler.runtime = self.runtime
 
-    def populate_profile_settings(self, f):
-        super(CompilerVisualStudio, self).populate_profile_settings(f)
-        f.write("compiler.runtime={}\n".format(self.runtime))
+    def populate_profile(self, configfile):
+        super(CompilerVisualStudio, self).populate_profile(configfile)
+        configfile['settings']['compiler.runtime'] = self.runtime
 
     @classmethod
     def environment_filters(cls):

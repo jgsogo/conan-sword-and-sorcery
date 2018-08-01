@@ -30,11 +30,8 @@ class CompilerGCC(BaseCompiler):
             return {'version': [(cls.id, v) for v in gcc_versions]}
         else: return {}
 
-    def populate_profile_settings(self, f):
-        super(CompilerGCC, self).populate_profile_settings(f)
-        f.write("compiler.libcxx={}\n".format(self.libcxx))
-
-    def populate_profile_env(self, f):
-        super(CompilerGCC, self).populate_profile_env(f)
-        f.write("CC=/usr/bin/gcc-{}\n".format(self.version))
-        f.write("CXX=/usr/bin/g++-{}\n".format(self.version))
+    def populate_profile(self, configfile):
+        super(CompilerGCC, self).populate_profile(configfile)
+        configfile['settings']['compiler.libcxx'] = self.libcxx
+        configfile['env']['CC'] = '/usr/bin/gcc-{}'.format(self.version)
+        configfile['env']['CXX'] = '/usr/bin/g++-{}'.format(self.version)

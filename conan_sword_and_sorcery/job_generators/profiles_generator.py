@@ -22,7 +22,7 @@ class JobGeneratorProfiles(JobGeneratorBase):
         for filename in os.listdir(profiles_dirname):
             log.debug(" - parse profile file '{}'".format(filename))
             data = parse_profile(os.path.join(profiles_dirname, filename))
-            filters = {key: [data[key], ] for key in recipe_settings_keys if key not in ['compiler', 'os', ]}
+            filters = {key: [data['settings'][key], ] for key in recipe_settings_keys if key not in ['compiler', 'os', ]}
             for item, value in data.items():
                 if item.startswith('compiler.') and not item.endswith('version'):
                     filters[item.split('.')[1]] = [value, ]

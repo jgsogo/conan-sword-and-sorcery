@@ -1,32 +1,32 @@
 # -*- coding: utf-8 -*-
 
 import os
-import re
 import tempfile
 from contextlib import contextmanager
+import configparser
 
 
 @contextmanager
 def profile_for(compiler):
     # Create profile file
+    config = configparser.ConfigParser()
+    config.optionxform=str
+    config["settings"] = {}
+    config["env"] = {}
+    compiler.populate_profile(config)
+
+    # Dump it to a system file
     tmp = tempfile.NamedTemporaryFile(dir=os.path.expanduser("~"), mode='w', delete=False)  # In local dirname
-    # tmp.write("include(default)\n\n")  # Profile 'default'
-    tmp.write("[settings]\n")
-    compiler.populate_profile_settings(tmp)
-    tmp.write("[options]\n[build_requires]\n")  # TODO: Is it needed?
-    tmp.write("[env]\n")
-    compiler.populate_profile_env(tmp)
+    config.write(tmp)
     tmp.close()
+
     yield tmp.name
+
     os.unlink(tmp.name)
 
 
 def parse_profile(profile_file):
-    eq = re.compile("^([\w\.]+)=([\w_\+\.\s]+)\s")
-    with open(profile_file) as f:
-        matches = {}
-        for line in f.readlines():
-            m = eq.match(line)
-            if m:
-                matches[m.group(1)] = m.group(2)
-    return matches
+    parser = configparser.ConfigParser()
+    parser.optionxform = str
+    parser.read(profile_file)
+    return parser

@@ -8,14 +8,17 @@ from conan_sword_and_sorcery.ci.compilers.base_compiler import BaseCompiler
 class CompilerClangBase(BaseCompiler):
     clang_versions_env_variable = None
 
+    def __str__(self):
+        return "{} {} ({}) {} {}".format(self.id, self.version, self.arch, self.build_type, self.libcxx)
+
     def update_settings(self, settings):
         super(CompilerClangBase, self).update_settings(settings)
         if 'libcxx' in settings.compiler._data.keys():
             settings.compiler.libcxx = self.libcxx
 
-    def populate_profile_settings(self, f):
-        super(CompilerClangBase, self).populate_profile_settings(f)
-        f.write("compiler.libcxx={}\n".format(self.libcxx))
+    def populate_profile(self, configfile):
+        super(CompilerClangBase, self).populate_profile(configfile)
+        configfile['settings']['compiler.libcxx'] = self.libcxx
 
     @classmethod
     def environment_filters(cls):
@@ -37,10 +40,10 @@ class CompilerClangLinux(CompilerClangBase):
     osys = 'Linux'
     clang_versions_env_variable="CONAN_CLANG_VERSIONS"
 
-    def populate_profile_env(self, f):
-        super(CompilerClangLinux, self).populate_profile_env(f)
-        f.write("CC=/usr/bin/clang-{}\n".format(self.version))
-        f.write("CXX=/usr/bin/clang++-{}\n".format(self.version))
+    def populate_profile(self, configfile):
+        super(CompilerClangLinux, self).populate_profile(configfile)
+        configfile['env']['CC'] = '/usr/bin/clang-{}'.format(self.version)
+        configfile['env']['CXX'] = '/usr/bin/clang++-{}'.format(self.version)
 
 
 @CompilerRegistry.register(
@@ -54,7 +57,7 @@ class CompilerClangApple(CompilerClangBase):
     osys = 'Macos'
     clang_versions_env_variable = "CONAN_APPLE_CLANG_VERSIONS"
 
-    def populate_profile_env(self, f):
-        super(CompilerClangApple, self).populate_profile_env(f)
-        f.write("CC=/usr/bin/clang\n".format(self.version))
-        f.write("CXX=/usr/bin/clang++\n".format(self.version))
+    def populate_profile(self, configfile):
+        super(CompilerClangApple, self).populate_profile(configfile)
+        configfile['env']['CC'] = '/usr/bin/clang'.format(self.version)  # TODO: Test it in mac, no version appended?
+        configfile['env']['CXX'] = '/usr/bin/clang++'.format(self.version)  # TODO: Test it in mac, no version appended?

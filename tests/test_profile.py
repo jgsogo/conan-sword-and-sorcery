@@ -33,10 +33,12 @@ class TestProfile(unittest.TestCase):
     def test_profile_file(self):
         compiler = ATestCompiler()
         with profile_for(compiler) as ff:
-            matches = parse_profile(ff)
-            self.assertEqual(len(matches), 5)
-            for key, val in matches.items():
-                self.assertEqual(getattr(compiler, key), val)
+            profile = parse_profile(ff)
+            self.assertEqual(profile['settings']['build_type'], compiler.build_type)
+            self.assertEqual(profile['settings']['arch'], compiler.arch)
+            self.assertEqual(profile['settings']['compiler'], compiler.id)
+            self.assertEqual(profile['settings']['compiler.version'], compiler.version)
+            self.assertEqual(profile['settings']['os'], compiler.osys)
 
     def test_compiler_clang(self):
         version = '3.9'
@@ -46,14 +48,19 @@ class TestProfile(unittest.TestCase):
 
         compiler = CompilerClangLinux(arch=arch, build_type=build_type, version=version, libcxx=libcxx)
         with profile_for(compiler) as ff:
-            matches = parse_profile(ff)
+            parser = parse_profile(ff)
+            options = {}
+            for section in parser.sections():
+                options.update(parser.items(section))
 
-        self.assertDictEqual(matches, {'os': compiler.osys,
+        self.assertDictEqual(options, {'os': compiler.osys,
                                        'arch': arch,
                                        'build_type': build_type,
                                        'compiler': compiler.id,
                                        'compiler.version': version,
-                                       'compiler.libcxx': libcxx})
+                                       'compiler.libcxx': libcxx,
+                                       'CC': '/usr/bin/clang-{}'.format(version),
+                                       'CXX': '/usr/bin/clang++-{}'.format(version),})
 
 
 if __name__ == '__main__':
