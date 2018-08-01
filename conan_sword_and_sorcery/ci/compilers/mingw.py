@@ -31,7 +31,7 @@ class CompilerMinGW(BaseCompiler):
         # TODO: Here we need to parse MINGW_CONFIGURATIONS with all the information.
         mingw_versions = get_env("CONAN_MINGW_VERSIONS", [])
         mingw_exceptions = get_env("CONAN_MINGW_EXCEPTIONS", [])
-        mingw_threads = get_env("CONAN_MINGW_THREAD", [])
+        mingw_threads = get_env("CONAN_MINGW_THREADS", [])
         r = {}
         if len(mingw_versions):
             r['version'] = [(cls.id, v) for v in mingw_versions]

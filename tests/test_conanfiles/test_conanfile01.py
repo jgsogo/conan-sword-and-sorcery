@@ -35,6 +35,7 @@ class TestConanfile01(TestCaseEnvClean):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.wrapper, settings=self.settings, osys="Linux")
         self.assertEqual(len(list(generator.enumerate_jobs())), 68)
 
+        # Just GCC
         with context_env(CONAN_GCC_VERSIONS="7"):
             self.assertEqual(len(list(generator.enumerate_jobs())), 8)
 
@@ -44,10 +45,21 @@ class TestConanfile01(TestCaseEnvClean):
         with context_env(CONAN_GCC_VERSIONS="7", CONAN_BUILD_TYPES='Debug', CONAN_OPTIONS='build_gmock,shared'):
             self.assertEqual(len(list(generator.enumerate_jobs())), 16)
 
+        # Just CLANG
+        with context_env(CONAN_CLANG_VERSIONS="5.0"):
+            self.assertEqual(len(list(generator.enumerate_jobs())), 12)
+
+        with context_env(CONAN_CLANG_VERSIONS="5.0", CONAN_BUILD_TYPES='Debug'):
+            self.assertEqual(len(list(generator.enumerate_jobs())), 6)
+
+        with context_env(CONAN_CLANG_VERSIONS="5.0", CONAN_BUILD_TYPES='Debug', CONAN_OPTIONS='build_gmock,shared'):
+            self.assertEqual(len(list(generator.enumerate_jobs())), 24)
+
     def test_total_windows(self):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.wrapper, settings=self.settings, osys="Windows")
         self.assertEqual(len(list(generator.enumerate_jobs())), 64)  # Visual Studio + MinGW
 
+        # Just Visual Studio
         with context_env(CONAN_VISUAL_VERSIONS='12'):
             self.assertEqual(len(list(generator.enumerate_jobs())), 8)
 
@@ -65,6 +77,16 @@ class TestConanfile01(TestCaseEnvClean):
 
         with context_env(CONAN_BUILD_TYPES='Debug', CONAN_GCC_VERSIONS='4.7'):
             self.assertEqual(len(list(generator.enumerate_jobs())), 0)
+
+        # Just MinGW
+        with context_env(CONAN_MINGW_VERSIONS='4.9'):
+            self.assertEqual(len(list(generator.enumerate_jobs())), 8)
+
+        with context_env(CONAN_MINGW_VERSIONS='4.9', CONAN_MINGW_EXCEPTIONS="seh"):
+            self.assertEqual(len(list(generator.enumerate_jobs())), 8)
+
+        with context_env(CONAN_MINGW_VERSIONS='4.9', CONAN_MINGW_EXCEPTIONS="seh", CONAN_MINGW_THREADS="posix"):
+            self.assertEqual(len(list(generator.enumerate_jobs())), 4)
 
     def test_filter_jobs(self):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.wrapper, settings=self.settings, osys="Windows")
