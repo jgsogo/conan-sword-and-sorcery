@@ -46,7 +46,7 @@ class TestConanfile01(TestCaseEnvClean):
 
     def test_total_windows(self):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.wrapper, settings=self.settings, osys="Windows")
-        self.assertEqual(len(list(generator.enumerate_jobs())), 32)
+        self.assertEqual(len(list(generator.enumerate_jobs())), 64)  # Visual Studio + MinGW
 
         with context_env(CONAN_VISUAL_VERSIONS='12'):
             self.assertEqual(len(list(generator.enumerate_jobs())), 8)
@@ -68,7 +68,7 @@ class TestConanfile01(TestCaseEnvClean):
 
     def test_filter_jobs(self):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.wrapper, settings=self.settings, osys="Windows")
-        self.assertEqual(len(list(generator.enumerate_jobs())), 32)
+        self.assertEqual(len(list(generator.enumerate_jobs())), 64)  # Visual Studio + MinGW
 
         with context_env(CONAN_VISUAL_VERSIONS='12'):
             all_jobs = list(generator.enumerate_jobs())

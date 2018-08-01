@@ -8,7 +8,7 @@ except ImportError:
 
 
 from conan_sword_and_sorcery.ci.compilers import CompilerRegistry
-from tests.utils import TestCaseEnvClean
+from tests.utils import TestCaseEnvClean, count_registered_compilers
 from conan_sword_and_sorcery.utils.environ import context_env
 
 
@@ -19,13 +19,20 @@ class TestCompilerRegistry(TestCaseEnvClean):
         self.os = ["Windows", "Linux", "Macos",]
 
     def test_base(self):
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os))), 132)
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ]))), 66)
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ], version=[("gcc", "7"), ]))), 4)
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ], version=[("gcc", "7"), ("Visual Studio", "12"), ]))), 8)
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os))),
+                         count_registered_compilers(osys=self.os))
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ]))),
+                         count_registered_compilers(osys=self.os, arch=['x86', ]))
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ], version=[("gcc", "7"), ]))),
+                         count_registered_compilers(os=self.os, arch=['x86'], id='gcc', version='7')
+                         )
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=['x86', ], version=[("gcc", "7"), ("Visual Studio", "12"), ]))),
+                         count_registered_compilers(os=self.os, arch=['x86'], id=['gcc', 'Visual Studio'], version=['7', '12', ])
+                         )
 
     def test_invalid_argument(self):
-        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, invalid_arg=["x86", ]))), 132)  # TODO: It may be invalid for some, but valid for others, so do not discard compilers if you pass them strange arguments
+        self.assertEqual(len(list(self.registry.get_compilers(os=self.os, invalid_arg=["x86", ]))),
+                         count_registered_compilers(osys=self.os, ))  # TODO: It may be invalid for some, but valid for others, so do not discard compilers if you pass them strange arguments
 
     def test_invalid_value(self):
         self.assertEqual(len(list(self.registry.get_compilers(os=self.os, arch=["x86000", ]))), 0)

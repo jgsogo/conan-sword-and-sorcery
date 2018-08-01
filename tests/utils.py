@@ -27,10 +27,13 @@ def count_registered_compilers(id=None, osys=None, **kwargs):
         if osys and class_holder.compiler_class.osys not in osys:
             continue
 
-        for compiler_instance in class_holder.explode():
+        def validate_compiler(instance):
             for key, value in compiler_kwargs.items():
-                compiler_key_value = getattr(compiler_instance, key, None)
+                compiler_key_value = getattr(instance, key, None)
                 if compiler_key_value and compiler_key_value not in value:
-                    continue
-            n += 1
+                    return False
+            return True
+
+        n += sum([validate_compiler(instance) for instance in class_holder.explode()])
+
     return n
