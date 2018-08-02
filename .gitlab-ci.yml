@@ -91,7 +91,7 @@ clang_50_release:
 
 gcc_49_dockerized:
    stage: live_tests
-   image: lasote/conangcc49
+   image: python:3.6
    services:
      - docker
    script:
