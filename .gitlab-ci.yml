@@ -98,11 +98,12 @@ gcc_49_dockerized:
      - sudo pip install .
      - conan user
      - sudo apt-get update
-     - sudo apt-get install -y apt-transport-https
-     - sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-     - sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
+     - sudo apt-get install linux-image-extra-$(uname -r) linux-image-extra-virtual
+     - sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+     - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
      - sudo apt-get update
-     - sudo apt-get install -y docker-engine
+     - sudo apt-get install docker-ce
      - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_DOCKER_IMAGE=lasote/conangcc49 run_ci tests/files/example1/conanfile.py
    except:
      - /^notest/
