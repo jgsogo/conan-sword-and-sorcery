@@ -65,19 +65,17 @@ gcc_49_all:
    script:
      - sudo pip install .
      - conan user
-     - git clone https://github.com/bincrafters/conan-protobuf.git
-     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 run_ci conan-protobuf/conanfile.py
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 run_ci tests/files/example1/conanfile.py
    except:
      - /^notest/
 
-gcc_49_x86_release,with_zlib:
+gcc_49_x86_release,option1:
    stage: live_tests
    image: lasote/conangcc49
    script:
      - sudo pip install .
      - conan user
-     - git clone https://github.com/bincrafters/conan-protobuf.git
-     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_OPTIONS=with_zlib run_ci conan-protobuf/conanfile.py
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_OPTIONS=option1 run_ci tests/files/example1/conanfile.py
    except:
      - /^notest/
 
@@ -87,19 +85,19 @@ clang_50_release:
    script:
      - sudo pip install .
      - conan user
-     - git clone https://github.com/bincrafters/conan-protobuf.git
-     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_CLANG_VERSIONS=4.9 CONAN_ARCHS=x86,x86_64 CONAN_BUILD_TYPES=Release run_ci conan-protobuf/conanfile.py
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_CLANG_VERSIONS=4.9 CONAN_ARCHS=x86,x86_64 CONAN_BUILD_TYPES=Release run_ci tests/files/example1/conanfile.py
    except:
      - /^notest/
 
 gcc_49_dockerized:
    stage: live_tests
    image: lasote/conangcc49
+   services:
+     - docker
    script:
      - sudo pip install .
      - conan user
-     - git clone https://github.com/bincrafters/conan-protobuf.git
-     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_DOCKER_IMAGE=lasote/conangcc49 run_ci conan-protobuf/conanfile.py
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_DOCKER_IMAGE=lasote/conangcc49 run_ci tests/files/example1/conanfile.py
    except:
      - /^notest/
 
