@@ -83,7 +83,7 @@ pages:
   dependencies:
     - python_3_6
   script:
-    - mv reports/ public/
+    - mv reports/html public/
   artifacts:
     paths:
       - public
