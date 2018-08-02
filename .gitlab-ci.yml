@@ -97,6 +97,7 @@ gcc_49_dockerized:
    script:
      - sudo pip install .
      - conan user
+     - sudo apt-get install -y docker-engine
      - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_DOCKER_IMAGE=lasote/conangcc49 run_ci tests/files/example1/conanfile.py
    except:
      - /^notest/
