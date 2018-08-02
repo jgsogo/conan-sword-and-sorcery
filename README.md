@@ -1,6 +1,8 @@
 Conan - Sword and Sorcery
 =========================
 
+![coverage](https://gitlab.com/jgsogo/conan-sword-and-sorcery/badges/master/coverage.svg?job=coverage)
+
 > **Status**: beta version. Under development
 
 Utilities for [Conan The Frogarian](https://conan.io). At this moment it addressed
