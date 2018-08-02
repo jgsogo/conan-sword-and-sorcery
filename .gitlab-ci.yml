@@ -66,6 +66,8 @@ gcc_49_all:
      - sudo pip install .
      - conan user
      - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 run_ci tests/files/example1/conanfile.py
+     - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
+     - if [ $n -eq 8 ]; then echo 0; else echo 1; fi;
    except:
      - /^notest/
 
@@ -76,6 +78,8 @@ gcc_49_x86_release,option1:
      - sudo pip install .
      - conan user
      - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_OPTIONS=option1 run_ci tests/files/example1/conanfile.py
+     - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
+     - if [ $n -eq 8 ]; then echo 0; else echo 1; fi;
    except:
      - /^notest/
 
@@ -86,6 +90,8 @@ clang_50_release:
      - sudo pip install .
      - conan user
      - TRAVIS=true TRAVIS_BRANCH=testing CONAN_CLANG_VERSIONS=4.9 CONAN_ARCHS=x86,x86_64 CONAN_BUILD_TYPES=Release run_ci tests/files/example1/conanfile.py
+     - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
+     - if [ $n -eq 8 ]; then echo 0; else echo 1; fi;
    except:
      - /^notest/
 
@@ -105,6 +111,8 @@ gcc_49_dockerized:
      - sudo apt-get update
      - sudo apt-get install docker-ce
      - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_DOCKER_IMAGE=lasote/conangcc49 run_ci tests/files/example1/conanfile.py
+     - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
+     - if [ $n -eq 8 ]; then echo 0; else echo 1; fi;
    except:
      - /^notest/
 
