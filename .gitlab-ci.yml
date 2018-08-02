@@ -35,7 +35,7 @@ python_3_6:
      - pip install -r tests/requirements.txt
      - conan user
      - mkdir ~/.conan/data  # This directory is not generated on install
-     - py.test --cov=conan_sword_and_sorcery --cov-report=html:public/coverage tests/  # Run with coverage
+     - py.test --cov=conan_sword_and_sorcery --cov-report=html:reports/html tests/  # Run with coverage
    except:
      - /^notest/
    artifacts:
@@ -78,6 +78,20 @@ deploy_pypi:
     - branches
 
 
+pages:
+  stage: deploy
+  dependencies:
+    - python_3_6
+  script:
+    - mv reports/ public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  only:
+    - master
+
+
 cleanup_pypirc:
    stage: cleanup
    when: always   # this is important; run even if preceding stages failed.
@@ -87,3 +101,4 @@ cleanup_pypirc:
     - /^v(\d+!)?(\d+)(\.\d+)+([\.\-\_])?((a(lpha)?|b(eta)?|c|r(c|ev)?|pre(view)?)\d*)?(\.?(post|dev)\d*)?$/  # PEP-440 compliant version (with 'v' at the beginning)
    except:
     - branches
+
