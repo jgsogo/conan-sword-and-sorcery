@@ -2,6 +2,7 @@ Conan - Sword and Sorcery
 =========================
 
 [![coverage](https://gitlab.com/jgsogo/conan-sword-and-sorcery/badges/master/coverage.svg?job=coverage)](http://jgsogo.gitlab.io/conan-sword-and-sorcery/)
+[![pipeline](https://gitlab.com/jgsogo/conan-sword-and-sorcery/badges/master/pipeline.svg)](https://gitlab.com/jgsogo/conan-sword-and-sorcery/commits/master)
 
 > **Status**: beta version. Under development
 
