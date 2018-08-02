@@ -35,7 +35,7 @@ python_3_6:
      - pip install -r tests/requirements.txt
      - conan user
      - mkdir ~/.conan/data  # This directory is not generated on install
-     - py.test --cov=conan_sword_and_sorcery --cov-report=html:reports/html tests/  # Run with coverage
+     - py.test --cov=conan_sword_and_sorcery --cov-report=html:public/coverage tests/  # Run with coverage
    except:
      - /^notest/
    artifacts:
