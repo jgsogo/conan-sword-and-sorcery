@@ -53,9 +53,10 @@ class DockerMixin(object):
                 # Install what is needed
                 its_me = os.environ.get('CONAN_SWORD_AND_SORCERY_ITS_ME', False)
                 if its_me:
-                    self.docker_helper.run_in_docker("pip install -U conan_sword_and_sorcery=={version}".format(version=__version__))
-                else:
+                    # We are testing conan_sword_and_sorcery itself
                     self.docker_helper.run_in_docker("pip install {path}".format(path=self.docker_project))
+                else:
+                    self.docker_helper.run_in_docker("pip install -U conan_sword_and_sorcery=={version}".format(version=__version__))
                 self.docker_helper.run_in_docker("conan user")
 
                 # Create profiles directory
