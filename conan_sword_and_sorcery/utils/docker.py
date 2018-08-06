@@ -15,8 +15,14 @@ def temporary_env_file():
     # Log env variables into a file to use it afterwards: https://stackoverflow.com/questions/30494050/how-do-i-pass-environment-variables-to-docker-containers
     "--env-file ./env.list"
     tmp = tempfile.NamedTemporaryFile(mode="w", delete=False)
+    log.info("Log env variable keys:")
     for key, value in os.environ.items():
-        tmp.write("{}={}\n".format(key, value))
+        # Check this issue https://github.com/moby/moby/issues/12997
+        #   and provided solution (commented in the issue): https://gist.github.com/hudon/149466af21dfc52fdc70
+        if key.startswith(('CONAN', 'TRAVIS', )):
+
+            tmp.write("{}={}\n".format(key, value))
+            log.info("{}".format(key))
     tmp.close()
     try:
         yield tmp.name
@@ -74,6 +80,6 @@ class DockerHelper(object):
 
     def run_in_docker(self, command, sudo=True):
         sudoer = "sudo " if sudo else ''
-        return cmd("docker exec -it {name} /bin/sh -c \"{sudoer}{command}\"".format(
+        return cmd("docker exec {name} /bin/sh -c \"{sudoer}{command}\"".format(
             name=self.name, command=command, sudoer=sudoer
         ))

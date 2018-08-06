@@ -36,12 +36,13 @@ def conf(new_values, conan_conf=None):
 
     with backup_file(conan_conf):
         config = ConfigParser()
+        config.optionxform = str
         config.read(conan_conf)
         for section, item, new_value in new_values:
             config[section][item] = new_value
 
-        with open(conan_conf, 'w') as f:
-            config.write(conan_conf)
+        with open(conan_conf, 'wb') as output_config:
+            config.write(output_config)
         yield config
 
     pass

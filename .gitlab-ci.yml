@@ -15,6 +15,7 @@ stages:
   - deploy
   - cleanup
 
+
 python_2_7:
    stage: test
    image: python:2.7
@@ -91,30 +92,26 @@ clang_50_release:
      - conan user
      - TRAVIS=true TRAVIS_BRANCH=testing CONAN_CLANG_VERSIONS=5.0 CONAN_ARCHS=x86,x86_64 CONAN_BUILD_TYPES=Release run_ci tests/files/example1/conanfile.py
      - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
-     - if [ $n -eq 8 ]; then true; else echo "found $n"; false; fi;
+     - if [ $n -eq 6 ]; then true; else echo "found $n"; false; fi;
    except:
      - /^notest/
 
 gcc_49_dockerized:
    stage: live_tests
-   image: python:3.6
+   image: docker:latest
    services:
-     - docker
+     - docker:dind
    script:
-     - sudo pip install .
+     - apk add --no-cache bash build-base curl git libffi-dev openssh openssl-dev python py-pip python-dev
+     - pip install .
      - conan user
-     - sudo apt-get update
-     - sudo apt-get install linux-image-extra-$(uname -r) linux-image-extra-virtual
-     - sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
-     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-     - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-     - sudo apt-get update
-     - sudo apt-get install docker-ce
-     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_DOCKER_IMAGE=lasote/conangcc49 run_ci tests/files/example1/conanfile.py
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_DOCKER_IMAGE=lasote/conangcc49 run_ci tests/files/example1/conanfile.py -vv
+     - conan config set storage.path=/builds/jgsogo/conan-sword-and-sorcery/data
      - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
-     - if [ $n -eq 8 ]; then true; else echo "found $n"; false; fi;
+     - if [ $n -eq 2 ]; then true; else echo "found $n"; false; fi;
    except:
      - /^notest/
+
 
 deploy_pypi:
   stage: deploy
@@ -150,7 +147,6 @@ pages:
     expire_in: 30 days
   only:
     - master
-
 
 cleanup_pypirc:
    stage: cleanup
