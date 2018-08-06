@@ -41,7 +41,7 @@ def conf(new_values, conan_conf=None):
         for section, item, new_value in new_values:
             config[section][item] = new_value
 
-        with open(conan_conf, 'wb') as output_config:
+        with open(conan_conf, 'w') as output_config:
             config.write(output_config)
         yield config
 
