@@ -1,6 +1,7 @@
 variables:
     PYPI_USER: SECURE
     PYPI_PASSWORD: SECURE
+    PYTHONUNBUFFERED: 1
 
 cache:
   paths:
@@ -10,8 +11,10 @@ cache:
 stages:
   - test
   - coverage
+  - live_tests
   - deploy
   - cleanup
+
 
 python_2_7:
    stage: test
@@ -56,6 +59,60 @@ coverage:
   except:
     - /^notest/
 
+
+gcc_49_all:
+   stage: live_tests
+   image: lasote/conangcc49
+   script:
+     - sudo pip install .
+     - conan user
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 run_ci tests/files/example1/conanfile.py
+     - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
+     - if [ $n -eq 8 ]; then true; else echo "found $n"; false; fi;
+   except:
+     - /^notest/
+
+gcc_49_x86_release,option1:
+   stage: live_tests
+   image: lasote/conangcc49
+   script:
+     - sudo pip install .
+     - conan user
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_OPTIONS=option1 run_ci tests/files/example1/conanfile.py
+     - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
+     - if [ $n -eq 6 ]; then true; else echo "found $n"; false; fi;
+   except:
+     - /^notest/
+
+clang_50_release:
+   stage: live_tests
+   image: lasote/conanclang50
+   script:
+     - sudo pip install .
+     - conan user
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_CLANG_VERSIONS=5.0 CONAN_ARCHS=x86,x86_64 CONAN_BUILD_TYPES=Release run_ci tests/files/example1/conanfile.py
+     - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
+     - if [ $n -eq 6 ]; then true; else echo "found $n"; false; fi;
+   except:
+     - /^notest/
+
+gcc_49_dockerized:
+   stage: live_tests
+   image: docker:latest
+   services:
+     - docker:dind
+   script:
+     - apk add --no-cache bash build-base curl git libffi-dev openssh openssl-dev python py-pip python-dev
+     - pip install .
+     - conan user
+     - TRAVIS=true TRAVIS_BRANCH=testing CONAN_GCC_VERSIONS=4.9 CONAN_ARCHS=x86_64 CONAN_BUILD_TYPES=Release CONAN_DOCKER_IMAGE=lasote/conangcc49 run_ci tests/files/example1/conanfile.py -vv
+     - conan config set storage.path=/builds/jgsogo/conan-sword-and-sorcery/data
+     - n=`conan search example1/test@conan/testing --raw | grep Package_ID | wc -l`
+     - if [ $n -eq 2 ]; then true; else echo "found $n"; false; fi;
+   except:
+     - /^notest/
+
+
 deploy_pypi:
   stage: deploy
   image: python:3.6
@@ -90,7 +147,6 @@ pages:
     expire_in: 30 days
   only:
     - master
-
 
 cleanup_pypirc:
    stage: cleanup

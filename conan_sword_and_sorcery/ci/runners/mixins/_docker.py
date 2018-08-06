@@ -4,6 +4,7 @@ import logging
 
 from conan_sword_and_sorcery import __version__
 from conan_sword_and_sorcery.utils.docker import DockerHelper
+from conan_sword_and_sorcery.utils.conan import conf
 from conan_sword_and_sorcery.parsers.conan_conf import ConanConf
 from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS, FAIL, DRY_RUN
 
@@ -26,6 +27,7 @@ class DockerMixin(object):
         self.use_docker = ("CONAN_DOCKER_IMAGE" in os.environ) or (os.environ.get("CONAN_USE_DOCKER", False))
         if self.use_docker:
             self.conanfile = transplant_path(conanfile, os.getcwd(), self.docker_project)
+            self.local_storage_path = os.path.join(os.getcwd(), 'data')
 
     def set_compiler(self, compiler):
         if self.use_docker:
@@ -43,8 +45,7 @@ class DockerMixin(object):
 
                 # Map some directories
                 self.docker_helper.add_mount_unit(os.getcwd(), self.docker_project)
-                self.docker_helper.add_mount_unit(os.path.expanduser("~"), self.docker_home)  # Required
-                self.docker_helper.add_mount_unit(host_storage, self.docker_storage_path)
+                self.docker_helper.add_mount_unit(self.local_storage_path, self.docker_storage_path)
 
                 # Run the container
                 self.docker_helper.run()
@@ -75,6 +76,11 @@ class DockerMixin(object):
             return DRY_RUN
 
     def upload(self, username, channel):
+        conf_values = []
+
         if self.use_docker:
             self.docker_helper.run_in_docker("chmod -R 777 {}".format(self.docker_storage_path))
-        super(DockerMixin, self).upload(username, channel)
+            conf_values = [('storage', 'path', self.local_storage_path), ]
+
+        with conf(new_values=conf_values) as _:
+            super(DockerMixin, self).upload(username, channel)
