@@ -4,6 +4,7 @@ import sys
 import logging
 import inspect
 import itertools
+from copy import deepcopy
 
 from conans.model.conan_file import ConanFile
 from conans.model.settings import Settings
@@ -54,6 +55,12 @@ class ConanFileWrapper(object):
 
     def instantiate(self, settings):  # type: (Settings) -> None
         self.recipe = self.recipe_class(output=None, runner=None, settings=settings)
+
+    def reset_recipe(self, settings):  # type: (Settings) -> None
+        self.instantiate(settings=settings)
+        # TODO: This is almost a Conan issue: a need to make this method available because I cannot reset options,
+        #   I cannot do a `self.recipe.options = conans.model.conan_file.create_options(self.recipe)` because the
+        #   the value self.recipe.options (which is used inside create_options is no longer a dictionary.
 
     def settings_keys(self):
         if not self.recipe:

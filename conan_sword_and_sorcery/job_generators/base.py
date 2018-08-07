@@ -78,6 +78,7 @@ class JobGeneratorBase(object):
             for compiler in compilers:
                 compiler.update_settings(self._settings)
                 try:
+                    self._conanfile_wrapper.reset_recipe(settings=self._settings)
                     self._conanfile_wrapper.configure()  # Check if settings configuration is supported
 
                     options = self._get_exploded_options()
@@ -88,11 +89,11 @@ class JobGeneratorBase(object):
                         for compiler, option_pack in itertools.product([compiler, ], options):
                             for k, v in option_pack.items():
                                 setattr(self._conanfile_wrapper.options, k, v)
-                            try:
-                                self._conanfile_wrapper.configure()
-                                yield compiler, option_pack
-                            except ConanException as e:  # TODO: Something like ConanInvalidConfiguration would fit better
-                                log.debug(" - configuration discarded by recipe: {}".format(e))
+                                try:
+                                    self._conanfile_wrapper.configure()
+                                    yield compiler, option_pack
+                                except ConanException as e:  # TODO: Something like ConanInvalidConfiguration would fit better
+                                    log.debug(" - configuration discarded by recipe: {}".format(e))
 
                 except ConanException as e:  # TODO: Something like ConanInvalidConfiguration would fit better
                     log.debug(" - configuration discarded by recipe: {}".format(e))
