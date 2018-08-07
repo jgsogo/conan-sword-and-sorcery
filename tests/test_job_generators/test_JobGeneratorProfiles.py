@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import shutil
+import tempfile
 try:
     from unittest import mock
 except ImportError:
@@ -8,9 +10,11 @@ except ImportError:
 
 from conans.errors import ConanException
 
+from conan_sword_and_sorcery.parsers.profile import profile_for
 from conan_sword_and_sorcery.job_generators.profiles_generator import JobGeneratorProfiles
 from conan_sword_and_sorcery.parsers.settings import get_settings
 from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
+from conan_sword_and_sorcery.ci.compilers.clang import CompilerClangApple, CompilerClangLinux
 
 from tests.utils import TestCaseEnvClean
 from conan_sword_and_sorcery.utils.environ import context_env
@@ -33,8 +37,18 @@ class TestExecutorAllSettings(TestCaseEnvClean):
         self.options = ''
 
     def test_default_profile_list(self):
-        generator = JobGeneratorProfiles(conanfile_wrapper=self.conanfile_wrapper, settings=self.settings, osys="Linux")
-        self.assertTrue(len(list(generator.enumerate_jobs())) != 0)
+        tmp_dir = tempfile.mkdtemp()
+        try:
+            # Generate a couple of random profiles
+            profiles_dir = os.path.join(tmp_dir, '.conan', 'profiles')
+            os.makedirs(profiles_dir)
+            with profile_for(CompilerClangApple(arch='x86', build_type='Release', version='7.3', libcxx='libc++'), basepath=profiles_dir) as _1:
+                with profile_for(CompilerClangLinux(arch='x86', build_type='Release', version='4.0', libcxx='libstdc++'), basepath=profiles_dir) as _2:
+                    with context_env(CONAN_USER_HOME=tmp_dir):
+                        generator = JobGeneratorProfiles(conanfile_wrapper=self.conanfile_wrapper, settings=self.settings)
+                        self.assertEqual(len(list(generator.enumerate_jobs())), 2)
+        finally:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
 
     def test_empty_profile_list(self):
         generator = JobGeneratorProfiles(conanfile_wrapper=self.conanfile_wrapper, settings=self.settings, osys="Linux")

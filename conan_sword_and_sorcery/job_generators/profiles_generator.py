@@ -6,12 +6,17 @@ import os
 from conan_sword_and_sorcery.ci.compilers import CompilerRegistry
 from conan_sword_and_sorcery.job_generators.base import JobGeneratorBase
 from conan_sword_and_sorcery.parsers.profile import parse_profile
+from conan_sword_and_sorcery.utils import platform_system
 
 log = logging.getLogger(__name__)
 
 
 class JobGeneratorProfiles(JobGeneratorBase):
     """ JobGenerator based on profile files in local machine """
+
+    def __init__(self, conanfile_wrapper, settings):  # type: (ConanFileWrapper, Settings) -> None
+        osys = platform_system()
+        super(JobGeneratorProfiles, self).__init__(conanfile_wrapper=conanfile_wrapper, settings=settings, osys=osys)
 
     def _get_compilers(self, recipe_settings_keys):
         log.debug("JobGeneratorProfiles::get_compilers(recipe_settings_keys='{}')".format(', '.join(recipe_settings_keys)))
@@ -30,6 +35,7 @@ class JobGeneratorProfiles(JobGeneratorBase):
                 if item.startswith('compiler.') and not item.endswith('version'):
                     filters[item.split('.')[1]] = [value, ]
             version = [(data['settings']['compiler'], data['settings']['compiler.version']), ]
+
             compilers = list(CompilerRegistry.get_compilers(os=data['settings']['os'], version=version, **filters))
             assert len(compilers) == 1, "Each profile file can retrieve one and only one compiler configuration"
 

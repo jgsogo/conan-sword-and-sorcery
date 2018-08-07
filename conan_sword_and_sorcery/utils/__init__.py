@@ -3,6 +3,7 @@
 import contextlib
 import os
 import shutil
+import platform
 
 
 try:
@@ -44,3 +45,10 @@ def backup_file(filename, backup_dir=None):
     finally:
         shutil.copy2(os.path.join(backup_dir, backup_filename), filename)
         os.remove(os.path.join(backup_dir, backup_filename))
+
+
+def platform_system():
+    osys = platform.system()
+    if osys == "Darwin":
+        osys = "Macos"
+    return osys
