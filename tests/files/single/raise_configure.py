@@ -9,8 +9,8 @@ class RaiseConfigureWindowsSettings(ConanFile):
     name = "settings_all"
     version = "1.8.0"
     settings = "os", "arch", "compiler", "build_type"
-    options = {'opt1': [True, False]}
-    default_options = "opt1=True"
+    options = {'opt1': [True, False], }
+    default_options = ("opt1=True", )
 
     def configure(self):
         if self.settings.os == 'Windows':

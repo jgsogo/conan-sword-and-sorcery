@@ -8,5 +8,5 @@ class Conanfile02(ConanFile):
     name = "protobuf"
     version = "3.5.1"
     settings = "os", "arch"
-    options = {"shared": [True, False],}
+    options = {"shared": [True, False], }
 
