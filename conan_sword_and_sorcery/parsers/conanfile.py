@@ -28,13 +28,13 @@ class ConanFileWrapper(object):
         log.debug("ConanfileParser::parse(filename='{0}')".format(filename))
         log.debug(" - using python version '{}".format(sys.version_info))
         # Follow https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
-        if sys.version_info[0] < 3:
+        if sys.version_info[0] < 3:  # pragma: no py3 cover
             import imp
             try:
                 foo = imp.load_source(filename, filename)  # First parameter uses filename so each .py is loaded in a module with a different name
             except IOError:
                 raise IOError("Cannot import filename '{}'".format(filename))
-        else:
+        else:  # pragma: no py2 cover
             try:
                 # Python 3.5+
                 import importlib.util
