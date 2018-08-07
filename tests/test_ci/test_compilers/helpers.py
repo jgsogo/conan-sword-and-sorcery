@@ -37,3 +37,8 @@ class CompilerMixinTestCase:
         kwargs.pop('version')
         with self.assertRaisesRegex(ValueError, "Required argument 'version'"):
             self.compiler_class(**kwargs)
+
+    def test_additional_argument(self):
+        kwargs = self.get_compiler_init_arguments()
+        with self.assertRaisesRegex(ValueError, "Invalid configuration argument for compiler"):
+             self.compiler_class(invalid_arg=23, **kwargs)
