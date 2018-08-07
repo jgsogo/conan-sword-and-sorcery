@@ -10,8 +10,10 @@ except ImportError:
 
 from conan_sword_and_sorcery.ci.runners import RunnerRegistry, TravisRunner, AppveyorRunner, ProfilesRunner
 from conan_sword_and_sorcery.parsers.settings import get_settings
-from tests.utils import TestCaseEnvClean
 from conan_sword_and_sorcery.utils.environ import context_env
+from conan_sword_and_sorcery.utils import platform_system
+
+from tests.utils import TestCaseEnvClean
 
 
 class TestRunnerRegistry(TestCaseEnvClean):
@@ -25,7 +27,7 @@ class TestRunnerRegistry(TestCaseEnvClean):
         self.conanfile = os.path.join(single_files, 'conanfile01.py')
 
     def test_none(self):
-        runner = self.registry.get_runner(conanfile=self.conanfile, settings=self.settings, osys='Windows')
+        runner = self.registry.get_runner(conanfile=self.conanfile, settings=self.settings, osys=platform_system())
         self.assertIsInstance(runner, ProfilesRunner)
 
     def test_travis(self):

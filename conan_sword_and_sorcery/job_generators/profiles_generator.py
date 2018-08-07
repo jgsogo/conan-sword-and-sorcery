@@ -14,9 +14,10 @@ log = logging.getLogger(__name__)
 class JobGeneratorProfiles(JobGeneratorBase):
     """ JobGenerator based on profile files in local machine """
 
-    def __init__(self, conanfile_wrapper, settings):  # type: (ConanFileWrapper, Settings) -> None
-        osys = platform_system()
-        super(JobGeneratorProfiles, self).__init__(conanfile_wrapper=conanfile_wrapper, settings=settings, osys=osys)
+    def __init__(self, conanfile_wrapper, settings, osys):  # type: (ConanFileWrapper, Settings, str) -> None
+        osys_real = platform_system()
+        assert osys_real == osys
+        super(JobGeneratorProfiles, self).__init__(conanfile_wrapper=conanfile_wrapper, settings=settings, osys=osys_real)
 
     def _get_compilers(self, recipe_settings_keys):
         log.debug("JobGeneratorProfiles::get_compilers(recipe_settings_keys='{}')".format(', '.join(recipe_settings_keys)))
