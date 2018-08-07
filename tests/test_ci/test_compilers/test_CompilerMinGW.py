@@ -7,34 +7,38 @@ try:
 except ImportError:
     import mock
 
-from conan_sword_and_sorcery.ci.compilers.clang import CompilerClangApple
+from conan_sword_and_sorcery.ci.compilers.mingw import CompilerMinGW
 from tests.test_ci.test_compilers.helpers import CompilerMixinTestCase
 
 
-class TestCompilerClangApple(CompilerMixinTestCase, unittest.TestCase):
-    compiler_class = CompilerClangApple
+class TestCompilerMinGW(CompilerMixinTestCase, unittest.TestCase):
+    compiler_class = CompilerMinGW
 
     def get_compiler_init_arguments(self):
         return {
             'version': '4.9',
             'arch': 'x86',
             'build_type': 'Release',
-            'libcxx': 'libstdc++11',
+            'exception': 'seh',
+            'thread': 'posix',
         }
 
     def get_profile_file(self):
         config = configparser.ConfigParser()
         config.optionxform = str
-        config['settings'] = {'os': 'Macos',
+        config['settings'] = {'os': 'Windows',
                               'arch': 'x86',
                               'build_type': 'Release',
-                              'compiler': 'apple-clang',
+                              'compiler': 'gcc',
                               'compiler.version': '4.9',
-                              'compiler.libcxx': 'libstdc++11',
+                              'compiler.exception': 'seh',
+                              'compiler.threads': 'posix',
+                              'os_build': 'Windows',
+                              'arch_build': 'x86',
                               }
-        config['env'] = {'CC': '/usr/bin/clang',
-                         'CXX': '/usr/bin/clang++', }
-        config['build_requires'] = {}
+        config['env'] = {}
+        config['build_requires'] = {'mingw_installer/1.0@conan/stable': '',
+                                    'msys2_installer/latest@bincrafters/stable': ''}
         return config
 
 

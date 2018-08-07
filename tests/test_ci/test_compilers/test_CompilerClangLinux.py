@@ -34,6 +34,7 @@ class TestCompilerClangLinux(CompilerMixinTestCase, unittest.TestCase):
                               }
         config['env'] = {'CC': '/usr/bin/clang-4.9',
                          'CXX': '/usr/bin/clang++-4.9', }
+        config['build_requires'] = {}
         return config
 
 
