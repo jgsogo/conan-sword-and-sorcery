@@ -20,7 +20,7 @@ class TestCompilerMinGW(CompilerMixinTestCase, unittest.TestCase):
             'arch': 'x86',
             'build_type': 'Release',
             'exception': 'seh',
-            'thread': 'posix',
+            'threads': 'posix',
         }
 
     def get_profile_file(self):
