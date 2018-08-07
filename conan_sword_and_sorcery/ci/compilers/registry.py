@@ -87,5 +87,4 @@ class CompilerRegistry(object):
                     yield it
             except ValueError as e:
                 log.warning("Compiler {} discarded: {}".format(compiler_holder, e))
-        log.debug(" - no compiler found")
         return
