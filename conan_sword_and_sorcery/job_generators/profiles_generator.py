@@ -18,7 +18,7 @@ class JobGeneratorProfiles(JobGeneratorBase):
         profiles_dirname = os.path.join(os.environ.get('CONAN_USER_HOME', os.path.expanduser("~")), '.conan', 'profiles')
 
         if not os.path.exists(profiles_dirname):
-            return []
+            return
 
         # TODO: Check for duplicate files (equal content configuration)
         # TODO: How to handle options for child packages?
