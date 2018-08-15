@@ -23,7 +23,7 @@ def remote(url, name=None, insert_first=True):
     cmd("conan remote remove {name}".format(name=name))
 
 
-def remote_auth(remote, username, password):
+def remote_auth(remote, username, password):  # pragma: no cover
     command = "conan user -p {password} -r {remote} {username}".format(username=username, remote=remote, password=password)
     cmd(command, secret=True)
 
