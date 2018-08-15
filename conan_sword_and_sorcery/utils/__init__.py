@@ -6,12 +6,12 @@ import shutil
 import platform
 
 
-try:
+try:  # pragma: no py3 cover
     basestring  # attempt to evaluate basestring
 
     def isstr(s):
         return isinstance(s, basestring)
-except NameError:
+except NameError:  # pragma: no py2 cover
     def isstr(s):
         return isinstance(s, str)
 

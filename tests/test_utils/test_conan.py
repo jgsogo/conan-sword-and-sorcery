@@ -13,7 +13,9 @@ def parse_remote_list():
     remote_line = re.compile(r'^(.*): (http[^\[\s]+)(\s*\[Verify SSL: True\]\s+)?$')
     remotes = subprocess.check_output(["conan", "remote", "list"]).decode('utf-8')
     ret = []
+    print(remotes)
     for item in remotes.split('\n'):
+        print(item)
         if not len(item.strip()):
             continue
         m = remote_line.match(item)

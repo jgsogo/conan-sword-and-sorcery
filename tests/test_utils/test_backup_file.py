@@ -22,7 +22,7 @@ class TestBackupFile(unittest.TestCase):
             shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
     def test_invalid_file(self):
-        with self.assertRaises(FileNotFoundError):
+        with self.assertRaises(IOError):
             with backup_file("invented-file-name"):
                 self.assertTrue(True)
 
@@ -44,7 +44,7 @@ class TestBackupFile(unittest.TestCase):
         self.assertEqual(original_content, open(self.file1).read())
 
     def test_collision_names(self):
-        another_file = "{}.bak.1".format(self.file1)
+        another_file = "{}.bak".format(self.file1)
         another_content = "another file with the expected name for backup"
         with open(another_file, "w") as f:
             f.write("another file with the expected name for backup")
@@ -54,5 +54,4 @@ class TestBackupFile(unittest.TestCase):
 
         self.assertTrue(os.path.exists(another_file))
         self.assertEqual(another_content, open(another_file).read())
-
 
