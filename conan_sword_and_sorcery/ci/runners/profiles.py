@@ -10,5 +10,5 @@ class ProfilesRunner(BaseRunner):
     job_generator_class = JobGeneratorProfiles
 
     def get_branch_name(self):
-        # TODO: Get from git/hg/svn? Rename this class to 'local' or 'desktop'
+        # TODO: Get from git/hg/svn? Rename this class to 'local' or 'desktop'. Is it related to SCM feature by Conan?
         return "testing"

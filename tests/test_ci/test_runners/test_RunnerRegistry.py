@@ -39,3 +39,20 @@ class TestRunnerRegistry(TestCaseEnvClean):
         with context_env(APPVEYOR='True'):
             runner = self.registry.get_runner(conanfile=self.conanfile, settings=self.settings, osys='Windows')
             self.assertIsInstance(runner, AppveyorRunner)
+
+    def test_single_fallback(self):
+        with self.assertRaises(RuntimeError):
+            @RunnerRegistry.fallback
+            class OtherRunner():
+                pass
+
+    def test_no_repeated_env_variable(self):
+        with self.assertRaises(ValueError):
+            @RunnerRegistry.register("APPVEYOR")
+            class OtherRunner():
+                pass
+
+        with self.assertRaises(ValueError):
+            @RunnerRegistry.register("TRAVIS")
+            class OtherRunner():
+                pass

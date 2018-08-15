@@ -41,7 +41,7 @@ class DockerHelper(object):
 
     def pull(self):
         command = "docker pull {}".format(self.image)
-        cmd(command, error_msg="Error pulling docker image '{}': {{command}}".format(self.image))
+        cmd(command=command, error_msg="Error pulling docker image '{}': {{command}}".format(self.image))
 
     def add_mount_unit(self, host, target):
         if host in self.mnt:
@@ -68,15 +68,17 @@ class DockerHelper(object):
         self._is_running = True
 
     def _stop(self):
-        cmd("docker stop {name}".format(name=self.name), exception=None)
+        cmd(command="docker stop {name}".format(name=self.name), exception=None)
         self._is_running = False
 
     def copy(self, origin, tgt):
+        # TODO: check if it is running?
         command = "docker cp {origin} {name}:{tgt}".format(origin=origin, name=self.name, tgt=tgt)
-        cmd(command, error_msg="Error copying file to container: {command}")
+        cmd(command=command, error_msg="Error copying file to container: {command}")
 
     def run_in_docker(self, command, sudo=True):
+        # TODO: check if docker is already running?
         sudoer = "sudo " if sudo else ''
-        return cmd("docker exec {name} /bin/sh -c \"{sudoer}{command}\"".format(
+        return cmd(command="docker exec {name} /bin/sh -c \"{sudoer}{command}\"".format(
             name=self.name, command=command, sudoer=sudoer
         ))
