@@ -13,7 +13,7 @@ try:  # pragma: no py3 cover
         return isinstance(s, basestring)
 except NameError:  # pragma: no py2 cover
     def isstr(s):
-        return isinstance(s, str)
+        return isinstance(s, (str, bytes))
 
 
 def slice(total, current_page, total_pages):

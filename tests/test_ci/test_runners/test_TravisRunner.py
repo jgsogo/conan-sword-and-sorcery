@@ -9,7 +9,7 @@ from conan_sword_and_sorcery.utils.environ import context_env
 from tests.utils import TestCaseEnvClean
 
 
-class TestAppveyorRunner(TestCaseEnvClean):
+class TestTravisRunner(TestCaseEnvClean):
 
     def setUp(self):
         settings = get_settings()

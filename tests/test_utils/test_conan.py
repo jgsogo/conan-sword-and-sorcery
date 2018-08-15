@@ -10,7 +10,7 @@ from conan_sword_and_sorcery.parsers.conan_conf import ConanConf
 
 
 def parse_remote_list():
-    remote_line = re.compile(r'^(.*): (http[^\[\s]+)(\s*\[Verify SSL: True\]\s+)?$')
+    remote_line = re.compile(r'^(.*): (http[^\[\s]+)(\s*\[Verify SSL: True\]\s*)?$')
     remotes = subprocess.check_output(["conan", "remote", "list"]).decode('utf-8')
     ret = []
     print(remotes)
