@@ -28,11 +28,8 @@ class CompilerVisualStudio(BaseCompiler):
 
     @classmethod
     def validate(cls, build_type, runtime, **kwargs):
-        if super(CompilerVisualStudio, cls).validate(build_type=build_type, runtime=runtime, **kwargs):
-            return (build_type == "Debug" and runtime.endswith('d')) or \
-                   (build_type == "Release" and not runtime.endswith('d'))
-        else:
-            return False
+        return super(CompilerVisualStudio, cls).validate(build_type=build_type, runtime=runtime, **kwargs) and \
+            ((build_type == "Debug" and runtime.endswith('d')) or  (build_type == "Release" and not runtime.endswith('d')))
 
     def update_settings(self, settings):
         super(CompilerVisualStudio, self).update_settings(settings)
