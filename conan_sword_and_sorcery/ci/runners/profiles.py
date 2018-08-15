@@ -11,4 +11,4 @@ class ProfilesRunner(BaseRunner):
 
     def get_branch_name(self):
         # TODO: Get from git/hg/svn? Rename this class to 'local' or 'desktop'. Is it related to SCM feature by Conan?
-        return "testing"
+        return "testing"  # pragma: no cover

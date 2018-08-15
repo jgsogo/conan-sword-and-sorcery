@@ -2,8 +2,13 @@
 
 import os
 import unittest
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 from conan_sword_and_sorcery.ci.runners import TravisRunner
+from conan_sword_and_sorcery.ci.runners.base_runner import SUCCESS
 from conan_sword_and_sorcery.parsers.settings import get_settings
 from conan_sword_and_sorcery.utils.environ import context_env
 from tests.utils import TestCaseEnvClean
@@ -37,3 +42,7 @@ class TestTravisRunner(TestCaseEnvClean):
             self.assertFalse(self.runner.is_stable_branch())
         with context_env(TRAVIS_BRANCH='stable/v1.2.3'):
             self.assertTrue(self.runner.is_stable_branch())
+
+    @mock.patch('conan_sword_and_sorcery.ci.runners.base_runner.cmd', return_value=0)
+    def test_cmd(self, cmd_mocked):
+        self.assertEqual(self.runner.cmd(command="mycommand"), SUCCESS)

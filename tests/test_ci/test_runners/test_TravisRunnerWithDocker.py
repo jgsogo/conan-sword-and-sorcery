@@ -29,6 +29,7 @@ class DockerHelperMocked:
         return DRY_RUN if self.dry_run else FAIL
 
     def run_in_docker(self, command, sudo=True):
+        # TODO: Append commands and check the expected sequence
         pass
 
     def copy(self, origin, tgt):
@@ -47,7 +48,7 @@ class TestTravisRunnerWithDocker(TestCaseEnvClean):
 
     def test_dry_run(self, DockerHelperMocked):
         runner = TravisRunner(conanfile=self.conanfile, settings=self.settings, osys="Linux", dry_run=True)
-        with context_env(CONAN_GCC_VERSIONS="6", CONAN_ARCHS='x86', CONAN_BUILD_PACKAGES='pckg1'):
+        with context_env(CONAN_GCC_VERSIONS="6", CONAN_ARCHS='x86', CONAN_BUILD_PACKAGES='pckg1', CONAN_SWORD_AND_SORCERY_ITS_ME="true"):
             compiler, options = list(runner.enumerate_jobs())[0]
             with profile_for(compiler=compiler) as profile_file:
                 runner.set_compiler(compiler)

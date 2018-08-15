@@ -7,9 +7,9 @@ import sys
 from itertools import groupby
 from operator import itemgetter
 
-try:
+try:  # pragma: no py2 cover
     from contextlib import ExitStack
-except ImportError:
+except ImportError:  # pragma: no py3 cover
     from contextlib2 import ExitStack
 
 from conans.util.env_reader import get_env
@@ -163,5 +163,5 @@ def run(conanfile, filter_func=None, dry_run=False):
     return 0 if succeed else -1
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

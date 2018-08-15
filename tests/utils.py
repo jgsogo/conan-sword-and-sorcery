@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import re
+import subprocess
 
 import unittest
 
@@ -40,3 +42,17 @@ def count_registered_compilers(id=None, osys=None, **kwargs):
         n += sum([validate_compiler(instance) for instance in class_holder.explode()])
 
     return n
+
+
+def parse_remote_list():
+    remote_line = re.compile(r'^(.*): (http[^\[\s]+)(\s*\[Verify SSL: True\]\s*)?$')
+    remotes = subprocess.check_output(["conan", "remote", "list"]).decode('utf-8')
+    ret = []
+    for item in remotes.split('\n'):
+        if not len(item.strip()):
+            continue
+        m = remote_line.match(item)
+        name = m.group(1)
+        url = m.group(2)
+        ret.append((name, url))
+    return ret
