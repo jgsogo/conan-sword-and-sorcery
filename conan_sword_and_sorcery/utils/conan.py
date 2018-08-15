@@ -43,7 +43,7 @@ def conf(new_values, conan_conf=None):
 
         with open(conan_conf, 'w') as output_config:
             config.write(output_config)
-        yield config
+        yield config  # TODO: Should return a ConanConf object
 
     pass
 
