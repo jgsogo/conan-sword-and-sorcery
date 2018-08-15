@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 def _raise_on_difference(lhs, rhs, msg="Some items are in 'lhs' but not in 'rhs': '{z}'"):
     z = list(set(lhs) - set(rhs))
     if z:
-        log.warning(msg.format(z=z))  # TODO: May remove this check and rename this function
+        log.warning(msg.format(z=', '.join(z)))  # TODO: May remove this check and rename this function
     return set(lhs).intersection(set(rhs))
 
 
@@ -82,9 +82,6 @@ class CompilerRegistry(object):
                 assert all(not isstr(it) for it in version), "Version should be a list of tuples [('compiler.id', 'version'), ...]"
                 filters['version'] = [it[1] for it in version if it[0] == compiler_holder.compiler_class.id]
 
-            try:
-                for it in compiler_holder.explode(**filters):
-                    yield it
-            except ValueError as e:
-                log.warning("Compiler {} discarded: {}".format(compiler_holder, e))
+            for it in compiler_holder.explode(**filters):
+                yield it
         return
