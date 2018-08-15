@@ -31,3 +31,14 @@ class CompilerMixinTestCase:
             self.assertListEqual(parser.sections(), profile_true.sections())
             for section in parser.sections():
                 self.assertDictEqual(dict(parser.items(section)), dict(profile_true.items(section)))
+
+    def test_missing_argument(self):
+        kwargs = self.get_compiler_init_arguments()
+        kwargs.pop('version')
+        with self.assertRaisesRegexp(ValueError, "Required argument 'version'"):
+            self.compiler_class(**kwargs)
+
+    def test_additional_argument(self):
+        kwargs = self.get_compiler_init_arguments()
+        with self.assertRaisesRegexp(ValueError, "Invalid configuration argument for compiler"):
+             self.compiler_class(invalid_arg=23, **kwargs)

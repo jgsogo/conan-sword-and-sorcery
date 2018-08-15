@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
+import re
+import subprocess
 
 import unittest
 
-from conan_sword_and_sorcery.utils.environ import clean_context_env
+from conan_sword_and_sorcery.utils.environ import clean_context_env, context_env
 from conan_sword_and_sorcery.ci.compilers import CompilerRegistry
 
 
 class TestCaseEnvClean(unittest.TestCase):
+    _initial_context_env = {}
+
     def run(self, *args, **kwargs):
-        with clean_context_env(pattern="(CONAN_.*)|(TRAVIS)|(APPVEYOR)"):  # TODO: What else?
-            super(TestCaseEnvClean, self).run(*args, **kwargs)
+        with clean_context_env(pattern="^(CONAN_.*)|(TRAVIS)|(APPVEYOR)$"):  # TODO: What else?
+            with context_env(**self._initial_context_env):
+                super(TestCaseEnvClean, self).run(*args, **kwargs)
 
 
 def count_registered_compilers(id=None, osys=None, **kwargs):
@@ -37,3 +42,17 @@ def count_registered_compilers(id=None, osys=None, **kwargs):
         n += sum([validate_compiler(instance) for instance in class_holder.explode()])
 
     return n
+
+
+def parse_remote_list():
+    remote_line = re.compile(r'^(.*): (http[^\[\s]+)(\s*\[Verify SSL: True\]\s*)?$')
+    remotes = subprocess.check_output(["conan", "remote", "list"]).decode('utf-8')
+    ret = []
+    for item in remotes.split('\n'):
+        if not len(item.strip()):
+            continue
+        m = remote_line.match(item)
+        name = m.group(1)
+        url = m.group(2)
+        ret.append((name, url))
+    return ret

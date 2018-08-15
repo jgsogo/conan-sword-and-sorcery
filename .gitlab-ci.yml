@@ -56,8 +56,8 @@ coverage:
   dependencies:
     - python_2_7
     - python_3_6
-  except:
-    - /^notest/
+  only:
+    - master
 
 
 gcc_49_all:

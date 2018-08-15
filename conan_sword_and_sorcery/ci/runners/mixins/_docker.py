@@ -53,7 +53,7 @@ class DockerMixin(object):
                 # Install what is needed
                 its_me = os.environ.get('CONAN_SWORD_AND_SORCERY_ITS_ME', False)
                 if its_me:
-                    # We are testing conan_sword_and_sorcery itself
+                    # We are testing conan_sword_and_sorcery itself (if we are creating a new tag it won't be in pypi.org yet)
                     self.docker_helper.run_in_docker("pip install {path}".format(path=self.docker_project))
                 else:
                     self.docker_helper.run_in_docker("pip install -U conan_sword_and_sorcery=={version}".format(version=__version__))

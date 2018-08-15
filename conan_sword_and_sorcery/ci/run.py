@@ -3,14 +3,13 @@
 import argparse
 import logging
 import os
-import platform
 import sys
 from itertools import groupby
 from operator import itemgetter
 
-try:
+try:  # pragma: no py2 cover
     from contextlib import ExitStack
-except ImportError:
+except ImportError:  # pragma: no py3 cover
     from contextlib2 import ExitStack
 
 from conans.util.env_reader import get_env
@@ -22,11 +21,12 @@ from conan_sword_and_sorcery.parsers.profile import profile_for
 from conan_sword_and_sorcery.parsers.settings import get_settings
 from conan_sword_and_sorcery.job_generators import JobGeneratorBase
 from conan_sword_and_sorcery.utils.environ import context_env
+from conan_sword_and_sorcery.utils import platform_system
 
 log = logging.getLogger('conan_sword_and_sorcery')
 
 
-class CLIFormatter(logging.Formatter):
+class CLIFormatter(logging.Formatter):  # pragma: no cover
     max_length = 10
 
     def format(self, record):
@@ -90,9 +90,7 @@ def main():
 
 def run(conanfile, filter_func=None, dry_run=False):
     # Do the work
-    osys = platform.system()
-    if osys == "Darwin":
-        osys = "Macos"
+    osys = platform_system()
 
     # Look for runner
     runner = RunnerRegistry.get_runner(conanfile=conanfile, settings=get_settings(), osys=osys, dry_run=dry_run)
@@ -165,5 +163,5 @@ def run(conanfile, filter_func=None, dry_run=False):
     return 0 if succeed else -1
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

@@ -6,6 +6,8 @@ try:
 except ImportError:
     import mock
 
+from conans.errors import ConanException
+
 from conan_sword_and_sorcery.job_generators.environ_generator import JobGeneratorEnviron
 from conan_sword_and_sorcery.parsers.settings import get_settings
 from conan_sword_and_sorcery.parsers.conanfile import ConanFileWrapper
@@ -111,3 +113,29 @@ class TestExecutorSettingsNoCompiler(TestCaseEnvClean):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.conanfile_wrapper, settings=self.settings, osys="Macos")
         with context_env(CONAN_OPTIONS='shared'):
             self.assertEqual(len(list(generator.enumerate_jobs())), 1 * self.options_multiplier)
+
+
+class TestExecutorRaiseConfigure(TestCaseEnvClean):
+
+    def setUp(self):
+        import logging
+        logging.basicConfig(level=logging.DEBUG)
+
+        me = os.path.dirname(__file__)
+        single_files = os.path.join(me, '..', 'files', 'single')
+        self.conanfile = os.path.join(single_files, 'raise_configure.py')
+        self.conanfile_wrapper = ConanFileWrapper.parse(self.conanfile)
+        self.settings = get_settings()
+        self.n_options = 1
+        self.options_multiplier = pow(2, self.n_options)
+
+    def test_windows(self):
+        generator = JobGeneratorEnviron(conanfile_wrapper=self.conanfile_wrapper, settings=self.settings, osys="Windows")
+        self.assertEqual(len(list(generator.enumerate_jobs())), 0)
+
+    def test_linux(self):
+        generator = JobGeneratorEnviron(conanfile_wrapper=self.conanfile_wrapper, settings=self.settings, osys="Linux")
+        self.assertEqual(len(list(generator.enumerate_jobs())), 68)
+        with context_env(CONAN_OPTIONS='opt1'):
+            self.assertEqual(len(list(generator.enumerate_jobs())), 68)  # Same number, because opt1 has two values and all recipes with opt1=False are discarded.
+

@@ -56,7 +56,7 @@ class BaseRunner(object):
     def cmd(self, command):
         log.info("command to run: {}".format(command))
         if not self.dry_run:
-            ret = cmd(command, exception=None)
+            ret = cmd(command=command, exception=None)
             return SUCCESS if ret == 0 else FAIL
         return DRY_RUN
 
@@ -67,11 +67,11 @@ class BaseRunner(object):
         raise NotImplementedError  # Travis, Appveyor,... will implement it
 
     def is_stable_branch(self):
-        stable_branch_pattern = os.getenv("CONAN_STABLE_BRANCH_PATTERN", STABLE_BRANCH_PATTERN)
-        return re.match(stable_branch_pattern, self.get_branch_name())
+        stable_branch_pattern = get_env("CONAN_STABLE_BRANCH_PATTERN", STABLE_BRANCH_PATTERN)
+        return bool(re.match(stable_branch_pattern, self.get_branch_name()))
 
     def is_upload_requested(self):
-        upload_only_when_stable = os.getenv("CONAN_UPLOAD_ONLY_WHEN_STABLE", False)
+        upload_only_when_stable = get_env("CONAN_UPLOAD_ONLY_WHEN_STABLE", False)
         return not upload_only_when_stable or self.is_stable_branch()
 
     def upload(self, username, channel):

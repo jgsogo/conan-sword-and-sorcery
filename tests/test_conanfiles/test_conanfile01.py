@@ -43,7 +43,7 @@ class TestConanfile01(TestCaseEnvClean):
             self.assertEqual(len(list(generator.enumerate_jobs())), 4)
 
         with context_env(CONAN_GCC_VERSIONS="7", CONAN_BUILD_TYPES='Debug', CONAN_OPTIONS='build_gmock,shared'):
-            self.assertEqual(len(list(generator.enumerate_jobs())), 16)
+            self.assertEqual(len(list(generator.enumerate_jobs())), 32)
 
         # Just CLANG
         with context_env(CONAN_CLANG_VERSIONS="5.0"):
@@ -53,7 +53,7 @@ class TestConanfile01(TestCaseEnvClean):
             self.assertEqual(len(list(generator.enumerate_jobs())), 6)
 
         with context_env(CONAN_CLANG_VERSIONS="5.0", CONAN_BUILD_TYPES='Debug', CONAN_OPTIONS='build_gmock,shared'):
-            self.assertEqual(len(list(generator.enumerate_jobs())), 24)
+            self.assertEqual(len(list(generator.enumerate_jobs())), 48)
 
     def test_total_windows(self):
         generator = JobGeneratorEnviron(conanfile_wrapper=self.wrapper, settings=self.settings, osys="Windows")
@@ -67,7 +67,7 @@ class TestConanfile01(TestCaseEnvClean):
             self.assertEqual(len(list(generator.enumerate_jobs())), 4)
 
         with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug', CONAN_OPTIONS='build_gmock,shared'):
-            self.assertEqual(len(list(generator.enumerate_jobs())), 16)
+            self.assertEqual(len(list(generator.enumerate_jobs())), 32)
 
         with context_env(CONAN_VISUAL_VERSIONS='12', CONAN_BUILD_TYPES='Debug', CONAN_VISUAL_RUNTIMES="MT"):
             self.assertEqual(len(list(generator.enumerate_jobs())), 0)

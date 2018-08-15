@@ -1,3 +1,4 @@
 pytest-cov
 mock==2.0.0
+pytest-env-info==0.3.0  # https://anonbadger.wordpress.com/2017/11/24/better-unittest-coverage-stats-excluding-code-that-only-executes-on-python-2-3/
 -r ../requirements.txt

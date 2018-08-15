@@ -8,6 +8,7 @@ def print_jobs(all_jobs, printer=sys.stdout.write, job_status=None):
     for compiler, options in all_jobs:
         compiler_headers_ext.update(compiler._data.keys())
         option_headers.update(options.keys())
+    option_headers = sorted(list(option_headers))  # Make it an ordered list
 
     compiler_headers = ['id', 'version', 'arch', 'build_type']
     compiler_headers += [it for it in compiler_headers_ext if it not in compiler_headers]
@@ -26,9 +27,9 @@ def print_jobs(all_jobs, printer=sys.stdout.write, job_status=None):
             assert len(all_jobs) == len(job_status), "You must provide a status for every job"
             compiler_headers = ['status', ] + compiler_headers
 
-        printer(tabulate(table, headers=list(compiler_headers)+list(option_headers),
+        printer(tabulate(table, headers=compiler_headers + option_headers,
                          # showindex=True,
                          tablefmt='psql'))
         printer("\n")
     else:
-        sys.stdout.write("There are no jobs!\n")
+        printer("There are no jobs!\n")

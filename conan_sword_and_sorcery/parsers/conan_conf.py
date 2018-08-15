@@ -7,6 +7,7 @@ from configparser import ConfigParser
 class ConanConf(object):
     def __init__(self, filepath=None):
         self.config = ConfigParser()
+        self.config.optionxform = str
         self.filepath = filepath or os.path.join(os.path.expanduser("~"), '.conan', 'conan.conf')
         self.config.read(self.filepath)
 

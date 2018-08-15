@@ -12,9 +12,24 @@ class TestParserConanfile01(unittest.TestCase):
     def setUp(self):
         me = os.path.dirname(__file__)
         single_files = os.path.join(me, '..', 'files', 'single')
-        conanfile01 = os.path.join(single_files, 'conanfile01.py')
-        self.wrapper = ConanFileWrapper.parse(conanfile01)
+        self.conanfile01 = os.path.join(single_files, 'conanfile01.py')
+        self.wrapper = ConanFileWrapper.parse(self.conanfile01)
         self.wrapper.instantiate(settings=get_settings())
+
+    def test_not_valid_filename(self):
+        with self.assertRaises(Exception):
+            ConanFileWrapper.parse("<invalid-filename>")
+        with self.assertRaises(Exception):
+            ConanFileWrapper.parse(os.path.abspath(__file__))
+
+    def test_not_instantiated(self):
+        wrapper = ConanFileWrapper.parse(self.conanfile01)
+        with self.assertRaisesRegexp(RuntimeError, "Instantiate recipe first"):
+            wrapper.settings_keys()
+        with self.assertRaisesRegexp(RuntimeError, "Instantiate recipe first"):
+            wrapper.options_keys()
+        with self.assertRaisesRegexp(RuntimeError, "Instantiate recipe first"):
+            _ = wrapper.name
 
     def test_basic(self):
         self.assertEqual(self.wrapper.name, "gtest")

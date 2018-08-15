@@ -28,6 +28,9 @@ class TestCompilerClassHolder(unittest.TestCase):
         self.param3_values = ["invalid", "valid", ]
         self.holder = CompilerClassHolder(ATestCompiler, param1=self.param1_values, param2=self.param2_values, param3=self.param3_values)
 
+    def test_str(self):
+        self.assertEqual(ATestCompiler.__name__, str(self.holder))
+
     def test_base(self):
         self.assertListEqual(self.holder.get_configurations(key='param1'), self.param1_values)
         self.assertListEqual(self.holder.get_configurations(key='param2'), self.param2_values)

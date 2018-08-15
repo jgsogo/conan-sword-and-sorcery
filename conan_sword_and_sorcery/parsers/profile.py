@@ -7,7 +7,7 @@ import configparser
 
 
 @contextmanager
-def profile_for(compiler):
+def profile_for(compiler, basepath=None):
     # Create profile file
     config = configparser.ConfigParser(allow_no_value=True)
     config.optionxform=str
@@ -17,7 +17,8 @@ def profile_for(compiler):
     compiler.populate_profile(config)
 
     # Dump it to a system file
-    tmp = tempfile.NamedTemporaryFile(dir=os.path.expanduser("~"), mode='w', delete=False)  # In local dirname
+    basepath = basepath or os.path.expanduser("~")
+    tmp = tempfile.NamedTemporaryFile(dir=basepath, mode='w', delete=False)  # In local dirname
     config.write(tmp)
     tmp.close()
 
