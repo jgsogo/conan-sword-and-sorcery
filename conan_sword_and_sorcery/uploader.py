@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import os
 import logging
+from conans.util.env_reader import get_env
 from conan_sword_and_sorcery.utils import conan
 from conan_sword_and_sorcery.utils.cmd import cmd
 
@@ -11,9 +11,9 @@ log = logging.getLogger(__name__)
 def upload(recipe, username, channel, dry_run=False):
     # TODO: Check requirements in a free function so it can be called before it all starts.
     # Check requirements:
-    LOGIN_USERNAME = os.getenv("CONAN_LOGIN_USERNAME", os.getenv("CONAN_USERNAME", None))
-    REMOTE = os.getenv("CONAN_UPLOAD", False)
-    PASSWORD = os.getenv("CONAN_PASSWORD", None)
+    LOGIN_USERNAME = get_env("CONAN_LOGIN_USERNAME", get_env("CONAN_USERNAME", None))
+    REMOTE = get_env("CONAN_UPLOAD", None)
+    PASSWORD = get_env("CONAN_PASSWORD", None)
     if not REMOTE:
         log.error("No remote provided in 'CONAN_UPLOAD' env variable")
         return
