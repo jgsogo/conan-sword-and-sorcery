@@ -26,7 +26,7 @@ from conan_sword_and_sorcery.utils import platform_system
 log = logging.getLogger('conan_sword_and_sorcery')
 
 
-class CLIFormatter(logging.Formatter):
+class CLIFormatter(logging.Formatter):  # pragma: no cover
     max_length = 10
 
     def format(self, record):

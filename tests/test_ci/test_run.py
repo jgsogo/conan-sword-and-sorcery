@@ -8,30 +8,12 @@ try:
 except ImportError:
     import mock
 
-from conan_sword_and_sorcery.ci.run import CLIFormatter, main, run
+from conan_sword_and_sorcery.ci.run import main, run
 from conan_sword_and_sorcery.ci.compilers.clang import CompilerClangApple
 from conan_sword_and_sorcery.ci.runners.base_runner import DRY_RUN, SUCCESS, FAIL
 from conan_sword_and_sorcery.utils.environ import context_env
 from conan_sword_and_sorcery.utils import backup_file
 from tests.utils import parse_remote_list
-
-
-class TestCLIFormatter(unittest.TestCase):
-    formatter = CLIFormatter()
-
-    def test_format(self):
-        class Record:
-            exc_info = None
-            exc_text = None
-            stack_info = None
-            __dict__ = {'name': 'my.long.name', 'message': 'message dict value'}
-
-            def getMessage(self):
-                return "my message"
-
-        record = Record()
-        self.assertEqual(self.formatter.format(record=record), "message dict value")
-        self.assertEqual(record.name, '~.long.name')
 
 
 @mock.patch('argparse.ArgumentParser.parse_args')
