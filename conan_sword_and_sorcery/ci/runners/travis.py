@@ -16,6 +16,7 @@ class TravisRunner(DockerMixin, BaseRunner):
     job_generator_class = JobGeneratorEnviron
 
     def is_pull_request(self):
+        assert os.getenv("TRAVIS_PULL_REQUEST") is not None, "Travis always populates this env variable"
         return os.getenv("TRAVIS_PULL_REQUEST") != "false"
 
     def get_branch_name(self):
