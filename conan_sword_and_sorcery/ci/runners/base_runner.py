@@ -68,7 +68,7 @@ class BaseRunner(object):
 
     def is_stable_branch(self):
         stable_branch_pattern = os.getenv("CONAN_STABLE_BRANCH_PATTERN", STABLE_BRANCH_PATTERN)
-        return re.match(stable_branch_pattern, self.get_branch_name())
+        return bool(re.match(stable_branch_pattern, self.get_branch_name()))
 
     def is_upload_requested(self):
         upload_only_when_stable = os.getenv("CONAN_UPLOAD_ONLY_WHEN_STABLE", False)
